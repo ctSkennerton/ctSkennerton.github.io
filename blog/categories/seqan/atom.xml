@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: seqan | bio(logist | informatician)]]></title>
+  <link href="http://ctSkennerton.github.io/blog/categories/seqan/atom.xml" rel="self"/>
+  <link href="http://ctSkennerton.github.io/"/>
+  <updated>2013-10-27T20:26:13+10:00</updated>
+  <id>http://ctSkennerton.github.io/</id>
+  <author>
+    <name><![CDATA[Connor Skennerton]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Testing out Seqan's Multipattern Search Implementations]]></title>
+    <link href="http://ctSkennerton.github.io/blog/2013/10/27/testing-out-seqans-multipattern-search-implementations/"/>
+    <updated>2013-10-27T18:50:00+10:00</updated>
+    <id>http://ctSkennerton.github.io/blog/2013/10/27/testing-out-seqans-multipattern-search-implementations</id>
+    <content type="html"><![CDATA[<p>I recently discovered <a href="http://seqan.de">Seqan</a>, a header-only C++ library for
+bioinformatics.  I&rsquo;ve been playing around with the toolkit to make some
+small programs just to see whether I want to use this toolkit in a
+larger project.  So far I&rsquo;ve written
+<a href="https://github.com/ctSkennerton/prepmate">prepmate</a>, an adaptor trimming
+program for Illumina&rsquo;s Nextera mate-pair libraries; and
+<a href="https://github.com/ctSkennerton/fxtract">fxtract</a>, a
+grep-like program for extracting fasta/fastq records.  One of the
+algorithms that I use in fxtract and in another program I&rsquo;ve written,
+<a href="http://ctskennerton.github.io/crass/">crass</a>, is to search for
+multiple patterns simultaneously.  Seqan
+implements a number of algorithms for multipattern matching (checkout
+their tutorial page), however they don&rsquo;t give many clues as to why you
+would choose one algorithm over another.  So I decided to take a few of
+these implementations out for a spin using fxtract.</p>
+
+<!--more-->
+
+
+<p>Test variables:
+* different numbers of patterns: 100, 1000, 10000
+* different length patterns: uniformly distributed size (0 &ndash; 100bp), 30bp,
+  60bp
+* Algorithms: WuManber, MultiBfam, AhoChorasick, SetHorspool
+* Test dataset: <a href="http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?cmd=viewer&amp;m=data&amp;s=viewer&amp;run=SRR438796">SRR438796</a>,
+  which is part of an EBPR metagenome that was sequenced with Illumina GAIIx</p>
+
+<p>I should point out the the following speed tests are not necessarily
+testing the algorithms, but the seqan implementation of these
+algorithms in the context of what fxtract is trying to accomplish.  Which
+means that other programs which implement these algorithms may perform
+quite differently and the conclusions that I reach below may be
+different in other situations. So with disclamers out of the way, how
+does each implementation perform.</p>
+
+<p>While running through a test of the wumanber implementation I discovered
+something very odd when using the uniformly distributed patterns.  With
+100 patterns the program ran through fine, outputting a number of reads,
+however when using the 1000 or 10000 pattern file I got no output.  I
+discovered though that these larger files contained some patterns that
+had a length of 0, whereas the 100 pattern file&rsquo;s smallest pattern was
+6bp.  I removed the empty lines from my pattern files and then and voila
+there was output.  What this means is that <strong>the seqan WuManber
+implementation fails silently when given an empty string as one of the
+patterns!</strong> I&rsquo;ve submitted a <a href="http://trac.seqan.de/ticket/1117">bug report</a>
+ with the seqan authors.</p>
+
+<h2>Scripts</h2>
+
+<h4>make_patterns.sh</h4>
+
+<p>Running this script requires that both <a href="https://github.com/lh3/seqtk">seqtk</a>
+and <a href="https://github.com/lh3/bioawk">bioawk</a> are installed
+and in your PATH.</p>
+
+<p>```bash
+for count in 100 1000 10000
+do</p>
+
+<pre><code># make uniformly distributed patterns
+seqtk sample ~/EBPR_phage/raw_data/M9248_s_5_CGATGT_sequence.txt.gz
+</code></pre>
+
+<p>$count |\</p>
+
+<pre><code>    bioawk -c fastx '{
+        start=rand() *99;
+        end=rand() * 99;
+        if(start &lt; end){                 
+            if(end - start &gt; 15) {
+                print substr($seq, start, end)             
+            }
+        }else{
+            if(start - end &gt; 15) {
+                print substr($seq, end, start)
+            }
+         }         
+</code></pre>
+
+<p>}&lsquo; >random<em>${count}</em>patterns.txt</p>
+
+<pre><code># make 30bp patterns 
+seqtk sample ~/EBPR_phage/raw_data/M9248_s_5_CGATGT_sequence.txt.gz
+</code></pre>
+
+<p>$count |\</p>
+
+<pre><code>    bioawk -c fastx '{
+        start=rand() * 30;
+        end=start + 30;
+        print substr($seq, start, end)
+    }' &gt;random_${count}_30bp_patterns.txt
+
+# make 60bp patterns
+seqtk sample ~/EBPR_phage/raw_data/M9248_s_5_CGATGT_sequence.txt.gz
+</code></pre>
+
+<p>$count |\</p>
+
+<pre><code>    bioawk -c fastx '{
+        start=rand() * 30;
+        end=start + 60;
+        print substr($seq, start, end)
+    }' &gt;random_${count}_60bp_patterns.txt
+</code></pre>
+
+<p>done
+```</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -2,16 +2,16 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>
-            http://yoursite.com/blog/2013/10/25/Testing-out-Seqan%27s-Multipattern-Search-Implementations/
+            http://ctSkennerton.github.io/blog/2013/10/27/testing-out-seqans-multipattern-search-implementations/
         </loc>
-        <lastmod>2013-10-27T18:19:08+10:00</lastmod>
+        <lastmod>2013-10-27T18:55:39+10:00</lastmod>
     </url>
     <url>
-        <loc>http://yoursite.com/blog/archives/</loc>
-        <lastmod>2013-10-27T18:19:08+10:00</lastmod>
+        <loc>http://ctSkennerton.github.io/blog/archives/</loc>
+        <lastmod>2013-10-27T18:55:39+10:00</lastmod>
     </url>
     <url>
-        <loc>http://yoursite.com/</loc>
-        <lastmod>2013-10-27T18:19:08+10:00</lastmod>
+        <loc>http://ctSkennerton.github.io/</loc>
+        <lastmod>2013-10-27T18:55:39+10:00</lastmod>
     </url>
 </urlset>

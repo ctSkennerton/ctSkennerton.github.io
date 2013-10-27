@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[bio(logist | informatician)]]></title>
-  <link href="http://yoursite.com/atom.xml" rel="self"/>
-  <link href="http://yoursite.com/"/>
-  <updated>2013-10-27T18:37:07+10:00</updated>
-  <id>http://yoursite.com/</id>
+  <link href="http://ctSkennerton.github.io/atom.xml" rel="self"/>
+  <link href="http://ctSkennerton.github.io/"/>
+  <updated>2013-10-27T20:26:13+10:00</updated>
+  <id>http://ctSkennerton.github.io/</id>
   <author>
     <name><![CDATA[Connor Skennerton]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Testing out Seqan's Multipattern Search Implementations]]></title>
-    <link href="http://yoursite.com/blog/2013/10/25/Testing-out-Seqan%27s-Multipattern-Search-Implementations/"/>
-    <updated>2013-10-25T00:00:00+10:00</updated>
-    <id>http://yoursite.com/blog/2013/10/25/Testing-out-Seqan&#8217;s-Multipattern-Search-Implementations</id>
+    <link href="http://ctSkennerton.github.io/blog/2013/10/27/testing-out-seqans-multipattern-search-implementations/"/>
+    <updated>2013-10-27T18:50:00+10:00</updated>
+    <id>http://ctSkennerton.github.io/blog/2013/10/27/testing-out-seqans-multipattern-search-implementations</id>
     <content type="html"><![CDATA[<p>I recently discovered <a href="http://seqan.de">Seqan</a>, a header-only C++ library for
 bioinformatics.  I&rsquo;ve been playing around with the toolkit to make some
 small programs just to see whether I want to use this toolkit in a
@@ -33,6 +33,9 @@ implements a number of algorithms for multipattern matching (checkout
 their tutorial page), however they don&rsquo;t give many clues as to why you
 would choose one algorithm over another.  So I decided to take a few of
 these implementations out for a spin using fxtract.</p>
+
+<!--more-->
+
 
 <p>Test variables:
 * different numbers of patterns: 100, 1000, 10000

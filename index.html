@@ -22,7 +22,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://yoursite.com/">
+  <link rel="canonical" href="http://ctSkennerton.github.io/">
   <link href="/favicon.png" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css'>
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -31,8 +31,8 @@
   <meta name="og:site_name" content="bio(logist | informatician)" />
   <meta name="og:title" content="bio(logist | informatician)" />
   <meta name="og:description" content=" " />
-  <meta name="og:url" content="http://yoursite.com/index.html"/>
-  <meta name="url" content="http://yoursite.com/index.html">
+  <meta name="og:url" content="http://ctSkennerton.github.io/index.html"/>
+  <meta name="url" content="http://ctSkennerton.github.io/index.html">
   
   <meta name="distribution" content="global">
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
@@ -61,13 +61,13 @@
       <div class="row">
   <div class="span4">
     <h2>about me</h2>
-<p>Hello, welcome to my blog about biology, bioinformatics and all things science.  My Name is Connor Skennerton and I&#8217;m an early career researcher in the field of <a title="metagenomics" href="http://en.wikipedia.org/wiki/Metagenomics">metagenomics</a>.  I got my PhD from <a href="http://uq.edu.au">UQ</a> at the <a href="http://ecogenomic.org">Australian Centre for Ecogenomics</a>.  I started out as a wet-lab guy, however over the course of my PhD I was sucked into the world of bioinformatics and I&#8217;m now pretty firmly a computer guy.  Luckily I&#8217;m still allowed back into the lab sometimes to do my own DNA extraction or PCR. It helps me keep sane in my new world of perl, python and C++</p>
+<p>Hi, my name is Connor Skennerton and I&#8217;m an early career researcher in the field of <a title="metagenomics" href="http://en.wikipedia.org/wiki/Metagenomics">metagenomics</a>.  I got my PhD from <a href="http://uq.edu.au">UQ</a> at the <a href="http://ecogenomic.org">Australian Centre for Ecogenomics</a>.  I started out as a wet-lab guy, however over the course of my PhD I was sucked into the world of bioinformatics and I&#8217;m now pretty firmly a computer guy.  Luckily I&#8217;m still allowed back into the lab sometimes to do my own DNA extraction or PCR. It helps me keep sane in my new world of perl, python and C++</p>
 
   </div>
   <div class="span6">
     
 <h2>recent public projects</h2>
-<dl id="gh_repos" class="dl-horizontal" data-github-user="ctSkennerton" data-github-repo-count="3" data-github-skip-forks="true">
+<dl id="gh_repos" class="dl-horizontal" data-github-user="ctSkennerton" data-github-repo-count="6" data-github-skip-forks="true">
   <dd class="loading">Status updating&#8230;</dd>
 </dl>
 <script src="/javascripts/github.js" type="text/javascript"> </script>
@@ -82,8 +82,16 @@
 
 
 
+<a href="http://stackoverflow.com/users/2049147/" rel="tooltip" title="Stack Overflow"><img class="social_icon" title="Stack Overflow" alt="stack overflow icon" src="/images/glyphicons_400_stack_overflow.png"></a>
 
 
+
+<a href="http://biostars.org/u/2049147/" rel="tooltip" title="Biostar"><img class="social_icon" title="Biostar" alt="Biostar icon" src="/images/glyphicons_049_star.png"></a>
+
+
+<a href="http://www.linkedin.com/pub/connor-skennerton/29/319/37" rel="tooltip" title="Linkedin"><img class="social_icon" title="Linkedin" alt="Linkedin icon" src="/images/glyphicons_377_linked_in.png"></a>
+
+<a href="http://scholar.google.com.au/citations?user=ziBFFD4AAAAJ&hl=en" rel="tooltip" title="Google Scholar"><img class="social_icon" title="Google Scholar" alt="Google Scholar icon" src="/images/google_scholar.png"></a>
 
 
 
@@ -108,7 +116,7 @@
 
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/10/25/Testing-out-Seqan%27s-Multipattern-Search-Implementations/">Testing Out Seqan&#8217;s Multipattern Search Implementations</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/10/27/testing-out-seqans-multipattern-search-implementations/">Testing Out Seqan&#8217;s Multipattern Search Implementations</a></h1>
     
     
       <p class="meta">
@@ -133,8 +141,15 @@
   
 
 
-<time datetime="2013-10-25T00:00:00+10:00" pubdate data-updated="true">Oct 25<span>th</span>, 2013</time> - 
+<time datetime="2013-10-27T18:50:00+10:00" pubdate data-updated="true">Oct 27<span>th</span>, 2013</time> - 
         
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/benchmarks/'>benchmarks</a>, <a class='category' href='/blog/categories/seqan/'>seqan</a>
+  
+</span>
 
 
         
@@ -159,120 +174,12 @@ their tutorial page), however they don&rsquo;t give many clues as to why you
 would choose one algorithm over another.  So I decided to take a few of
 these implementations out for a spin using fxtract.</p>
 
-<p>Test variables:
-* different numbers of patterns: 100, 1000, 10000
-* different length patterns: uniformly distributed size (0 &ndash; 100bp), 30bp,
-  60bp
-* Algorithms: WuManber, MultiBfam, AhoChorasick, SetHorspool
-* Test dataset: <a href="http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?cmd=viewer&amp;m=data&amp;s=viewer&amp;run=SRR438796">SRR438796</a>,
-  which is part of an EBPR metagenome that was sequenced with Illumina GAIIx</p>
-
-<p>I should point out the the following speed tests are not necessarily
-testing the algorithms, but the seqan implementation of these
-algorithms in the context of what fxtract is trying to accomplish.  Which
-means that other programs which implement these algorithms may perform
-quite differently and the conclusions that I reach below may be
-different in other situations. So with disclamers out of the way, how
-does each implementation perform.</p>
-
-<p>While running through a test of the wumanber implementation I discovered
-something very odd when using the uniformly distributed patterns.  With
-100 patterns the program ran through fine, outputting a number of reads,
-however when using the 1000 or 10000 pattern file I got no output.  I
-discovered though that these larger files contained some patterns that
-had a length of 0, whereas the 100 pattern file&rsquo;s smallest pattern was
-6bp.  I removed the empty lines from my pattern files and then and voila
-there was output.  What this means is that <strong>the seqan WuManber
-implementation fails silently when given an empty string as one of the
-patterns!</strong> I&rsquo;ve submitted a <a href="http://trac.seqan.de/ticket/1117">bug report</a>
- with the seqan authors.</p>
-
-<h2>Scripts</h2>
-
-<h4>make_patterns.sh</h4>
-
-<p>Running this script requires that both <a href="https://github.com/lh3/seqtk">seqtk</a>
-and <a href="https://github.com/lh3/bioawk">bioawk</a> are installed
-and in your PATH.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">for </span>count in 100 1000 10000
-</span><span class='line'><span class="k">do</span>
-</span><span class='line'>    <span class="c"># make uniformly distributed patterns</span>
-</span><span class='line'>    seqtk sample ~/EBPR_phage/raw_data/M9248_s_5_CGATGT_sequence.txt.gz
-</span><span class='line'><span class="nv">$count</span> |<span class="se">\</span>
-</span><span class='line'>        bioawk -c fastx <span class="s1">&#39;{</span>
-</span><span class='line'><span class="s1">            start=rand() *99;</span>
-</span><span class='line'><span class="s1">            end=rand() * 99;</span>
-</span><span class='line'><span class="s1">            if(start &lt; end){                 </span>
-</span><span class='line'><span class="s1">                if(end - start &gt; 15) {</span>
-</span><span class='line'><span class="s1">                    print substr($seq, start, end)             </span>
-</span><span class='line'><span class="s1">                }</span>
-</span><span class='line'><span class="s1">            }else{</span>
-</span><span class='line'><span class="s1">                if(start - end &gt; 15) {</span>
-</span><span class='line'><span class="s1">                    print substr($seq, end, start)</span>
-</span><span class='line'><span class="s1">                }</span>
-</span><span class='line'><span class="s1">             }         </span>
-</span><span class='line'><span class="s1">}&#39;</span> &gt;random_<span class="k">${</span><span class="nv">count</span><span class="k">}</span>_patterns.txt
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># make 30bp patterns </span>
-</span><span class='line'>    seqtk sample ~/EBPR_phage/raw_data/M9248_s_5_CGATGT_sequence.txt.gz
-</span><span class='line'><span class="nv">$count</span> |<span class="se">\</span>
-</span><span class='line'>        bioawk -c fastx <span class="s1">&#39;{</span>
-</span><span class='line'><span class="s1">            start=rand() * 30;</span>
-</span><span class='line'><span class="s1">            end=start + 30;</span>
-</span><span class='line'><span class="s1">            print substr($seq, start, end)</span>
-</span><span class='line'><span class="s1">        }&#39;</span> &gt;random_<span class="k">${</span><span class="nv">count</span><span class="k">}</span>_30bp_patterns.txt
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># make 60bp patterns</span>
-</span><span class='line'>    seqtk sample ~/EBPR_phage/raw_data/M9248_s_5_CGATGT_sequence.txt.gz
-</span><span class='line'><span class="nv">$count</span> |<span class="se">\</span>
-</span><span class='line'>        bioawk -c fastx <span class="s1">&#39;{</span>
-</span><span class='line'><span class="s1">            start=rand() * 30;</span>
-</span><span class='line'><span class="s1">            end=start + 60;</span>
-</span><span class='line'><span class="s1">            print substr($seq, start, end)</span>
-</span><span class='line'><span class="s1">        }&#39;</span> &gt;random_<span class="k">${</span><span class="nv">count</span><span class="k">}</span>_60bp_patterns.txt
-</span><span class='line'><span class="k">done</span>
-</span></code></pre></td></tr></table></div></figure>
-
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/10/27/testing-out-seqans-multipattern-search-implementations/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -299,7 +206,7 @@ and in your PATH.</p>
     <ul class="recent_posts">
       
         <li>
-          <a href="/blog/2013/10/25/Testing-out-Seqan%27s-Multipattern-Search-Implementations/">Testing out Seqan's Multipattern Search Implementations</a>
+          <a href="/blog/2013/10/27/testing-out-seqans-multipattern-search-implementations/">Testing out Seqan's Multipattern Search Implementations</a>
         </li>
       
     </ul>
@@ -320,8 +227,16 @@ and in your PATH.</p>
 
 
 
+<a href="http://stackoverflow.com/users/2049147/" rel="tooltip" title="Stack Overflow"><img class="social_icon" title="Stack Overflow" alt="stack overflow icon" src="/images/glyphicons_400_stack_overflow.png"></a>
 
 
+
+<a href="http://biostars.org/u/2049147/" rel="tooltip" title="Biostar"><img class="social_icon" title="Biostar" alt="Biostar icon" src="/images/glyphicons_049_star.png"></a>
+
+
+<a href="http://www.linkedin.com/pub/connor-skennerton/29/319/37" rel="tooltip" title="Linkedin"><img class="social_icon" title="Linkedin" alt="Linkedin icon" src="/images/glyphicons_377_linked_in.png"></a>
+
+<a href="http://scholar.google.com.au/citations?user=ziBFFD4AAAAJ&hl=en" rel="tooltip" title="Google Scholar"><img class="social_icon" title="Google Scholar" alt="Google Scholar icon" src="/images/google_scholar.png"></a>
 
 
 
