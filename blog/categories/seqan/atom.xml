@@ -4,7 +4,7 @@
   <title><![CDATA[Category: seqan | bio(logist | informatician)]]></title>
   <link href="http://ctSkennerton.github.io/blog/categories/seqan/atom.xml" rel="self"/>
   <link href="http://ctSkennerton.github.io/"/>
-  <updated>2013-10-28T00:31:48+10:00</updated>
+  <updated>2013-10-28T18:38:47+10:00</updated>
   <id>http://ctSkennerton.github.io/</id>
   <author>
     <name><![CDATA[Connor Skennerton]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Testing out Seqan's Multipattern Search Implementations]]></title>
-    <link href="http://ctSkennerton.github.io/blog/2013/10/27/testing-out-seqans-multipattern-search-implementations/"/>
-    <updated>2013-10-27T18:50:00+10:00</updated>
-    <id>http://ctSkennerton.github.io/blog/2013/10/27/testing-out-seqans-multipattern-search-implementations</id>
+    <link href="http://ctSkennerton.github.io/blog/2013/10/28/testing-out-seqans-multipattern-search-implementations/"/>
+    <updated>2013-10-28T18:38:00+10:00</updated>
+    <id>http://ctSkennerton.github.io/blog/2013/10/28/testing-out-seqans-multipattern-search-implementations</id>
     <content type="html"><![CDATA[<p>I recently discovered <a href="http://seqan.de">Seqan</a>, a header-only C++ library for
 bioinformatics.  I&rsquo;ve been playing around with the toolkit to make some
 small programs just to see whether I want to use this toolkit in a
@@ -69,6 +69,23 @@ implementation fails silently when given an empty string as one of the
 patterns!</strong> I&rsquo;ve submitted a <a href="http://trac.seqan.de/ticket/1117">bug report</a>
  with the seqan authors.</p>
 
+<p><img src="/images/seqan_multipattern_search_speed_benchmark.png", alt="Seqan speed test summary"></p>
+
+<p>The above graph shows the total wall clock time in seconds foreach
+algorithm to process the input file with the different numbers of search
+patterns (columns) or for the different types of patters (rows).  There
+is no stats for the Wu-Manber algorithm because it was <em>so</em> much slower
+than the other three.  For the 10000 pattern test it was taking more
+than 1 hour to run through whereas the next worst completed the task in
+15 mins.  So don&rsquo;t use the Wu-Manber implementation in Seqan!  The
+winner of the speed benchmark was the multiBfam algorithim which
+performed nearly identically for any number of input patterns or for the
+different length patterns.  In comparison the Aho-Corasick and
+SetHorspool algorithms became slower with more patterns.</p>
+
+<p>So I&rsquo;m going to be using the multiBfam algorithm from now on, at least
+if I&rsquo;m using Seqan anyway.</p>
+
 <h2>Scripts</h2>
 
 <h4>make_patterns.sh</h4>
@@ -82,7 +99,7 @@ for count in 100 1000 10000
 do</p>
 
 <pre><code># make uniformly distributed patterns
-seqtk sample ~/EBPR_phage/raw_data/M9248_s_5_CGATGT_sequence.txt.gz
+seqtk sample SRR438796.fastq.gz
 </code></pre>
 
 <p>$count |\</p>
@@ -104,7 +121,7 @@ seqtk sample ~/EBPR_phage/raw_data/M9248_s_5_CGATGT_sequence.txt.gz
 <p>}&lsquo; >random<em>${count}</em>patterns.txt</p>
 
 <pre><code># make 30bp patterns 
-seqtk sample ~/EBPR_phage/raw_data/M9248_s_5_CGATGT_sequence.txt.gz
+seqtk sample SRR438796.fastq.gz
 </code></pre>
 
 <p>$count |\</p>
@@ -116,7 +133,7 @@ seqtk sample ~/EBPR_phage/raw_data/M9248_s_5_CGATGT_sequence.txt.gz
     }' &gt;random_${count}_30bp_patterns.txt
 
 # make 60bp patterns
-seqtk sample ~/EBPR_phage/raw_data/M9248_s_5_CGATGT_sequence.txt.gz
+seqtk sample SRR438796.fastq.gz
 </code></pre>
 
 <p>$count |\</p>
@@ -130,6 +147,90 @@ seqtk sample ~/EBPR_phage/raw_data/M9248_s_5_CGATGT_sequence.txt.gz
 
 <p>done
 ```</p>
+
+<h4>time_implementations.sh</h4>
+
+<p>```bash</p>
+
+<h1>! /bin/bash</h1>
+
+<p>for impl in fxtract-*
+do</p>
+
+<pre><code>for p in speed_test/random_100*
+do
+    patterns=$(basename $p)
+    echo "real,user,sys,avemem,maxmem" &gt;speed_test/${impl}_${patterns%.txt}_times.txt
+    for i in {1..10}
+    do
+        /usr/bin/time -f "%E,%U,%S,%K,%M" -a -o speed_test/${impl}_${patterns%.txt}_times.txt ./$impl -f $p SRR438796.fastq.gz |\ 
+            wc -l &gt;&gt;speed_test/${impl}_${patterns%.txt}_words.txt
+    done
+done
+</code></pre>
+
+<p>done
+```</p>
+
+<h4>summarize_times.py</h4>
+
+<p>```python</p>
+
+<h1>!/usr/bin/env python</h1>
+
+<p>from <strong>future</strong> import print_function
+import sys, os, glob, re</p>
+
+<p>fixed_re = re.compile(&lsquo;fxtract-(\w+)<em>random</em>(10{2,5})<em>(\d\d)bp_patterns_times.txt&rsquo;)
+norm_re = re.compile(&lsquo;fxtract-(\w+)</em>random<em>(10{2,5})</em>patterns_minus_small_times.txt&rsquo;)</p>
+
+<p>impl_codes = {&lsquo;ac&rsquo;: &lsquo;aho-corasick&rsquo;, &lsquo;sh&rsquo;: &lsquo;set horspool&rsquo;, &lsquo;mb&rsquo;: &lsquo;multi-bfam&rsquo;, &lsquo;wm&rsquo;: &lsquo;wu-manber&rsquo;}</p>
+
+<p>times_files = glob.glob(&ldquo;./fxtract*times.txt&rdquo;)
+data = {}
+for fn in times_files:</p>
+
+<pre><code>match = fixed_re.search(fn)
+if match:
+    impl = impl_codes[match.group(1)]
+    pattern_type = match.group(3)
+    pattern_count = match.group(2)
+else:
+    match = norm_re.search(fn)
+    if match:
+        impl = impl_codes[match.group(1)]
+        pattern_type = 'norm'
+        pattern_count = match.group(2)
+    else:
+        raise ValueError("Filename %s does not fit either form" % fn)
+with open(fn) as fp:
+    first_line = True
+    seconds = 0.0
+    for line in fp:
+        if first_line:
+            first_line = False
+            continue
+        fields = line.rstrip().split(',')
+        seconds += float(fields[1]) + float(fields[2])
+
+    seconds /= 10.0
+    print(impl,pattern_type, pattern_count, seconds, sep="\t")
+</code></pre>
+
+<p>```</p>
+
+<h4>plot_summary.R</h4>
+
+<p><code>
+library(ggplot2)
+data = read.table("summary.txt", header=T, sep="\t")
+p &lt;- ggplot(data, aes(Algorithm, Wall.time)) + geom_bar(stat="bin")
+png("seqan_multipattern_search_speed_benchmark.png", width=600,
+height=600)
+p + facet_grid(Pattern.type ~ Number.of.patterns) + theme(axis.text.x =
+element_text(angle = 45, hjust = 1))
+dev.off()
+</code></p>
 ]]></content>
   </entry>
   

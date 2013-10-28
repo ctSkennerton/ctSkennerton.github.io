@@ -1,0 +1,28 @@
+Algorithm	Pattern type	Number of patterns	Wall time
+aho-corasick	30	10000	511.497
+aho-corasick	30	1000	330.601
+aho-corasick	30	100	253.859
+aho-corasick	60	10000	533.64
+aho-corasick	60	1000	335.031
+aho-corasick	60	100	252.724
+aho-corasick	norm	10000	510.203
+aho-corasick	norm	1000	324.463
+aho-corasick	norm	100	253.754
+multi-bfam	30	10000	121.753
+multi-bfam	30	1000	99.291
+multi-bfam	30	100	88.036
+multi-bfam	60	10000	94.307
+multi-bfam	60	1000	83.432
+multi-bfam	60	100	79.28
+multi-bfam	norm	10000	173.983
+multi-bfam	norm	1000	125.59
+multi-bfam	norm	100	96.652
+set horspool	30	10000	930.063
+set horspool	30	1000	565.122
+set horspool	30	100	380.711
+set horspool	60	10000	601.136
+set horspool	60	1000	367.237
+set horspool	60	100	253.724
+set horspool	norm	10000	1091.314
+set horspool	norm	1000	651.236
+set horspool	norm	100	423.646

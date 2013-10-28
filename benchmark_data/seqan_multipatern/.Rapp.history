@@ -1,0 +1,339 @@
+row.names(oft)
+as.numeric(row.names(oft))
+order(as.numeric(row.names(oft)))
+oft = read.table("~/LUCA/projects1/ebpr_phage/combined_phage/hiseq/database/host_relab_filtered_ordered.txt",sep="\t", header=T, row.names=1)
+c = as.matrix(oft[2:length(oft) - 1])
+head(c)
+rows(c)
+wc(oft)
+heatmap.2(c, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,5), Colv=NULL, lhei=c(1,50))
+postscript("microbial genome bin abundance.ps")
+heatmap.2(c, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,5), Colv=NULL, lhei=c(1,50))
+dev.off()
+ot = oft[order(Consensus.Lineage),]
+head(oft)
+ot = oft[order(oft$Consensus.Lineage),]
+head(ot)
+c = as.matrix(oft[2:length(ot) - 1])
+c = as.matrix(ot[2:length(ot) - 1])
+heatmap.2(c, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,5), Colv=NULL, lhei=c(1,50))
+postscript("microbial genome bin abundance.ps")
+heatmap.2(c, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,5), Colv=NULL, lhei=c(1,50))
+dev.off()
+q()
+oft = read.table("~/LUCA/projects1/ebpr_phage/combined_phage/hiseq/database/host_relab_filtered_ordered.txt",sep="\t", header=T, row.names=1)
+ot = oft[order(oft$Consensus.Lineage),]
+write.table(ot,"Genome bins taxonomy sorted.txt", sep="\t")
+kn = ot[ot$Consensus.Lineage != "Unknown"]
+kn = ot[ot$Consensus.Lineage != "Unknown",]
+head(kn)
+tail(kn)
+library(RColorBrewer)#
+library(gplots)
+c = as.matrix(kn[2:length(kn) - 1])
+heatmap.2(c, trace='none', density.info='none', scale='none', Rowv=kn$Consensus.Lineage, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,5), Colv=NULL, lhei=c(1,50))
+heatmap.2(c, trace='none', density.info='none', scale='none', Rowv=NULL, labRow=kn$Consensus.Lineage, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,5), Colv=NULL, lhei=c(1,50))
+heatmap.2(c, trace='none', density.info='none', scale='none', Rowv=NULL, labRow=kn$Consensus.Lineage, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,15), Colv=NULL, lhei=c(1,50))
+heatmap.2(c, trace='none', density.info='none', scale='none', Rowv=NULL, labRow=kn$Consensus.Lineage, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,20), Colv=NULL, lhei=c(1,50))
+heatmap.2(c, trace='none', density.info='none', scale='none', Rowv=NULL, labRow=kn$Consensus.Lineage, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,18), Colv=NULL, lhei=c(1,50))
+heatmap.2(c, trace='none', density.info='none', scale='none', Rowv=NULL, labRow=kn$Consensus.Lineage, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,17), Colv=NULL, lhei=c(1,50))
+heatmap.2(c, trace='none', density.info='none', scale='none', Rowv=NULL, labRow=kn$Consensus.Lineage, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,17), Colv=NULL, lhei=c(1,50), labCol=c("2011-05-27","2011-06-22","2011-08-01","2011-08-09","2011-11-25","2012-01-18","2011-06-17","2011-09-05","2011-12-16"))
+postscript("named microbial genome bins.ps")
+heatmap.2(c, trace='none', density.info='none', scale='none', Rowv=NULL, labRow=kn$Consensus.Lineage, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,17), Colv=NULL, lhei=c(1,50), labCol=c("2011-05-27","2011-06-22","2011-08-01","2011-08-09","2011-11-25","2012-01-18","2011-06-17","2011-09-05","2011-12-16"))
+dev.off()
+data = read.table("~/LUCA/projects1/ebpr_phage/combined_phage/hiseq/database/putative_complete_phage_relab.txt", sep="\t", header=T, row.names=1)
+head(data)
+data.matrix = as.matrix(data)
+head(data.matrix)
+library(RColorBrewer)#
+library(gplots)
+heatmap.2(data.matrix)
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, labRow=kn$Consensus.Lineage, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,17), Colv=NULL, lhei=c(1,50))
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,17), Colv=NULL, lhei=c(1,50))
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,17), Colv=NULL)
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,17), Colv=NULL, lhei=c(1,10))
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,17), Colv=NULL, lhei=c(1,50))
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(8,5), Colv=NULL, lhei=c(1,50))
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,3,5,10,15,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(5,3), Colv=NULL, lhei=c(1,50))
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.01,0.1,0.5,1,3,5,10,20 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(5,3), Colv=NULL, lhei=c(1,50))
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.01,0.05,0.1,0.5,1,3,5,10 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(5,3), Colv=NULL, lhei=c(1,50))
+postscript("phage_heatmap.ps")
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.01,0.05,0.1,0.5,1,3,5,10 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(5,3), Colv=NULL, lhei=c(1,50))
+dev.off()
+library(VennDiagram)
+a1 = 100
+a2 = 90
+a3 = 50
+a4 = 110
+a12 = 50
+a13 = 20
+a23 = 40
+a123 = 10
+draw.triple.venn(a1,a2,a3, a12,a13, a23,a123)
+imge1 = draw.triple.venn(a1,a2,a3, a12,a13, a23,a123)
+imge1
+grid.draw(imge1)
+venn.plot <- draw.quintuple.venn(#
+area1 = 301,#
+area2 = 321,#
+area3 = 311,#
+area4 = 321,#
+area5 = 301,#
+n12 = 188,#
+n13 = 191,#
+n14 = 184,#
+n15 = 177,#
+n23 = 194,#
+n24 = 197,#
+n25 = 190,#
+n34 = 190,#
+n35 = 173,#
+n45 = 186,#
+n123 = 112,#
+n124 = 108,#
+n125 = 108,#
+n134 = 111,#
+n135 = 104,#
+n145 = 104,#
+n234 = 111,#
+n235 = 107,#
+n245 = 110,#
+n345 = 100,#
+n1234 = 61,#
+n1235 = 60,#
+n1245 = 59,#
+n1345 = 58,#
+n2345 = 57,#
+n12345 = 31,#
+category = c("A", "B", "C", "D", "E"),#
+fill = c("dodgerblue", "goldenrod1", "darkorange1", "seagreen3", "orchid3"),#
+cat.col = c("dodgerblue", "goldenrod1", "darkorange1", "seagreen3", "orchid3"),#
+cat.cex = 2,#
+margin = 0.05,#
+cex = c(1.5, 1.5, 1.5, 1.5, 1.5, 1, 0.8, 1, 0.8, 1, 0.8, 1, 0.8, 1, 0.8,#
+1, 0.55, 1, 0.55, 1, 0.55, 1, 0.55, 1, 0.55, 1, 1, 1, 1, 1, 1.5),#
+ind = TRUE#
+);
+update.packages()
+library(VennDiagram)
+draw.pairwise.venn(3923, 3788, 2134)
+draw.triple.venn(3923,3788,4177,2134,1875,2443,1716)
+draw.quad.venn(3923,3788,4177,4646,2134,2443,2042, 1875,1567,2325,1716,1437,1912,1427,1363)
+draw.quad.venn(3923,3788,4177,4646,2134,2443,2042,1875,1567,2325,1716,1437,1912,1427,1363,category=c('IA.faa', 'IB.faa', 'IIA.faa', 'IIC-1.faa'))
+draw.quad.venn(5459,4177,7206,5799,2583,2608,2648,2754,2774,2737,2248,2318,2235,2374,2089,category=c('3,10:IA', 'IIA.faa', '6,7:IIC', '8,9:IIF'))
+draw.quad.venn(5459,4177,7206,5799,2583,2608,2648,2754,2774,2737,2248,2318,2235,2374,2089,category=c('IA', 'UW-1', 'IIC', 'IIF'))
+library(VennDiagram)
+draw.quintuple.venn(#
+area1 = 301,#
+area2 = 321,#
+area3 = 311,#
+area4 = 321,#
+area5 = 301,#
+n12 = 188,#
+n13 = 191,#
+n14 = 184,#
+n15 = 177,#
+n23 = 194,#
+n24 = 197,#
+n25 = 190,#
+n34 = 190,#
+n35 = 173,#
+n45 = 186,#
+n123 = 112,#
+n124 = 108,#
+n125 = 108,#
+n134 = 111,#
+n135 = 104,#
+n145 = 104,#
+n234 = 111,#
+n235 = 107,#
+n245 = 110,#
+n345 = 100,#
+n1234 = 61,#
+n1235 = 60,#
+n1245 = 59,#
+n1345 = 58,#
+n2345 = 57,#
+n12345 = 31);
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 1875, 1859, 2754, 1772, 1691, 2248, 1613, 1564, 1476, categories=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'))
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 2648, 1875, 1859, 1948, 2754, 2774, 2737, 1772, 1691, 1784, 2248, 2318, 2235, 1613, 1702, 1627, 2374, 1564, 1631, 1549, 2089, 1519, 1476, categories=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'))
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 2648, 1875, 1859, 1948, 2754, 2774, 2737, 1772, 1691, 1784, 2248, 2318, 2235, 1613, 1702, 1627, 2374, 1564, 1631, 1549, 2089, 1519, 1476, category=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'))
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 2648, 1875, 1859, 1948, 2754, 2774, 2737, 1772, 1691, 1784, 2248, 2318, 2235, 1613, 1702, 1627, 2374, 1564, 1631, 1549, 2089, 1519, 1476, category=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'), #
+cat.fontfamily = rep("sans", 5)#
+)
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 2648, 1875, 1859, 1948, 2754, 2774, 2737, 1772, 1691, 1784, 2248, 2318, 2235, 1613, 1702, 1627, 2374, 1564, 1631, 1549, 2089, 1519, 1476, category=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'), #
+cat.fontfamily = rep("sans", 5), margin=c(10,10,10,10))
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 2648, 1875, 1859, 1948, 2754, 2774, 2737, 1772, 1691, 1784, 2248, 2318, 2235, 1613, 1702, 1627, 2374, 1564, 1631, 1549, 2089, 1519, 1476, category=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'), #
+cat.fontfamily = rep("sans", 5), margin=c(1,1,1,1))
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 2648, 1875, 1859, 1948, 2754, 2774, 2737, 1772, 1691, 1784, 2248, 2318, 2235, 1613, 1702, 1627, 2374, 1564, 1631, 1549, 2089, 1519, 1476, category=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'), #
+cat.fontfamily = rep("sans", 5), margin=c(.1,.1,.1,.1))
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 2648, 1875, 1859, 1948, 2754, 2774, 2737, 1772, 1691, 1784, 2248, 2318, 2235, 1613, 1702, 1627, 2374, 1564, 1631, 1549, 2089, 1519, 1476, category=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'), #
+cat.fontfamily = rep("sans", 5), margin=c(.05,.05,.05,.05))
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 2648, 1875, 1859, 1948, 2754, 2774, 2737, 1772, 1691, 1784, 2248, 2318, 2235, 1613, 1702, 1627, 2374, 1564, 1631, 1549, 2089, 1519, 1476, category=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'), #
+cat.fontfamily = rep("sans", 5))
+postscript("venn main.ps")
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 2648, 1875, 1859, 1948, 2754, 2774, 2737, 1772, 1691, 1784, 2248, 2318, 2235, 1613, 1702, 1627, 2374, 1564, 1631, 1549, 2089, 1519, 1476, category=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'), #
+cat.fontfamily = rep("sans", 5))
+dev.off()
+postscript("venn main.ps")
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 2648, 1875, 1859, 1948, 2754, 2774, 2737, 1772, 1691, 1784, 2248, 2318, 2235, 1613, 1702, 1627, 2374, 1564, 1631, 1549, 2089, 1519, 1476, category=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'))
+dev.off()
+postscript("venn main.ps")
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 2648, 1875, 1859, 1948, 2754, 2774, 2737, 1772, 1691, 1784, 2248, 2318, 2235, 1613, 1702, 1627, 2374, 1564, 1631, 1549, 2089, 1519, 1476, category=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'), #
+cat.fontfamily = rep("Arial", 5))
+dev.off()
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 2648, 1875, 1859, 1948, 2754, 2774, 2737, 1772, 1691, 1784, 2248, 2318, 2235, 1613, 1702, 1627, 2374, 1564, 1631, 1549, 2089, 1519, 1476, category=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'), #
+cat.fontfamily = rep("Arial", 5), fontfamily=rep("Arial", 31))
+postscript("venn main.ps")
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 2648, 1875, 1859, 1948, 2754, 2774, 2737, 1772, 1691, 1784, 2248, 2318, 2235, 1613, 1702, 1627, 2374, 1564, 1631, 1549, 2089, 1519, 1476, category=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'), #
+cat.fontfamily = rep("Arial", 5), fontfamily=rep("Arial", 31))
+warnings()
+dev.off()
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 2648, 1875, 1859, 1948, 2754, 2774, 2737, 1772, 1691, 1784, 2248, 2318, 2235, 1613, 1702, 1627, 2374, 1564, 1631, 1549, 2089, 1519, 1476, category=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'),  cat.fontfamily = rep("Arial", 5),  fontfamily=rep("Arial", 31) )
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 2648, 1875, 1859, 1948, 2754, 2774, 2737, 1772, 1691, 1784, 2248, 2318, 2235, 1613, 1702, 1627, 2374, 1564, 1631, 1549, 2089, 1519, 1476, category=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'),  cat.fontfamily = rep("Arial", 5),  fontfamily=rep("Arial", 31), margin=c(0,0,1,0) )
+draw.quintuple.venn( 5459, 3788, 4177, 7206, 5799, 2248, 2583, 2608, 2648, 1875, 1859, 1948, 2754, 2774, 2737, 1772, 1691, 1784, 2248, 2318, 2235, 1613, 1702, 1627, 2374, 1564, 1631, 1549, 2089, 1519, 1476, category=c('IA', 'BA-92', 'UW-1', 'IIC', 'IIF'),  cat.fontfamily = rep("Arial", 5),  fontfamily=rep("Arial", 31))
+draw.pairwise.venn(3923, 4529, 2993, #
+category=c('BA-93', 'UW-2'),  cat.fontfamily = rep("Arial", 2),  fontfamily=rep("Arial", 3) )
+postscript("IA pairwise.ps")
+draw.pairwise.venn(3923, 4529, 2993, #
+category=c('BA-93', 'UW-2'),  cat.fontfamily = rep("Arial", 2),  fontfamily=rep("Arial", 3) )
+dev.off()
+postscript("IIC pairwise.ps")
+draw.pairwise.venn(4646, 4628, 2068, #
+category=c('SK-01', 'BA-91'),  cat.fontfamily = rep("Arial", 2),  fontfamily=rep("Arial", 3) )
+dev.off()
+postscript("IIF pairwise.ps")
+draw.pairwise.venn(3820, 4132, 2153, #
+category=c('SK-12', 'SK-11'),  cat.fontfamily = rep("Arial", 2),  fontfamily=rep("Arial", 3) )
+dev.off()
+draw.quintuple.venn( 5459, 3788, 5799, 7206, 4177, 2248, 2648, 2608, 2583, 1948, 1859, 1875, 2737, 2774, 2754, 1784, 1691, 1772, 2235, 2318, 2248, 1627, 1702, 1613, 2374, 1549, 1631, 1564, 2089, 1519, 1476, category=c('IA', 'BA-92', 'IIF', 'IIC', 'UW-1'),  cat.fontfamily = rep("Arial", 5),  fontfamily=rep("Arial", 31) )
+postscript("venn main.ps")
+draw.quintuple.venn( 5459, 3788, 5799, 7206, 4177, 2248, 2648, 2608, 2583, 1948, 1859, 1875, 2737, 2774, 2754, 1784, 1691, 1772, 2235, 2318, 2248, 1627, 1702, 1613, 2374, 1549, 1631, 1564, 2089, 1519, 1476, category=c('IA', 'BA-92', 'IIF', 'IIC', 'UW-1'),  cat.fontfamily = rep("Arial", 5),  fontfamily=rep("Arial", 31) )
+dev.off()
+library(RColorBrewer)#
+library(gplots)
+data = read.table("bc_community_normalised_merge_dups_copy_corr_L6_sorted.generic", row.names=1, header=T, sep="\t")
+data.matrix = as.matrix(data)
+heatmap.2(c, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,5,10,20,50, 100 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,5), Colv=NULL, lhei=c(1,50))
+head(data.matrix)
+data.matrix = as.matrix(data[2:length(data)-1])
+head(data.matrix)
+data.matrix = as.matrix(data)
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,5,10,20,50, 100 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(10,5), Colv=NULL, lhei=c(1,50))
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,5,10,20,50, 100 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(5,15), Colv=NULL, lhei=c(1,50))
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,5,10,20,50, 100 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.5, key=F, lwid=c(.05,.99), margins=c(5,15), Colv=NULL, lhei=c(1,50))
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,5,10,20,50, 100 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,15), Colv=NULL, lhei=c(1,50))
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,5,10,20,50, 100 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,15), Colv=NULL, lhei=c(1,50), family="Arial")
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,5,10,20,50, 100 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,15), Colv=NULL, lhei=c(1,50), family="Arial", font="Arial")
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,5,10,20,50, 100 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,15), Colv=NULL, lhei=c(1,50), family="Arial", fontfamily="Arial")
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,5,10,20,50, 100 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,15), Colv=NULL, lhei=c(1,50), family="serif")
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,5,10,20,50, 100 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,15), Colv=NULL, lhei=c(1,50))
+postscript("SBR9 pyrotags.ps")
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,5,10,20,50, 100 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,15), Colv=NULL, lhei=c(1,50))
+dev.off()
+data = read.table("SBR9_pyrotags.txt", row.names=1, header=T, sep="\t")
+data.matrix = as.matrix(data)
+postscript("SBR9 pyrotags.ps")
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,5,10,20,50, 100 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,15), Colv=NULL, lhei=c(1,50))
+dev.off()
+data = read.table("SBR9_pyrotags.txt", row.names=1, header=T, sep="\t")
+data.matrix = as.matrix(data)
+postscript("SBR9 pyrotags.ps")
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', Rowv=NULL, dendrogram='none', breaks=c(0,0.1,0.5,1,5,10,20,50, 100 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,15), Colv=NULL, lhei=c(1,50))
+dev.off()
+a = c(1,4,7,12,40,3)
+b = c(1,5,6,10,30,6)
+result = cor.test(a, b)
+result
+result$p.value
+data = read.table("phage_and_host_average_tetramers.tsv", header=F, sep="\t", row.names=1)
+plot(hclust(data, method="euclidean"))
+plot(hclust(data))
+plot(hclust(dist(data)))
+plot(hclust(dist(data)), cex=0.1)
+plot(hclust(dist(data)), cex=0.1, hang=-1)
+postscript("dendrogram.ps",height=10,width=20)
+plot(hclust(dist(data)), cex=0.3, hang=-1)
+dev.off()
+postscript("dendrogram.ps",height=10,width=30)
+plot(hclust(dist(data)), cex=0.2, hang=-1)
+dev.off()
+postscript("dendrogram.ps",height=10,width=30)
+plot(hclust(dist(data)), cex=0.1, hang=-1)
+dev.off()
+postscript("dendrogram.ps",height=10,width=30)
+plot(hclust(dist(data),method="centroid"), cex=0.1, hang=-1)
+dev.off()
+postscript("dendrogram.ps",height=10,width=30)
+plot(hclust(dist(data),method="median"), cex=0.1, hang=-1)
+dev.off()
+postscript("dendrogram.ps",height=10,width=30)
+plot(hclust(dist(data,method="manhattan")), cex=0.1, hang=-1)
+dev.off()
+sensor_output_1 = c(1,2,3,4,5,6,7)
+sensor_output_1 = c(30,30,30,30,30,30,120,120,120,120)
+sensor_output_2 = c(30,45,30,30,120,120,100,100,120,120)
+cor.test(sensor_output_1, sensor_output_2)
+cor.test(sensor_output_1, sensor_output_2, alternative='greater')
+library(RColorBrewer)
+display.brewer.pal(6,"BuPu")
+display.brewer.pal(7,"BuPu")
+svg("~/Dropbox/Chapter IV/bupu_7_key.svg")
+display.brewer.pal(7,"BuPu")
+dev.off()
+library(gplots)
+data = read.table("~/LUCA/projects1/ebpr_phage/combined_phage/hiseq/database/putative_complete_phage_relab.txt", sep="\t", header=T, row.names=1)
+data.matrix = as.matrix(data)
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', dendrogram='none', breaks=c(0,0.01,0.05,0.1,0.5,1,3,5,10 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.3, key=F, lwid=c(.05,.99), margins=c(5,3), Colv=NULL, lhei=c(1,50))
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', dendrogram='none', breaks=c(0,0.01,0.05,0.1,0.5,1,3,5,10 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,3), Colv=NULL, lhei=c(1,50))
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', dendrogram='none', breaks=c(0,0.01,0.05,0.1,0.5,1,3,5,10 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,3), Colv=NULL, lhei=c(1,50), labcol=c(5,26,49,75,95,110,117,124,131,152,159,173,201,208,215,229,243,259,306,327,341,355))
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', dendrogram='none', breaks=c(0,0.01,0.05,0.1,0.5,1,3,5,10 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,3), Colv=NULL, lhei=c(1,50), labCol=c(5,26,49,75,95,110,117,124,131,152,159,173,201,208,215,229,243,259,306,327,341,355))
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', dendrogram='row', breaks=c(0,0.01,0.05,0.1,0.5,1,3,5,10 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,3), Colv=NULL, lhei=c(1,50), labCol=c(5,26,49,75,95,110,117,124,131,152,159,173,201,208,215,229,243,259,306,327,341,355))
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', dendrogram='none', breaks=c(0,0.01,0.05,0.1,0.5,1,3,5,10 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,3), Colv=NULL, lhei=c(1,50), labCol=c(5,26,49,75,95,110,117,124,131,152,159,173,201,208,215,229,243,259,306,327,341,355))
+svg("~/Dropbox/Chapter IV/phage relab.svg")
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', dendrogram='none', breaks=c(0,0.01,0.05,0.1,0.5,1,3,5,10 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,3), Colv=NULL, lhei=c(1,50), labCol=c(5,26,49,75,95,110,117,124,131,152,159,173,201,208,215,229,243,259,306,327,341,355))
+dev.off()
+postscript("~/Dropbox/Chapter IV/phage relab.ps")
+heatmap.2(data.matrix, trace='none', density.info='none', scale='none', dendrogram='none', breaks=c(0,0.01,0.05,0.1,0.5,1,3,5,10 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,3), Colv=NULL, lhei=c(1,50), labCol=c(5,26,49,75,95,110,117,124,131,152,159,173,201,208,215,229,243,259,306,327,341,355))
+dev.off()
+blooming_phage = c(6,8,13,17,34,45,51,87,124,185,194,350,380,401,408,416,429,430,436,441,445,623,764,844,857,1333,1862,1920)
+head(data)
+blooming_phage = c('6','8','13','17','34','45','51','87','124','185','194','350','380','401','408','416','429','430','436','441','445','623','764','844','857','1333','1862','1920')
+data[blooming_phage,]
+bpr = data[blooming_phage,]
+bpr = as.matrix(data[blooming_phage,])
+heatmap.2(bpr, trace='none', density.info='none', scale='none', dendrogram='none', breaks=c(0,0.01,0.05,0.1,0.5,1,3,5,10 ), col=c("white",brewer.pal(7,"BuPu")), cexRow=0.2, key=F, lwid=c(.05,.99), margins=c(5,3), Colv=NULL, lhei=c(1,50), labCol=c(5,26,49,75,95,110,117,124,131,152,159,173,201,208,215,229,243,259,306,327,341,355))
+heatmap.2(bpr, trace='none', density.info='none', scale='none', dendrogram='none', breaks=c(0,0.01,0.05,0.1,0.5,1,3,5,10 ), col=c("white",brewer.pal(7,"BuPu")), key=F, lwid=c(.05,.99), margins=c(5,3), Colv=NULL, lhei=c(1,50), labCol=c(5,26,49,75,95,110,117,124,131,152,159,173,201,208,215,229,243,259,306,327,341,355))
+heatmap.2(bpr, trace='none', density.info='none', scale='none', dendrogram='none', breaks=c(0,0.01,0.05,0.1,0.5,1,3,5,10 ), col=c("white",brewer.pal(7,"BuPu")), key=F, lwid=c(.05,.5), margins=c(5,3), Colv=NULL, lhei=c(1,50), labCol=c(5,26,49,75,95,110,117,124,131,152,159,173,201,208,215,229,243,259,306,327,341,355))
+heatmap.2(bpr, trace='none', density.info='none', scale='none', dendrogram='none', breaks=c(0,0.01,0.05,0.1,0.5,1,3,5,10 ), col=c("white",brewer.pal(7,"BuPu")), key=F, Colv=NULL, labCol=c(5,26,49,75,95,110,117,124,131,152,159,173,201,208,215,229,243,259,306,327,341,355))
+heatmap.2(bpr, trace='none', density.info='none', scale='none', dendrogram='row', breaks=c(0,0.01,0.05,0.1,0.5,1,3,5,10 ), col=c("white",brewer.pal(7,"BuPu")), key=F, Colv=NULL, labCol=c(5,26,49,75,95,110,117,124,131,152,159,173,201,208,215,229,243,259,306,327,341,355))
+postscript("~/Dropbox/Chapter IV/blooming phage.ps")
+heatmap.2(bpr, trace='none', density.info='none', scale='none', dendrogram='row', breaks=c(0,0.01,0.05,0.1,0.5,1,3,5,10 ), col=c("white",brewer.pal(7,"BuPu")), key=F, Colv=NULL, labCol=c(5,26,49,75,95,110,117,124,131,152,159,173,201,208,215,229,243,259,306,327,341,355))
+dev.off()
+data1 = c(9.9848309054, 12.5359254037, 2.3209465194, 3.986785587, 0.8247344754, 0.4428685198)
+data2 = c(4.8591112972, 2.8982773546, 15.2666589084, 7.1173743947, 21.4569450491, 17.0120248707)
+data3 = c(14.240837314, 19.3907514807, 7.1230310313, 9.8431158142, 1.8399097975, 0.7534946399)
+cor.test(data1, data3, alternative='greater')
+cor.test(data1, data3, alternative='less')
+library(ggplot2)
+data = read.table("summary.txt", header=T, sep="\t")
+data
+p <- ggplot(data, aes(Algorithm, Wall.time)) + geom_bar()
+p + facet_grid(Pattern.type ~ Number.of.patterns, margins=T)
+p <- ggplot(data) + geom_bar()
+p
+p <- ggplot(data, aes(Algorithm, Wall.time)) + geom_bar()
+p
+p + facet_grid(Pattern.type ~ Number.of.patterns, margins=T)
+p <- ggplot(data, aes(Algorithm, Wall.time)) + geom_bar(stat="bin")
+p + facet_grid(Pattern.type ~ Number.of.patterns, margins=T)
+p + facet_grid(Pattern.type ~ Number.of.patterns)
+p + facet_grid(Pattern.type ~ Number.of.patterns) + opts(axis.text.x=theme_text(angle=-90))
+p + facet_grid(Pattern.type ~ Number.of.patterns) + opts(axis.text.x=theme_text(angle=-45))
+p + facet_grid(Pattern.type ~ Number.of.patterns) + opts(axis.text.x=theme_text(angle=45))
+p + facet_grid(Pattern.type ~ Number.of.patterns) + opts(axis.text.x=theme_text(angle=-90))
+p + facet_grid(Pattern.type ~ Number.of.patterns) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p + facet_grid(Pattern.type ~ Number.of.patterns) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+png("speedtest_summary.png", width=600, height=600)
+p + facet_grid(Pattern.type ~ Number.of.patterns) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+dev.off()
