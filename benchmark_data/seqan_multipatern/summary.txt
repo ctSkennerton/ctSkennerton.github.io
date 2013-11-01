@@ -1,28 +1,46 @@
-Algorithm	Pattern type	Number of patterns	Wall time
-aho-corasick	30	10000	511.497
-aho-corasick	30	1000	330.601
-aho-corasick	30	100	253.859
-aho-corasick	60	10000	533.64
-aho-corasick	60	1000	335.031
-aho-corasick	60	100	252.724
-aho-corasick	norm	10000	510.203
-aho-corasick	norm	1000	324.463
-aho-corasick	norm	100	253.754
-multi-bfam	30	10000	121.753
-multi-bfam	30	1000	99.291
-multi-bfam	30	100	88.036
-multi-bfam	60	10000	94.307
-multi-bfam	60	1000	83.432
-multi-bfam	60	100	79.28
-multi-bfam	norm	10000	173.983
-multi-bfam	norm	1000	125.59
-multi-bfam	norm	100	96.652
-set horspool	30	10000	930.063
-set horspool	30	1000	565.122
-set horspool	30	100	380.711
-set horspool	60	10000	601.136
-set horspool	60	1000	367.237
-set horspool	60	100	253.724
-set horspool	norm	10000	1091.314
-set horspool	norm	1000	651.236
-set horspool	norm	100	423.646
+Algorithm	Pattern.Type	Num.Patterns	Wall.Time	Max.Memory
+aho-corasick	30	10000	511.497	9471360.0
+aho-corasick	30	1000	330.601	1246803.2
+aho-corasick	30	100	253.859	114256.0
+aho-corasick	60	10000	533.64	21282817.6
+aho-corasick	60	1000	335.031	1872609.6
+aho-corasick	60	100	252.724	168819.2
+aho-corasick	norm	10000	510.203	14204686.4
+aho-corasick	norm	1000	324.463	1247633.6
+aho-corasick	norm	100	253.754	114388.8
+multi-bfam	30	10000	121.753	3261097.6
+multi-bfam	30	1000	99.291	291448.0
+multi-bfam	30	100	88.036	41750.4
+multi-bfam	60	10000	94.307	7265356.8
+multi-bfam	60	1000	83.432	642107.2
+multi-bfam	60	100	79.28	88340.8
+multi-bfam	norm	10000	173.983	1487179.2
+multi-bfam	norm	1000	125.59	135113.6
+multi-bfam	norm	100	96.652	22161.6
+non-seqan wu-manber	30	10000	868.978	85768.0
+non-seqan wu-manber	30	1000	148.728	46633.6
+non-seqan wu-manber	30	100	91.739	43352.0
+non-seqan wu-manber	60	10000	556.897	90900.8
+non-seqan wu-manber	60	1000	118.042	47688.0
+non-seqan wu-manber	60	100	84.919	42964.8
+non-seqan wu-manber	norm	10000	948.163	84643.2
+non-seqan wu-manber	norm	1000	157.58	46662.4
+non-seqan wu-manber	norm	100	94.07	43339.2
+set horspool	30	10000	930.063	9469876.8
+set horspool	30	1000	565.122	1250926.4
+set horspool	30	100	380.711	114419.2
+set horspool	60	10000	601.136	21272427.2
+set horspool	60	1000	367.237	1866211.2
+set horspool	60	100	253.724	168480.0
+set horspool	norm	10000	1091.314	14179664.0
+set horspool	norm	1000	651.236	1248371.2
+set horspool	norm	100	423.646	113379.2
+wu-manber	30	10000	6707.704	65640.0
+wu-manber	30	1000	449.484	20233.6
+wu-manber	30	100	123.626	14952.0
+wu-manber	60	10000	4293.986	75339.2
+wu-manber	60	1000	291.012	21291.2
+wu-manber	60	100	103.706	14955.2
+wu-manber	norm	10000	6725.485	65641.6
+wu-manber	norm	1000	484.594	19174.4
+wu-manber	norm	100	128.281	14950.4

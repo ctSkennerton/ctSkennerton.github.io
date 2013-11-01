@@ -4,7 +4,7 @@
   <title><![CDATA[bio(logist | informatician)]]></title>
   <link href="http://ctSkennerton.github.io/atom.xml" rel="self"/>
   <link href="http://ctSkennerton.github.io/"/>
-  <updated>2013-10-28T18:38:47+10:00</updated>
+  <updated>2013-11-01T23:48:14+10:00</updated>
   <id>http://ctSkennerton.github.io/</id>
   <author>
     <name><![CDATA[Connor Skennerton]]></name>
@@ -73,18 +73,39 @@ patterns!</strong> I&rsquo;ve submitted a <a href="http://trac.seqan.de/ticket/1
 
 <p>The above graph shows the total wall clock time in seconds foreach
 algorithm to process the input file with the different numbers of search
-patterns (columns) or for the different types of patters (rows).  There
-is no stats for the Wu-Manber algorithm because it was <em>so</em> much slower
-than the other three.  For the 10000 pattern test it was taking more
-than 1 hour to run through whereas the next worst completed the task in
-15 mins.  So don&rsquo;t use the Wu-Manber implementation in Seqan!  The
+patterns (columns) or for the different types of patters (rows).  The
+seqan implementation of the Wu-Manber algorithm does not scale well
+for many patterns as it was There <em>so</em> much slower than the other three.</p>
+
+<p>I was lead to believe that Wu-Manber was the pinicle of multipattern
+searching so I was a little perplexed by this result.  I know of another
+stand alone implementation of Wu-Manber provided by <a href="http://www.oneunified.net/blog/2008/03/23/">Ray
+Burkholder</a>.  As a
+comparison I tested out this implementation as well and perhaps
+unsurprisingly this implementation performed much better (it&rsquo;s referred
+to in the figures as &ldquo;non-seqan wu-manber&rdquo;).
+So don&rsquo;t use the Wu-Manber implementation in Seqan!  The
 winner of the speed benchmark was the multiBfam algorithim which
 performed nearly identically for any number of input patterns or for the
 different length patterns.  In comparison the Aho-Corasick and
 SetHorspool algorithms became slower with more patterns.</p>
 
-<p>So I&rsquo;m going to be using the multiBfam algorithm from now on, at least
-if I&rsquo;m using Seqan anyway.</p>
+<p>Speed tells you only half of the story and usually comes at the price of
+memory consumption.  Both of the Wu-Manber implementations excelled at
+memory consumption, or lack there of.  The worst were the Aho-Corasick
+and SetHorspool algorithms, which used 20Gb+ of memory under the worst
+case.  The multiBfam algorithm was somewhere in the middle.</p>
+
+<p><img src="http://ctSkennerton.github.io/images/seqan_multipattern_search_memory_benchmark.png", alt="Seqan speed test summary"></p>
+
+<p>Considering only the seqan implementations I would probably go for the
+multiBfam algorithm as my first choice.  On balance the stand alone
+Wu-Manber algorith is probably your best option unless you can
+definatively rule out there ever being more than 1000 patterns.
+Base on what I&rsquo;ve seen the Aho-Corasick and SetHorspool implementations
+in seqan are the worst options as they use far too much memory, however
+that&rsquo;s not to say that other implementations of these algorithms would
+perform differently.</p>
 
 <h2>Scripts</h2>
 
