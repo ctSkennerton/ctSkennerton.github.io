@@ -163,15 +163,16 @@ posted in
 
   <div class="entry-content"><p>I recently discovered <a href="http://seqan.de">Seqan</a>, a header-only C++ library for
 bioinformatics.  I&rsquo;ve been playing around with the toolkit to make some
-small programs just to see whether I want to use this toolkit in a
+small programs just to see whether I want to use it in a
 larger project.  So far I&rsquo;ve written
 <a href="https://github.com/ctSkennerton/prepmate">prepmate</a>, an adaptor trimming
 program for Illumina&rsquo;s Nextera mate-pair libraries; and
 <a href="https://github.com/ctSkennerton/fxtract">fxtract</a>, a
-grep-like program for extracting fasta/fastq records.  One of the
+grep-like program for extracting fasta/fastq records from large files.  One of the
 algorithms that I use in fxtract and in another program I&rsquo;ve written,
 <a href="http://ctskennerton.github.io/crass/">crass</a>, is to search for
-multiple patterns simultaneously.  Seqan
+multiple patterns simultaneously (in this case a number of different DNA
+motifs).  Seqan
 implements a number of algorithms for multipattern matching (checkout
 their tutorial page), however they don&rsquo;t give many clues as to why you
 would choose one algorithm over another.  So I decided to take a few of

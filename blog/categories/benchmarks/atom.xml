@@ -4,7 +4,7 @@
   <title><![CDATA[Category: benchmarks | bio(logist | informatician)]]></title>
   <link href="http://ctSkennerton.github.io/blog/categories/benchmarks/atom.xml" rel="self"/>
   <link href="http://ctSkennerton.github.io/"/>
-  <updated>2013-11-01T23:48:14+10:00</updated>
+  <updated>2013-11-24T00:13:37+10:00</updated>
   <id>http://ctSkennerton.github.io/</id>
   <author>
     <name><![CDATA[Connor Skennerton]]></name>
@@ -20,15 +20,16 @@
     <id>http://ctSkennerton.github.io/blog/2013/10/28/testing-out-seqans-multipattern-search-implementations</id>
     <content type="html"><![CDATA[<p>I recently discovered <a href="http://seqan.de">Seqan</a>, a header-only C++ library for
 bioinformatics.  I&rsquo;ve been playing around with the toolkit to make some
-small programs just to see whether I want to use this toolkit in a
+small programs just to see whether I want to use it in a
 larger project.  So far I&rsquo;ve written
 <a href="https://github.com/ctSkennerton/prepmate">prepmate</a>, an adaptor trimming
 program for Illumina&rsquo;s Nextera mate-pair libraries; and
 <a href="https://github.com/ctSkennerton/fxtract">fxtract</a>, a
-grep-like program for extracting fasta/fastq records.  One of the
+grep-like program for extracting fasta/fastq records from large files.  One of the
 algorithms that I use in fxtract and in another program I&rsquo;ve written,
 <a href="http://ctskennerton.github.io/crass/">crass</a>, is to search for
-multiple patterns simultaneously.  Seqan
+multiple patterns simultaneously (in this case a number of different DNA
+motifs).  Seqan
 implements a number of algorithms for multipattern matching (checkout
 their tutorial page), however they don&rsquo;t give many clues as to why you
 would choose one algorithm over another.  So I decided to take a few of
@@ -59,10 +60,11 @@ does each implementation perform.</p>
 
 <p>While running through a test of the wumanber implementation I discovered
 something very odd when using the uniformly distributed patterns.  With
-100 patterns the program ran through fine, outputting a number of reads,
+100 patterns the program ran through fine, outputting the correct
+results,
 however when using the 1000 or 10000 pattern file I got no output.  I
 discovered though that these larger files contained some patterns that
-had a length of 0, whereas the 100 pattern file&rsquo;s smallest pattern was
+had a length of 0 (i.e. they were empty lines), whereas the 100 pattern file&rsquo;s smallest pattern was
 6bp.  I removed the empty lines from my pattern files and then and voila
 there was output.  What this means is that <strong>the seqan WuManber
 implementation fails silently when given an empty string as one of the
@@ -71,11 +73,11 @@ patterns!</strong> I&rsquo;ve submitted a <a href="http://trac.seqan.de/ticket/1
 
 <p><img src="/images/seqan_multipattern_search_speed_benchmark.png", alt="Seqan speed test summary"></p>
 
-<p>The above graph shows the total wall clock time in seconds foreach
+<p>The above graph shows the total wall clock time in seconds for each
 algorithm to process the input file with the different numbers of search
-patterns (columns) or for the different types of patters (rows).  The
-seqan implementation of the Wu-Manber algorithm does not scale well
-for many patterns as it was There <em>so</em> much slower than the other three.</p>
+patterns (columns) or for the different types of patters (rows).<br/>
+The main thing that striked me was the poor performance of the<br/>
+seqan implementation of the Wu-Manber algorithm &ndash; it does not scale well.</p>
 
 <p>I was lead to believe that Wu-Manber was the pinicle of multipattern
 searching so I was a little perplexed by this result.  I know of another
@@ -83,8 +85,8 @@ stand alone implementation of Wu-Manber provided by <a href="http://www.oneunifi
 Burkholder</a>.  As a
 comparison I tested out this implementation as well and perhaps
 unsurprisingly this implementation performed much better (it&rsquo;s referred
-to in the figures as &ldquo;non-seqan wu-manber&rdquo;).
-So don&rsquo;t use the Wu-Manber implementation in Seqan!  The
+to in the figures as &ldquo;non-seqan wu-manber&rdquo;). <strong>Bottom line:
+So don&rsquo;t use the Wu-Manber implementation in Seqan!</strong>  The
 winner of the speed benchmark was the multiBfam algorithim which
 performed nearly identically for any number of input patterns or for the
 different length patterns.  In comparison the Aho-Corasick and
@@ -94,14 +96,14 @@ SetHorspool algorithms became slower with more patterns.</p>
 memory consumption.  Both of the Wu-Manber implementations excelled at
 memory consumption, or lack there of.  The worst were the Aho-Corasick
 and SetHorspool algorithms, which used 20Gb+ of memory under the worst
-case.  The multiBfam algorithm was somewhere in the middle.</p>
+case.  The multiBfam algorithm was somewhere in the middle (~7Gb under
+the worst case scenario).</p>
 
 <p><img src="/images/seqan_multipattern_search_memory_benchmark.png", alt="Seqan speed test summary"></p>
 
 <p>Considering only the seqan implementations I would probably go for the
-multiBfam algorithm as my first choice.  On balance the stand alone
-Wu-Manber algorith is probably your best option unless you can
-definatively rule out there ever being more than 1000 patterns.
+multiBfam algorithm as my first choice when searching for less than 1000
+patterns after which Wu-Manber would have to be preferred.<br/>
 Base on what I&rsquo;ve seen the Aho-Corasick and SetHorspool implementations
 in seqan are the worst options as they use far too much memory, however
 that&rsquo;s not to say that other implementations of these algorithms would
