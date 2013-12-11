@@ -4,7 +4,7 @@
   <title><![CDATA[Category: metagenomics | bio(logist | informatician)]]></title>
   <link href="http://ctSkennerton.github.io/blog/categories/metagenomics/atom.xml" rel="self"/>
   <link href="http://ctSkennerton.github.io/"/>
-  <updated>2013-12-11T23:25:16+10:00</updated>
+  <updated>2013-12-11T23:35:26+10:00</updated>
   <id>http://ctSkennerton.github.io/</id>
   <author>
     <name><![CDATA[Connor Skennerton]]></name>
@@ -98,7 +98,7 @@ about the whole process and never tried to run the program again.</p>
 <h3>bambus2</h3>
 
 <p>I had hope for bambus, and this was the scaffolder which I put the most
-amount of effort into to get it to work.  The problem with bambus is
+amount of effort to get it to work.  The problem with bambus is
 that it is part of the <a href="http://sourceforge.net/apps/mediawiki/amos/index.php?title=AMOS">AMOS</a>
 software package and the problem with AMOS is that it is fairly old
 and uses it&rsquo;s own file format.  I have no doubt that the authors of AMOS
@@ -123,6 +123,8 @@ have it in me to debug the situation and figure out whether it was caused by a p
 sam2amos (which it probably is) or something else.</p>
 
 <p>Four down, two to go&hellip;</p>
+
+<h2>Finally some results</h2>
 
 <h3>scarpa</h3>
 
