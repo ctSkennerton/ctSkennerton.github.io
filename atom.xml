@@ -4,7 +4,7 @@
   <title><![CDATA[bio(logist | informatician)]]></title>
   <link href="http://ctSkennerton.github.io/atom.xml" rel="self"/>
   <link href="http://ctSkennerton.github.io/"/>
-  <updated>2013-12-11T23:35:26+10:00</updated>
+  <updated>2013-12-27T05:18:02+10:00</updated>
   <id>http://ctSkennerton.github.io/</id>
   <author>
     <name><![CDATA[Connor Skennerton]]></name>
@@ -12,6 +12,155 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Poking around inside grep]]></title>
+    <link href="http://ctSkennerton.github.io/blog/2013/12/27/poking-around-inside-grep/"/>
+    <updated>2013-12-27T00:00:00+10:00</updated>
+    <id>http://ctSkennerton.github.io/blog/2013/12/27/poking-around-inside-grep</id>
+    <content type="html"><![CDATA[<p>Playing around with the grep source code to make it output fasta/fastq records.
+Check out the code <a href="https://github.com/ctSkennerton/fagrep">here</a>.</p>
+
+<!-- more -->
+
+
+<p>I&rsquo;m quite interested in string searching algorithms as I&rsquo;ve written a
+program, <a href="http://ctskennerton.github.io/crass">crass</a>, which uses a few of them
+to search for CRISPR elements.  Crass is pretty fast, but I want it to be faster,
+specifically there is one point in crass where it searches for exact matches to many
+thousands of patterns.
+In a <a href="http://ctSkennerton.github.io/blog/2013/10/28/testing-out-seqans-multipattern-search-implementations/">previous post</a>
+I tried out a number of different &lsquo;multi-pattern matchers&rsquo; from <a href="http://seqan.de">seqan</a>
+and was fairly unimpressed with their speed.  In this testing though I did not try
+out the most widely used implementations of multi-pattern matching: GNU grep (using <code>-Ff</code> options).  I don&rsquo;t have any graphs to show, but it was faster, like <strong>a lot</strong> faster.</p>
+
+<p>It wasn&rsquo;t a fair fight though, as grep works very differently to my test program
+fxtract.  There is a great mailing list <a href="http://lists.freebsd.org/pipermail/freebsd-current/2010-August/019310.html">post</a>
+by one of the original grep authors on ways to speed things up.  It basically
+comes down to I/O (not that the search algorithms aren&rsquo;t highly optimised themselves),
+fast input from a file and not copying the data in memory is the key.  Grep doesn&rsquo;t
+try to parse the file instead it just loads it into a big buffer in memory and searches
+the whole thing, if it finds a match then it figures out the boundaries of the line
+the match is on and prints it out.  This is in contrast to programs like fxtract or
+crass that parse the file first to get the individual portions of each record before
+the search is performed.</p>
+
+<p>This got me thinking that I could drastically speed crass up if I switched over
+to the grep way of processing files.  I was a little worried though that determining
+the boundaries of a fasta/fastq record from an anonymous buffer might be a bit tricky
+so before I modified crass I chose to modify grep so that it would output
+fasta or fastq records.</p>
+
+<p>The printing functions in grep live in <code>main.c</code> and start with the function <code>grep</code>, which
+in-turn calls <code>grepbuf</code>, which in-turn calls <code>prtext</code> etc.  The code is surprisingly simple,
+<code>grep</code> reads from the file and fills a buffer; <code>grepbuf</code> executes
+one of the search functions on that buffer; if a match is found, a pointer to the first
+character in the line the match was found is returned; and then the printing functions
+take over.  The printing functions get a pointer to the start of the line and the end
+of the line of the match and pass that through to <code>fwrite</code>.  Everything is handled using
+pointer arithmetic for determining the start and end of where to print.</p>
+
+<p>This is great since it&rsquo;s easy to change the pointer to the beginning a end of a record, rather
+than a line.  So that just left the logic for me to write in to find the limits of
+a record.  Below is a code snippet from grep where I&rsquo;ve added in the logic.  Fasta is
+easy to implement as the <code>&gt;</code> symbol is generally unique.  Fastq on the other hand takes
+a bit more work, since the <code>@</code> symbol can also be found in the quality string.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">b</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">match_offset</span><span class="p">;</span>  <span class="cm">/*pointer to beginning of matching line*/</span>
+</span><span class='line'><span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">endp</span> <span class="o">=</span> <span class="n">b</span> <span class="o">+</span> <span class="n">match_size</span><span class="p">;</span> <span class="cm">/*pointer to end of matching line*/</span>
+</span><span class='line'><span class="cm">/* Avoid matching the empty line at the end of the buffer. */</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">b</span> <span class="o">==</span> <span class="n">lim</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">break</span><span class="p">;</span>
+</span><span class='line'><span class="k">if</span><span class="p">(</span><span class="n">fasta_input</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="cm">/*find the beginning of the record*/</span>
+</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">b</span> <span class="o">&gt;</span> <span class="n">p</span> <span class="o">&amp;&amp;</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="sc">&#39;&gt;&#39;</span><span class="p">)</span> <span class="o">--</span><span class="n">b</span><span class="p">;</span>
+</span><span class='line'>    <span class="cm">/*find the end of the record*/</span>
+</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">endp</span> <span class="o">&lt;</span> <span class="n">lim</span> <span class="o">&amp;&amp;</span> <span class="n">endp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="sc">&#39;&gt;&#39;</span><span class="p">)</span> <span class="o">++</span><span class="n">endp</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="k">if</span><span class="p">(</span><span class="n">fastq_input</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="cm">/*find the beginning of the record*/</span>
+</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">b</span> <span class="o">&gt;=</span> <span class="n">beg</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;@&#39;</span><span class="p">)</span>
+</span><span class='line'>          <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">beg</span><span class="p">)</span>
+</span><span class='line'>              <span class="cm">/*can&#39;t go back any further therefore must be start of record*/</span>
+</span><span class='line'>              <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;\n&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="sc">&#39;+&#39;</span><span class="p">)</span>
+</span><span class='line'>              <span class="cm">/*@ symbol at beginning of line but not the first in the quality */</span>
+</span><span class='line'>              <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>      <span class="o">--</span><span class="n">b</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="n">endp</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">newline_count</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="n">newline_count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">newline_count</span> <span class="o">&lt;</span><span class="mi">4</span><span class="p">;</span> <span class="o">++</span><span class="n">newline_count</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">{</span>
+</span><span class='line'>        <span class="cm">/*find the end of the record*/</span>
+</span><span class='line'>        <span class="k">while</span><span class="p">(</span><span class="n">endp</span> <span class="o">&lt;</span> <span class="n">lim</span> <span class="o">&amp;&amp;</span> <span class="n">endp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="sc">&#39;\n&#39;</span><span class="p">)</span>
+</span><span class='line'>          <span class="o">++</span><span class="n">endp</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="o">++</span><span class="n">endp</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The fastq format parsing has fairly obvious corner cases since with this
+code there can be no text on the &lsquo;comment&rsquo; line and the whole
+record must be of four lines.  This version of fastq is the recommended formatting from the
+official <a href="http://nar.oxfordjournals.org/content/38/6/1767.full">fastq publication</a>,
+which seems to have been adopted by Illumina and others, so hopefully this simple
+parsing will work most of the time.</p>
+
+<p>It&rsquo;s been a heap of fun looking at the way this very mature piece of software works
+and I&rsquo;ve gotten a usable tool out of it.  Now it&rsquo;s onto the main event of
+ripping out parts of the source code that I want for crass</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Genome Scaffolders Suck]]></title>

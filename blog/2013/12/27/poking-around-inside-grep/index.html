@@ -1,0 +1,425 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Poking around inside grep - bio(logist | informatician)</title>
+  <meta name="author" content="Connor Skennerton">
+  <link rel="author" href="humans.txt">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  
+    
+  
+  <meta name="description" content=" Playing around with the grep source code to make it output fasta/fastq records.
+Check out the code here. ">
+  
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ctSkennerton.github.io/blog/2013/12/27/poking-around-inside-grep/">
+  <link href="/favicon.png" rel="icon">
+  <link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css'>
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="bio(logist | informatician)" type="application/atom+xml">
+  <meta name="og:type" content="website" />
+  <meta name="og:site_name" content="bio(logist | informatician)" />
+  <meta name="og:title" content="Poking around inside grep" />
+  <meta name="og:description" content=" Playing around with the grep source code to make it output fasta/fastq records.
+Check out the code here. " />
+  <meta name="og:url" content="http://ctSkennerton.github.io/blog/2013/12/27/poking-around-inside-grep/"/>
+  <meta name="url" content="http://ctSkennerton.github.io/blog/2013/12/27/poking-around-inside-grep/">
+  
+  <meta name="subject" content="bioinformatics"/>
+  <meta name="category" content="bioinformatics"/>
+  
+  <meta name="distribution" content="global">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <nav role="navigation"><div class="navbar">
+  <div class="navbar-inner">
+    <a class="brand" href="/">bio(logist | informatician)</a>
+    <ul class="nav">
+      <li><a href="/">Home</a></li>
+      <li><a href="/blog/archives">Archives</a></li>
+    </ul>
+    <ul class="nav" data-subscription="rss">
+      <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+      
+    </ul>
+      
+    <form class="navbar-form" action="http://google.com/search" method="get">
+      <fieldset role="search">
+        <input type="hidden" name="q" value="site:ctSkennerton.github.io" />
+        <input class="span2" type="text" name="q" results="0" placeholder="Search"/>
+      </fieldset>
+    </form>
+      
+    
+  </div>
+</div>
+</nav>
+  <div class="wrapper_single">
+    <div class="container">
+      <article class="span8 offset2" role="article">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title">Poking Around Inside Grep</h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Connor Skennerton</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-27T00:00:00+10:00" pubdate data-updated="true">Dec 27<span>th</span>, 2013</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/bioinformatics/'>bioinformatics</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Playing around with the grep source code to make it output fasta/fastq records.
+Check out the code <a href="https://github.com/ctSkennerton/fagrep">here</a>.</p>
+
+<!-- more -->
+
+
+<p>I&rsquo;m quite interested in string searching algorithms as I&rsquo;ve written a
+program, <a href="http://ctskennerton.github.io/crass">crass</a>, which uses a few of them
+to search for CRISPR elements.  Crass is pretty fast, but I want it to be faster,
+specifically there is one point in crass where it searches for exact matches to many
+thousands of patterns.
+In a <a href="/blog/2013/10/28/testing-out-seqans-multipattern-search-implementations/">previous post</a>
+I tried out a number of different &lsquo;multi-pattern matchers&rsquo; from <a href="http://seqan.de">seqan</a>
+and was fairly unimpressed with their speed.  In this testing though I did not try
+out the most widely used implementations of multi-pattern matching: GNU grep (using <code>-Ff</code> options).  I don&rsquo;t have any graphs to show, but it was faster, like <strong>a lot</strong> faster.</p>
+
+<p>It wasn&rsquo;t a fair fight though, as grep works very differently to my test program
+fxtract.  There is a great mailing list <a href="http://lists.freebsd.org/pipermail/freebsd-current/2010-August/019310.html">post</a>
+by one of the original grep authors on ways to speed things up.  It basically
+comes down to I/O (not that the search algorithms aren&rsquo;t highly optimised themselves),
+fast input from a file and not copying the data in memory is the key.  Grep doesn&rsquo;t
+try to parse the file instead it just loads it into a big buffer in memory and searches
+the whole thing, if it finds a match then it figures out the boundaries of the line
+the match is on and prints it out.  This is in contrast to programs like fxtract or
+crass that parse the file first to get the individual portions of each record before
+the search is performed.</p>
+
+<p>This got me thinking that I could drastically speed crass up if I switched over
+to the grep way of processing files.  I was a little worried though that determining
+the boundaries of a fasta/fastq record from an anonymous buffer might be a bit tricky
+so before I modified crass I chose to modify grep so that it would output
+fasta or fastq records.</p>
+
+<p>The printing functions in grep live in <code>main.c</code> and start with the function <code>grep</code>, which
+in-turn calls <code>grepbuf</code>, which in-turn calls <code>prtext</code> etc.  The code is surprisingly simple,
+<code>grep</code> reads from the file and fills a buffer; <code>grepbuf</code> executes
+one of the search functions on that buffer; if a match is found, a pointer to the first
+character in the line the match was found is returned; and then the printing functions
+take over.  The printing functions get a pointer to the start of the line and the end
+of the line of the match and pass that through to <code>fwrite</code>.  Everything is handled using
+pointer arithmetic for determining the start and end of where to print.</p>
+
+<p>This is great since it&rsquo;s easy to change the pointer to the beginning a end of a record, rather
+than a line.  So that just left the logic for me to write in to find the limits of
+a record.  Below is a code snippet from grep where I&rsquo;ve added in the logic.  Fasta is
+easy to implement as the <code>&gt;</code> symbol is generally unique.  Fastq on the other hand takes
+a bit more work, since the <code>@</code> symbol can also be found in the quality string.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">b</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">match_offset</span><span class="p">;</span>  <span class="cm">/*pointer to beginning of matching line*/</span>
+</span><span class='line'><span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">endp</span> <span class="o">=</span> <span class="n">b</span> <span class="o">+</span> <span class="n">match_size</span><span class="p">;</span> <span class="cm">/*pointer to end of matching line*/</span>
+</span><span class='line'><span class="cm">/* Avoid matching the empty line at the end of the buffer. */</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">b</span> <span class="o">==</span> <span class="n">lim</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">break</span><span class="p">;</span>
+</span><span class='line'><span class="k">if</span><span class="p">(</span><span class="n">fasta_input</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="cm">/*find the beginning of the record*/</span>
+</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">b</span> <span class="o">&gt;</span> <span class="n">p</span> <span class="o">&amp;&amp;</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="sc">&#39;&gt;&#39;</span><span class="p">)</span> <span class="o">--</span><span class="n">b</span><span class="p">;</span>
+</span><span class='line'>    <span class="cm">/*find the end of the record*/</span>
+</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">endp</span> <span class="o">&lt;</span> <span class="n">lim</span> <span class="o">&amp;&amp;</span> <span class="n">endp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="sc">&#39;&gt;&#39;</span><span class="p">)</span> <span class="o">++</span><span class="n">endp</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="k">if</span><span class="p">(</span><span class="n">fastq_input</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="cm">/*find the beginning of the record*/</span>
+</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">b</span> <span class="o">&gt;=</span> <span class="n">beg</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;@&#39;</span><span class="p">)</span>
+</span><span class='line'>          <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">beg</span><span class="p">)</span>
+</span><span class='line'>              <span class="cm">/*can&#39;t go back any further therefore must be start of record*/</span>
+</span><span class='line'>              <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;\n&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="sc">&#39;+&#39;</span><span class="p">)</span>
+</span><span class='line'>              <span class="cm">/*@ symbol at beginning of line but not the first in the quality */</span>
+</span><span class='line'>              <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>      <span class="o">--</span><span class="n">b</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="n">endp</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">newline_count</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="n">newline_count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">newline_count</span> <span class="o">&lt;</span><span class="mi">4</span><span class="p">;</span> <span class="o">++</span><span class="n">newline_count</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">{</span>
+</span><span class='line'>        <span class="cm">/*find the end of the record*/</span>
+</span><span class='line'>        <span class="k">while</span><span class="p">(</span><span class="n">endp</span> <span class="o">&lt;</span> <span class="n">lim</span> <span class="o">&amp;&amp;</span> <span class="n">endp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="sc">&#39;\n&#39;</span><span class="p">)</span>
+</span><span class='line'>          <span class="o">++</span><span class="n">endp</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="o">++</span><span class="n">endp</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The fastq format parsing has fairly obvious corner cases since with this
+code there can be no text on the &lsquo;comment&rsquo; line and the whole
+record must be of four lines.  This version of fastq is the recommended formatting from the
+official <a href="http://nar.oxfordjournals.org/content/38/6/1767.full">fastq publication</a>,
+which seems to have been adopted by Illumina and others, so hopefully this simple
+parsing will work most of the time.</p>
+
+<p>It&rsquo;s been a heap of fun looking at the way this very mature piece of software works
+and I&rsquo;ve gotten a usable tool out of it.  Now it&rsquo;s onto the main event of
+ripping out parts of the source code that I want for crass</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Connor Skennerton</span></span>
+  
+
+ - 
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-27T00:00:00+10:00" pubdate data-updated="true">Dec 27<span>th</span>, 2013</time> - 
+      
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/bioinformatics/'>bioinformatics</a>
+  
+</span>
+
+
+    </p>
+    
+      <a class="pull-left" href="/blog/2013/12/11/genome-scaffolders-suck/" title="Previous Post: Genome Scaffolders Suck">&laquo; Genome Scaffolders Suck</a>
+    
+    
+  </footer>
+
+</div>
+
+        
+      </article>
+    </div>
+  </div>
+  <div id="footer-widgets">
+  <div class="container">
+    <div class="row">
+  <div class="span3">
+    <h2>recent posts</h2>
+    <ul class="recent_posts">
+      
+        <li>
+          <a href="/blog/2013/12/27/poking-around-inside-grep/">Poking around inside grep</a>
+        </li>
+      
+        <li>
+          <a href="/blog/2013/12/11/genome-scaffolders-suck/">Genome Scaffolders Suck</a>
+        </li>
+      
+        <li>
+          <a href="/blog/2013/10/28/testing-out-seqans-multipattern-search-implementations/">Testing out Seqan's Multipattern Search Implementations</a>
+        </li>
+      
+    </ul>
+    <h2><a href="/blog/archives">archives</a></h2>
+  </div>
+  <div class="span6">
+    
+<h2>twitter</h2>
+<a href="https://twitter.com/ctskennerton" class="twitter-follow-button" data-show-count="true" data-lang="en">Follow @ctskennerton</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+<div class="tweet" data-twitter-user="ctskennerton">
+</div>
+
+
+  </div>
+  <div class="span3">
+    <h2>found on</h2>
+
+<a href="https://github.com/ctSkennerton/" rel="tooltip" title="Github"><img class="social_icon" title="Github" alt="github icon" src="/images/glyphicons_381_github.png"></a>
+
+
+
+<a href="http://stackoverflow.com/users/2049147/" rel="tooltip" title="Stack Overflow"><img class="social_icon" title="Stack Overflow" alt="stack overflow icon" src="/images/glyphicons_400_stack_overflow.png"></a>
+
+
+
+
+<a href="http://twitter.com/ctskennerton" rel="tooltip" title="Twitter"><img class="social_icon" title="Twitter" alt="Twitter icon" src="/images/glyphicons_391_twitter_t.png"></a>
+
+
+
+
+
+
+
+<a href="http://biostars.org/u/7059/" rel="tooltip" title="Biostar"><img class="social_icon" title="Biostar" alt="Biostar icon" src="/images/glyphicons_049_star.png"></a>
+
+
+<a href="http://www.linkedin.com/pub/connor-skennerton/29/319/37" rel="tooltip" title="Linkedin"><img class="social_icon" title="Linkedin" alt="Linkedin icon" src="/images/glyphicons_377_linked_in.png"></a>
+
+<a href="http://scholar.google.com.au/citations?user=ziBFFD4AAAAJ&hl=en" rel="tooltip" title="Google Scholar"><img class="social_icon" title="Google Scholar" alt="Google Scholar icon" src="/images/google_scholar.png"></a>
+
+
+
+  </div>
+</div>
+
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-left">
+  <a href="/">bio(logist | informatician)</a>
+  - Copyright &copy; 2013 - Connor Skennerton
+</p>
+<p class="pull-right">
+  <span>Powered by <a href="http://octopress.org/">Octopress</a>.</span>
+  
+    <span>Designed by <a href="http://www.AdrianArtiles.com">Adrian Artiles</a>.</span>
+  
+</p>
+
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+<script>window.jQuery || document.write('<script src="/javascripts/libs/jquery-1.7.2.min.js" type="text/javascript"><\/script>')</script>
+<script src="/javascripts/libs/bootstrap.min.js" type="text/javascript"></script>
+<script src="/javascripts/jquery.tweet.js" type="text/javascript"></script>
+<script src="/javascripts/jquery.instagram.js" type="text/javascript"></script>
+<script src="/javascripts/libs/jquery.masonry.min.js" type="text/javascript"></script>
+<script src="/javascripts/custom.js" type="text/javascript"></script>
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>
