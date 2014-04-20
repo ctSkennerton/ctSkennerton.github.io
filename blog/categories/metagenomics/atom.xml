@@ -4,7 +4,7 @@
   <title><![CDATA[Category: metagenomics | bio(logist | informatician)]]></title>
   <link href="http://ctSkennerton.github.io/blog/categories/metagenomics/atom.xml" rel="self"/>
   <link href="http://ctSkennerton.github.io/"/>
-  <updated>2013-12-27T05:18:02+10:00</updated>
+  <updated>2014-04-19T17:23:38-07:00</updated>
   <id>http://ctSkennerton.github.io/</id>
   <author>
     <name><![CDATA[Connor Skennerton]]></name>
@@ -14,9 +14,163 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Finding 16s/18s reads in metagenomes]]></title>
+    <link href="http://ctSkennerton.github.io/blog/2014/04/19/rRNA-read-extraction-from-metagenomes/"/>
+    <updated>2014-04-19T22:51:00-07:00</updated>
+    <id>http://ctSkennerton.github.io/blog/2014/04/19/rRNA-read-extraction-from-metagenomes</id>
+    <content type="html"><![CDATA[<p>Got a Metagenome? want to know what the community looks like?</p>
+
+<!-- more -->
+
+
+<p>rRNA operons are typically poorly assembled in metagenomic datasets due to
+highly conserved sequences.  More targeted assembly approaches may be necessary
+to obtain accurate reconstructions from short read datasets. There are a few
+ways in which we can extract reads originating from either 16S or 18S reads and
+there are a number of programs (<a href="http://selab.janelia.org/software/ssu-align/">SSU-ALIGN</a>,
+<a href="http://www.ncbi.nlm.nih.gov/pubmed/21887657">rRNASelector</a>,
+<a href="http://ribopicker.sourceforge.net/">riboPicker</a>,
+<a href="http://bioinfo.lifl.fr/RNA/sortmerna/">SortMeRNA</a>,
+blast, <a href="http://bowtie-bio.sourceforge.net/bowtie2/index.shtml">bowtie</a> or <a href="https://github.com/lh3/bwa">bwa</a>) to name a few.</p>
+
+<p>There are a other ways of looking at the communty from raw metagenomic
+reads. These are mostly kmer-based approaches like
+<a href="http://ccb.jhu.edu/software/kraken/">kraken</a> or extended marker gene
+approaches like
+<a href="http://huttenhower.sph.harvard.edu/metaphlan">MetaPhlAn</a> or
+<a href="http://phylosift.wordpress.com/">phylosift</a>. I&rsquo;m not against any of
+them, just never used them, so I&rsquo;m going to keep the following post
+specific to 16s/18s community composition</p>
+
+<h2>Extracting 16S/18S reads</h2>
+
+<p>I&rsquo;ve used SortMeRNA and bowtie/bwa in my workflows with good success. The
+difference between these two methods is that SortMeRNA that uses a kmer
+searching method using an index created from a database of previously sequenced
+genes whereas bowtie/bwa use a local alignment method to compare the query sequence to
+a previously made database. Below are instructions on how to use both methods.</p>
+
+<h2>Installing and using SortMeRNA</h2>
+
+<p>From the source page for SortMeRNA on <a href="https://github.com/biocore/sortmerna">github</a>
+copy the ssh clone url and then open up a terminal window and type
+<code>bash
+$ git clone git@github.com:biocore/sortmerna.git
+$ cd sortmerna
+$ ./configure --prefix=$PWD
+$ make install
+</code>
+<strong>Mac OSX install note:</strong> I found that there was an error with my install
+with <code>configure</code> complaining that it was missing <code>install-sh</code>. I solved this by
+copying <a href="http://sourceforge.net/projects/buildconf/">autogen.sh</a> into the same
+directory as <code>configure</code>, execute it and then try running configure again.</p>
+
+<p>The commands above should install SortMeRNA in the directory which you downloaded
+it to.</p>
+
+<h4>Building indexes for SortMeRNA</h4>
+
+<p>SortMeRNA comes packaged with 8 different rRNA databases, all derived from SILVA.
+Build either the 16S or 18S database, depending on what you want. Below is the
+command used to generate the 18S index (assuming that you&rsquo;ve installed in the
+download directory)
+<code>bash
+$ bin/indexdb_rna --ref rRNA_databases/silva-euk-18s-database-id95.fasta,index/silva-euk-18s-database-id95 --sensitive
+</code>
+If you <code>ls</code> the index directory you should see four files generated.</p>
+
+<h4>Preprocessing reads</h4>
+
+<p>Now we can use this index to extract the reads that may come from 18S using the
+<code>sortmerna</code> command. I&rsquo;m going to assume that there are files containing raw
+reads from an Illumina run called <code>file_R1.fastq.gz</code> and <code>file_R2.fastq.gz</code>.
+Unfortunately one of the limitations of SortMeRNA is that it requires that you
+only give it a single file and that the file is uncompressed. So to start with,
+unzip the files using <code>gzip</code> and then combine them into a single file using
+<code>merge-paired-reads.sh</code> found in the scripts directory of the SortMeRNA source
+code
+<code>bash
+$ gunzip file_R1.fastq.gz file_R2.fastq.gz
+$ bash scripts/merge-paired-reads.sh file_R1.fastq file_R2.fastq combined.fastq
+</code>
+To save space, it&rsquo;s probably best to re-zip the files to save on harddrive space
+<code>bash
+$ gzip file_R1.fastq file_R2.fastq
+</code></p>
+
+<h4>Extracting the reads</h4>
+
+<p>Now we can run <code>sortmerna</code>, saving matched reads (and their mates) to a file
+with the prefix &lsquo;matched-18S&rsquo; in fastq format using 4 processors.
+```bash
+$ bin/sortmerna &mdash;reads combined.fastq \</p>
+
+<pre><code>--ref rRNA_databases/silva-euk-18s-database-id95.fasta,index/silva-euk-18s-database-id95 \
+--paired-in \
+--fastx \
+--aligned matched-18S \
+-a 4
+</code></pre>
+
+<p>```</p>
+
+<h2>Installing and using BWA</h2>
+
+<p>My personal preference is to use bwa over bowtie but the merits of either are
+debatable (there are also 50 other programs out there that try to solve the same
+problem so the choice is yours). Download bwa from <a href="https://github.com/lh3/bwa">github</a>
+by copying the ssh clone url and typing the following into the terminal. (Change
+directories out of the SortMeRNA source directory before you do this)
+<code>bash
+$ git clone git@github.com:lh3/bwa.git
+$ cd bwa
+$ make
+</code>
+bwa also requires that an index of the database be made. For simplicity, lets
+use the same database that was included in SortMeRNA. To make the bwa index
+copy the files that you want from the SortMeRNA source directory into a new
+location.
+<code>bash
+$ cp ../sortmerna/rRNA_databases/silva-euk-18s-database-id95.fasta .
+$ bwa index silva-euk-18s-database-id95.fasta
+</code>
+This should make a whole bunch of files that have extra file extensions appended
+to the fasta file. With the index created we can now align the reads
+<code>bash
+$ bwa mem silva-euk-18s-database-id95.fasta file_R1.fastq.gz file_R2.fastq.gz &gt; aligned_18S.sam
+</code>
+(Notice that there is no preprocessing steps necessary for the reads)</p>
+
+<h4>Postprocessing the sam file</h4>
+
+<p>The output of bwa is a standardized format called <a href="http://samtools.github.io/hts-specs/SAMv1.pdf">sam</a>
+which many programs will now output. This format essentially describes the
+alignment of each of the query sequences to the reference sequences. This is
+not exactly what we want, which is the reads that were successful hits to the
+reference in fasta/q format. To go from a sam file to a fasta/q file is a little
+complicated (I wish it wasn&rsquo;t). To start with, download <a href="https://github.com/samtools/samtools">samtools</a>
+and <a href="https://github.com/ctSkennerton/fxtract">fxtract</a> from github, and download
+them into new source directories (bonus points for getting them installed without
+a walkthrough). First convert the sam file into its equivalent binary format and
+filter out unaligned sequences:
+<code>bash
+$ samtools view -SubF 4 aligned_18S.sam | samtools sort - aligned_18S &amp;&amp; samtools index aligned_18S.bam
+</code>
+Now get the names of all the reads that aligned:
+<code>bash
+$ samtools view aligned_18S.bam | cut -f 1 &gt;aligned_reads.txt
+</code>
+And finally extract those reads from the original fastq files:
+<code>bash
+$ fxtract -Hf aligned_reads.txt file_R1.fastq.gz file_R2.fastq.gz &gt;aligned_reads.fastq
+</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Genome Scaffolders Suck]]></title>
     <link href="http://ctSkennerton.github.io/blog/2013/12/11/genome-scaffolders-suck/"/>
-    <updated>2013-12-11T22:51:00+10:00</updated>
+    <updated>2013-12-11T22:51:00-08:00</updated>
     <id>http://ctSkennerton.github.io/blog/2013/12/11/genome-scaffolders-suck</id>
     <content type="html"><![CDATA[<p>Experiences using a variety of contig scaffolding tools. It was not a good experience.</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: benchmarks | bio(logist | informatician)]]></title>
   <link href="http://ctSkennerton.github.io/blog/categories/benchmarks/atom.xml" rel="self"/>
   <link href="http://ctSkennerton.github.io/"/>
-  <updated>2013-12-27T05:18:02+10:00</updated>
+  <updated>2014-04-19T17:23:38-07:00</updated>
   <id>http://ctSkennerton.github.io/</id>
   <author>
     <name><![CDATA[Connor Skennerton]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Testing out Seqan's Multipattern Search Implementations]]></title>
     <link href="http://ctSkennerton.github.io/blog/2013/10/28/testing-out-seqans-multipattern-search-implementations/"/>
-    <updated>2013-10-28T18:38:00+10:00</updated>
+    <updated>2013-10-28T18:38:00-07:00</updated>
     <id>http://ctSkennerton.github.io/blog/2013/10/28/testing-out-seqans-multipattern-search-implementations</id>
     <content type="html"><![CDATA[<p>I recently discovered <a href="http://seqan.de">Seqan</a>, a header-only C++ library for
 bioinformatics.  I&rsquo;ve been playing around with the toolkit to make some
