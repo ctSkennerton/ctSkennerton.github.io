@@ -9,7 +9,7 @@ $(function(){
     );
   }
 
-  $(".tweet").tweet({
+ /* $(".tweet").tweet({
     username: $('.tweet').data('twitter-user'),
     join_text: "auto",
     avatar_size: 32,
@@ -20,7 +20,7 @@ $(function(){
     auto_join_text_ing: "",
     auto_join_text_reply: "",
     auto_join_text_url: ""
-  });
+  });*/
 
   var instagramElement = $('.instagram');
   var instagram = {
