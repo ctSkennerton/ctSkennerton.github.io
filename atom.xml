@@ -4,7 +4,7 @@
   <title><![CDATA[bio(logist | informatician)]]></title>
   <link href="http://ctSkennerton.github.io/atom.xml" rel="self"/>
   <link href="http://ctSkennerton.github.io/"/>
-  <updated>2014-04-27T12:40:35-07:00</updated>
+  <updated>2014-06-23T01:59:26-07:00</updated>
   <id>http://ctSkennerton.github.io/</id>
   <author>
     <name><![CDATA[Connor Skennerton]]></name>
@@ -12,6 +12,64 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[My First Useful Script]]></title>
+    <link href="http://ctSkennerton.github.io/blog/2014/06/23/My-first-useful-script/"/>
+    <updated>2014-06-23T02:06:00-07:00</updated>
+    <id>http://ctSkennerton.github.io/blog/2014/06/23/My-first-useful-script</id>
+    <content type="html"><![CDATA[<p>Can you remember the first useful thing that you ever coded? I sure can, and I&rsquo;m
+thankful for it every day.</p>
+
+<!-- more -->
+
+
+<p>I&rsquo;ve recently finished writing a little program called <a href="https://github.com/ctSkennerton/fxtract"><code>fxtract</code></a>
+(which I&rsquo;ve blogged about <a href="http://ctSkennerton.github.io/blog/2013/10/28/testing-out-seqans-multipattern-search-implementations/">before</a>)
+that acts like grep but returns whole fasta or fastq records from a file. It&rsquo;s
+taken me a very long time to write this thing, primarily cause I&rsquo;m writing it
+in C++ but now that it&rsquo;s pretty much done I&rsquo;m feeling nostalgic about why I&rsquo;m
+writing it in the first place.</p>
+
+<p>Back in 2010 I was just starting my PhD with <a href="http://www.ecogenomic.org/users/gene-tyson">Gene Tyson</a>
+and learning some bioinformatics on a &ldquo;toy&rdquo; dataset (which became my first
+<a href="http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0020095">paper</a>)
+that was a huge 10 Mbp of viral sequence data! At the time I was learning Perl
+using this great <a href="http://www.woolfit.net/perl/classindex.html">online tutorial</a>
+but I found that I needed some more &ldquo;real-world&rdquo; examples to really get to grips
+with the language. I can&rsquo;t fully remember what I was doing but I had a tabular
+blast output file and I wanted to get the sequence of some contigs with blast
+hits. I jumped at the opportunity to solve this with my nasent coding skills and
+so I started writing my first useful bit of code:
+<a href="https://github.com/ctSkennerton/scriptShed/blob/master/contig_extractor.pl"><code>contig_extractor.pl</code></a>.</p>
+
+<p>In the beginning it did only what I first wrote it to do: take a blast file and
+a fasta file and return some contigs. Over time though it morphed into something
+more general &ndash; a way of getting some subset of a fasta file using a list of
+identifiers. Over the years I added functionality for different file formats and
+allowed searching using regular expressions.
+This one piece of code eventually disseminated throughout the whole lab group
+as new people came in and needed to solve the same problems. I think that the
+introduction to github for many of the PhD students who came after me
+was downloading my random collection of scripts just so they
+could get their hands on <code>contig_extractor.pl</code>.</p>
+
+<p>Of course every bioinformatician has probably written the same piece of code
+to solve the same problem. If I had been smart enough to look I&rsquo;m sure
+that I would have found one, but using a script doesn&rsquo;t quite give the same
+level of satisfaction as writing it yourself (and finding that it&rsquo;s useful by all your
+colleages).</p>
+
+<p>There came a time though when <code>contig_extractor.pl</code> reached it&rsquo;s limit. I was
+trying to extract a few thousand records from a fastq file with 100 million and
+Perl just wasn&rsquo;t cutting it anymore. And so <code>fxtract</code> was born to do all the good
+things from <code>contig_extractor.pl</code> just a heap faster.The sun is setting on my
+first useful piece of code, at the moment only my finger memory and force of habit
+keeps it being used. But when I think about it, it&rsquo;s been an amazing four year run for something that I
+probably thought was going to be a one-off script, hopefully <code>fxtract</code> can get
+as much love from me as well.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Finding 16s/18s reads in metagenomes]]></title>
