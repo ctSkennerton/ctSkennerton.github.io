@@ -4,7 +4,7 @@
   <title><![CDATA[Category: bioinformatics | bio(logist | informatician)]]></title>
   <link href="http://ctSkennerton.github.io/blog/categories/bioinformatics/atom.xml" rel="self"/>
   <link href="http://ctSkennerton.github.io/"/>
-  <updated>2014-11-12T00:40:56-08:00</updated>
+  <updated>2014-11-12T00:49:42-08:00</updated>
   <id>http://ctSkennerton.github.io/</id>
   <author>
     <name><![CDATA[Connor Skennerton]]></name>
@@ -42,15 +42,17 @@ wanted out of my thesis and into wikipedia.</p>
 
 <ol>
 <li>First thing, I wrote my thesis in word and used endnote to format my
-references    using the style from nucleic acids research (which is a numbered
-style). If you    want to use my method you need to have the exact formatting
-style 2. Export the literature review from word as plain text and then removed
-all    the parts that aren&rsquo;t needed 3. Put back in some formatting for the
-headers using <a href="https://en.wikipedia.org/wiki/Help:Cheatsheet">wikipedia&rsquo;s
-markup</a> 4. Split out the
-bibliography into a separate file 5. Then use some very dodgy <a href="http://github.com/ctSkennerton/wikipedia_reference_formatter">perl
-code</a>    I wrote
-to format all of the in text citations into the format that wikipedia requires</li>
+references using the style from nucleic acids research (which is a numbered
+style). If you want to use my method you need to have the exact formatting
+style</li>
+<li>Export the literature review from word as plain text and then removed
+all the parts that aren&rsquo;t needed</li>
+<li>Put back in some formatting for the headers using
+<a href="https://en.wikipedia.org/wiki/Help:Cheatsheet">wikipedia&rsquo;s markup</a></li>
+<li>Split out the bibliography into a separate file</li>
+<li>Then use some very dodgy <a href="http://github.com/ctSkennerton/wikipedia_reference_formatter">perl code</a>
+I wrote to format all of the in text citations into the format that wikipedia
+requires</li>
 </ol>
 
 
