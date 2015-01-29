@@ -4,7 +4,7 @@
   <title><![CDATA[Category: bioinformatics | bio(logist | informatician)]]></title>
   <link href="http://ctSkennerton.github.io/blog/categories/bioinformatics/atom.xml" rel="self"/>
   <link href="http://ctSkennerton.github.io/"/>
-  <updated>2015-01-29T01:24:21-08:00</updated>
+  <updated>2015-01-29T01:33:20-08:00</updated>
   <id>http://ctSkennerton.github.io/</id>
   <author>
     <name><![CDATA[Connor Skennerton]]></name>
@@ -79,10 +79,9 @@ the bigger the contig the more confident that you become in assigning
 them to a draft genome.
 (Of course the answer is just getting a better assembly :P).</p>
 
-<p>With these observations and caveats in mind, what value does placing a
-percent completeness or contamination value based on marker genes
-have if it doesn&rsquo;t relate to the
-total gene content?</p>
+<p>With these observations and caveats in mind, what value is there in placing a
+percent completeness or contamination based on marker genes if it doesn&rsquo;t really
+relate to the total gene content?</p>
 
 <p>I think there is a lot of value but not when the numbers are taken literally.
 Marker genes are an approximation and
