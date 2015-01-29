@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Uploading your Theis Literature Review to Wikipedia - bio(logist | informatician)</title>
+  <title>Genome Bin Completeness and Contamination - bio(logist | informatician)</title>
   <meta name="author" content="Connor Skennerton">
   <link rel="author" href="humans.txt">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -13,8 +13,8 @@
   
     
   
-  <meta name="description" content=" Every PhD student can contribute to open science by uploading their thesis
-literature review onto Wikipedia! ">
+  <meta name="description" content="The question that most people ask when looking at a metagenomic draft genome bin
+is: should this gene really be there? The answer is that sometimes &hellip;">
   
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -22,18 +22,18 @@ literature review onto Wikipedia! ">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ctSkennerton.github.io/blog/2014/11/12/Uploading-your-Theis-Lit-Review-to-Wikipedia/">
+  <link rel="canonical" href="http://ctSkennerton.github.io/blog/2015/01/29/Genome-bin-completeness-and-contamination/">
   <link href="/favicon.png" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css'>
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="bio(logist | informatician)" type="application/atom+xml">
   <meta name="og:type" content="website" />
   <meta name="og:site_name" content="bio(logist | informatician)" />
-  <meta name="og:title" content="Uploading your Theis Literature Review to Wikipedia" />
-  <meta name="og:description" content=" Every PhD student can contribute to open science by uploading their thesis
-literature review onto Wikipedia! " />
-  <meta name="og:url" content="http://ctSkennerton.github.io/blog/2014/11/12/Uploading-your-Theis-Lit-Review-to-Wikipedia/"/>
-  <meta name="url" content="http://ctSkennerton.github.io/blog/2014/11/12/Uploading-your-Theis-Lit-Review-to-Wikipedia/">
+  <meta name="og:title" content="Genome Bin Completeness and Contamination" />
+  <meta name="og:description" content="The question that most people ask when looking at a metagenomic draft genome bin
+is: should this gene really be there? The answer is that sometimes &hellip;" />
+  <meta name="og:url" content="http://ctSkennerton.github.io/blog/2015/01/29/Genome-bin-completeness-and-contamination/"/>
+  <meta name="url" content="http://ctSkennerton.github.io/blog/2015/01/29/Genome-bin-completeness-and-contamination/">
   
   <meta name="subject" content="bioinformatics"/>
   <meta name="category" content="bioinformatics"/>
@@ -78,7 +78,7 @@ literature review onto Wikipedia! " />
 
   <header>
     
-      <h1 class="entry-title">Uploading Your Theis Literature Review to Wikipedia</h1>
+      <h1 class="entry-title">Genome Bin Completeness and Contamination</h1>
     
     
       <p class="meta">
@@ -103,7 +103,7 @@ literature review onto Wikipedia! " />
   
 
 
-<time datetime="2014-11-12T00:00:00-08:00" pubdate data-updated="true">Nov 12<span>th</span>, 2014</time> - 
+<time datetime="2015-01-29T00:00:00-08:00" pubdate data-updated="true">Jan 29<span>th</span>, 2015</time> - 
         
 
 posted in
@@ -120,67 +120,81 @@ posted in
   </header>
 
 
-  <div class="entry-content"><p>Every PhD student can contribute to open science by uploading their thesis
-literature review onto Wikipedia!</p>
+  <div class="entry-content"><p>The question that most people ask when looking at a metagenomic draft genome bin
+is: should this gene really be there? The answer is that sometimes it&rsquo;s not easy to know</p>
 
-<!-- more -->
-
-
-<p>My thesis was entitled &ldquo;Phage-host evolution in a model ecosystem&rdquo;, where I
-tracked the evolution of phage genome evolution and the evolution of bacterial
-defense mechanisms using metagenomics. When I was writing my thesis I spent a
-lot of time writing up the section on
-<a href="http://en.wikipedia.org/wiki/CRISPR">CRISPRs</a>, which are a type of bacterial
-adaptive immune system. The CRISPR field has exploded in recent times due to its
-applications for genome editing which has also meant that there have been
-numerous great reviews on the ever expanding primary literature. Despite this
-though I found the CRISPR page on wikipedia to be a bit bare (of course now that
-I&rsquo;ve updated it things look better, but check out the edit history for a look at
-what I&rsquo;ve added). Since there was already a saturation of reviews on the subject
-I decided to go through and add in what I had written for my thesis to
-wikipedia. By far the most important <strong>and difficult</strong> part of this is was
-formatting the references right. So I made a simple workflow for getting what I
-wanted out of my thesis and into wikipedia.</p>
-
-<ol>
-<li>First thing, I wrote my thesis in word and used endnote to format my
-references using the style from nucleic acids research (which is a numbered
-style). If you want to use my method you need to have the exact formatting
-style</li>
-<li>Export the literature review from word as plain text and then removed
-all the parts that aren&rsquo;t needed</li>
-<li>Put back in some formatting for the headers using
-<a href="https://en.wikipedia.org/wiki/Help:Cheatsheet">wikipedia&rsquo;s markup</a></li>
-<li>Split out the bibliography into a separate file</li>
-<li>Then use some very dodgy <a href="http://github.com/ctSkennerton/wikipedia_reference_formatter">perl code</a>
-I wrote to format all of the in text citations into the format that wikipedia
-requires</li>
-</ol>
+<!--more-->
 
 
-<p>This perl code takes the text and looks for numbers, or lists of numbers inside
-parentheses. For example: (1,2,5), (1-7,14), (1). Then looks up what those
-references are in the bibliography, extracting the title of the journal article.
-Then it looks up what the pubmed ID is for that paper using
-<a href="http://www.ncbi.nlm.nih.gov/books/NBK179288/">entrezdirect</a> with the title as
-the search term. After getting the pubmed IDs for all the cited references it
-saves them to a file, so that it can be used later on (without looking up the
-pubmed IDs again) and any errors can be fixed manually. Finally all of those in
-text citations are replaced with the proper wikipedia markup and your ready to
-upload.</p>
+<p>I spend a lot of my time looking at genome assemblies. They are almost always
+from metagenomic data and usually are from some novel phylogenetic lineage
+with few (if any) &ldquo;close&rdquo; relatives. Unfortunately the quality of genome
+assemblies is such that all of these genomes are in many pieces and due to the
+nature of binning, there is always the spectre of some genes not belonging to
+the genome that your analyzing. I&rsquo;m currently a middle author on a
+<a href="https://peerj.com/preprints/554/">paper</a> that attempts to quantify genome
+completeness and contamination using single copy marker genes. The idea is that
+there are genes that are always found in a single copy per genome, therefore
+if you find them in multiple copies then you&rsquo;ve got some contamination from
+other sources. This is great in principle but the number of single-copy genes
+is going to be very small for a large set of genomes, for example there are
+about 100 of these genes that are common for all bacteria. Assuming that some
+bacterial genome has approximately 3000 genes, then looking at only 100 of them
+is about 3% of the gene content. That&rsquo;s quite a small percentage to be making
+big statements on how good or bad a genome is.</p>
 
-<p>There are so many scientific wikipedia pages that are way too brief for their
-subject matter and I&rsquo;m not just talking about the thousands of stubs for
-bacterial and archaeal species either. My current work is with methane seep
-sediment communities that perform <a href="https://en.wikipedia.org/wiki/Anaerobic_oxidation_of_methane">anaerobic oxidation of
-methane</a> (AOM),
-the wikipedia page contains five paragraphs. Looking at the broader topic of
-<a href="https://en.wikipedia.org/wiki/Methanogenesis">methanogenesis</a> there is still
-only three short paragraphs on the biochemistry. We know so much more than this,
-all that knowledge fills the pages of hundreds of review articles yet when
-someone, anyone types anything into google the first match that comes up is
-wikipedia. We should make it better cause it&rsquo;s ultimately the most visible
-publication on the internet.</p>
+<p>So here is a question that one of my colleagues posed in a group meeting: if a genome has 10%
+contamination does that mean that 1 in 10 genes shouldn&rsquo;t be there?</p>
+
+<p>My answer is: of course not, it means that 1 in 10 of the marker genes are in
+multiple copies. But it does get me thinking, how can we tell that 10% of all
+genes in the genome aren&rsquo;t from contamination?</p>
+
+<p>One of the observations with
+single-copy marker genes is that many of them are
+co-located such that getting one erroneous contig can disproportionatly increase
+contamination. Similarly all of the genes of a contig are either correctly or
+incorrectly binned, rather than every 10th gene in some contig being from a
+different genome. If we were to assume a perfect situation where every contaminating
+contig contained at least one marker gene then the real value of contamination would be
+the total number of genes on those contaminating contigs divided by the total number
+of genes in the genome bin. The &ldquo;real&rdquo; contamination percent then becomes more
+about the size of the contigs rather than the number of marker genes. This is
+easy in theory but hard to determine in practice since you need to know which
+copy of the marker gene is the contaminant and which is legit.</p>
+
+<p>It&rsquo;s easy to remove
+contigs with extra marker genes to lower the contamination numbers but what about
+short contigs that contain no markers? I don&rsquo;t think there is a perfect way
+to tell if they belong to a genome or not but one approach has been to look for
+paired reads that link these contigs to larger ones in the assembly even if they
+are not contiguous. Here again there are questions raised, if there are reads that
+link the contig to the bigger assembly why is it separate, why hasn&rsquo;t the assembler
+joined the contigs together? The magic behind genome assemblers creates many
+interesting outcomes that I can never explain and as such there is no general rule
+for believing paired-end links or not. Honestly, I usually go with my gut
+(very unscientific) and generally only bother to go further in depth if there are
+genes that are important to the story I&rsquo;m trying to write.</p>
+
+<p>The golden rule of interpreting genome bin assemblies is that
+the bigger the contig the more confident that you become in assigning
+them to a draft genome.
+(Of course the answer is just getting a better assembly :P).</p>
+
+<p>With these observations and caveats in mind, what value does placing a
+percent completeness or contamination value based on marker genes
+have if it doesn&rsquo;t relate to the
+total gene content?</p>
+
+<p>I think there is a lot of value but not when the numbers are taken literally.
+Marker genes are an approximation and
+a way of sorting genomes that are worth a closer look. From experience I can
+tell you that a genome that is
+&ldquo;90% complete, 5% contamination&rdquo; looks a lot better than one that is
+&ldquo;50% complete, 30% contamination&rdquo;. I take these numbers to be a relative score
+along with other factors like the total number of contigs (less is better) and the
+total number of bases (does it look like it&rsquo;s about the size of a whole genome)
+to point me in the right direction of what I should work on first.</p>
 </div>
 
 
@@ -207,7 +221,7 @@ publication on the internet.</p>
   
 
 
-<time datetime="2014-11-12T00:00:00-08:00" pubdate data-updated="true">Nov 12<span>th</span>, 2014</time> - 
+<time datetime="2015-01-29T00:00:00-08:00" pubdate data-updated="true">Jan 29<span>th</span>, 2015</time> - 
       
 
 posted in
@@ -220,10 +234,8 @@ posted in
 
     </p>
     
-      <a class="pull-left" href="/blog/2014/06/23/My-first-useful-script/" title="Previous Post: My First Useful Script">&laquo; My First Useful Script</a>
+      <a class="pull-left" href="/blog/2014/11/12/Uploading-your-Theis-Lit-Review-to-Wikipedia/" title="Previous Post: Uploading your Theis Literature Review to Wikipedia">&laquo; Uploading your Theis Literature Review to Wikipedia</a>
     
-    
-      <a class="pull-right" href="/blog/2015/01/29/Genome-bin-completeness-and-contamination/" title="Next Post: Genome Bin Completeness and Contamination">Genome Bin Completeness and Contamination &raquo;</a>
     
   </footer>
 

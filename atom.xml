@@ -4,7 +4,7 @@
   <title><![CDATA[bio(logist | informatician)]]></title>
   <link href="http://ctSkennerton.github.io/atom.xml" rel="self"/>
   <link href="http://ctSkennerton.github.io/"/>
-  <updated>2015-01-11T01:25:06-08:00</updated>
+  <updated>2015-01-29T01:24:21-08:00</updated>
   <id>http://ctSkennerton.github.io/</id>
   <author>
     <name><![CDATA[Connor Skennerton]]></name>
@@ -12,6 +12,89 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Genome Bin Completeness and Contamination]]></title>
+    <link href="http://ctSkennerton.github.io/blog/2015/01/29/Genome-bin-completeness-and-contamination/"/>
+    <updated>2015-01-29T00:00:00-08:00</updated>
+    <id>http://ctSkennerton.github.io/blog/2015/01/29/Genome-bin-completeness-and-contamination</id>
+    <content type="html"><![CDATA[<p>The question that most people ask when looking at a metagenomic draft genome bin
+is: should this gene really be there? The answer is that sometimes it&rsquo;s not easy to know</p>
+
+<!--more-->
+
+
+<p>I spend a lot of my time looking at genome assemblies. They are almost always
+from metagenomic data and usually are from some novel phylogenetic lineage
+with few (if any) &ldquo;close&rdquo; relatives. Unfortunately the quality of genome
+assemblies is such that all of these genomes are in many pieces and due to the
+nature of binning, there is always the spectre of some genes not belonging to
+the genome that your analyzing. I&rsquo;m currently a middle author on a
+<a href="https://peerj.com/preprints/554/">paper</a> that attempts to quantify genome
+completeness and contamination using single copy marker genes. The idea is that
+there are genes that are always found in a single copy per genome, therefore
+if you find them in multiple copies then you&rsquo;ve got some contamination from
+other sources. This is great in principle but the number of single-copy genes
+is going to be very small for a large set of genomes, for example there are
+about 100 of these genes that are common for all bacteria. Assuming that some
+bacterial genome has approximately 3000 genes, then looking at only 100 of them
+is about 3% of the gene content. That&rsquo;s quite a small percentage to be making
+big statements on how good or bad a genome is.</p>
+
+<p>So here is a question that one of my colleagues posed in a group meeting: if a genome has 10%
+contamination does that mean that 1 in 10 genes shouldn&rsquo;t be there?</p>
+
+<p>My answer is: of course not, it means that 1 in 10 of the marker genes are in
+multiple copies. But it does get me thinking, how can we tell that 10% of all
+genes in the genome aren&rsquo;t from contamination?</p>
+
+<p>One of the observations with
+single-copy marker genes is that many of them are
+co-located such that getting one erroneous contig can disproportionatly increase
+contamination. Similarly all of the genes of a contig are either correctly or
+incorrectly binned, rather than every 10th gene in some contig being from a
+different genome. If we were to assume a perfect situation where every contaminating
+contig contained at least one marker gene then the real value of contamination would be
+the total number of genes on those contaminating contigs divided by the total number
+of genes in the genome bin. The &ldquo;real&rdquo; contamination percent then becomes more
+about the size of the contigs rather than the number of marker genes. This is
+easy in theory but hard to determine in practice since you need to know which
+copy of the marker gene is the contaminant and which is legit.</p>
+
+<p>It&rsquo;s easy to remove
+contigs with extra marker genes to lower the contamination numbers but what about
+short contigs that contain no markers? I don&rsquo;t think there is a perfect way
+to tell if they belong to a genome or not but one approach has been to look for
+paired reads that link these contigs to larger ones in the assembly even if they
+are not contiguous. Here again there are questions raised, if there are reads that
+link the contig to the bigger assembly why is it separate, why hasn&rsquo;t the assembler
+joined the contigs together? The magic behind genome assemblers creates many
+interesting outcomes that I can never explain and as such there is no general rule
+for believing paired-end links or not. Honestly, I usually go with my gut
+(very unscientific) and generally only bother to go further in depth if there are
+genes that are important to the story I&rsquo;m trying to write.</p>
+
+<p>The golden rule of interpreting genome bin assemblies is that
+the bigger the contig the more confident that you become in assigning
+them to a draft genome.
+(Of course the answer is just getting a better assembly :P).</p>
+
+<p>With these observations and caveats in mind, what value does placing a
+percent completeness or contamination value based on marker genes
+have if it doesn&rsquo;t relate to the
+total gene content?</p>
+
+<p>I think there is a lot of value but not when the numbers are taken literally.
+Marker genes are an approximation and
+a way of sorting genomes that are worth a closer look. From experience I can
+tell you that a genome that is
+&ldquo;90% complete, 5% contamination&rdquo; looks a lot better than one that is
+&ldquo;50% complete, 30% contamination&rdquo;. I take these numbers to be a relative score
+along with other factors like the total number of contigs (less is better) and the
+total number of bases (does it look like it&rsquo;s about the size of a whole genome)
+to point me in the right direction of what I should work on first.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Uploading your Theis Literature Review to Wikipedia]]></title>
