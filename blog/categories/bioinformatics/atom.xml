@@ -4,7 +4,7 @@
   <title><![CDATA[Category: bioinformatics | bio(logist | informatician)]]></title>
   <link href="http://ctSkennerton.github.io/blog/categories/bioinformatics/atom.xml" rel="self"/>
   <link href="http://ctSkennerton.github.io/"/>
-  <updated>2015-06-18T00:52:52-07:00</updated>
+  <updated>2015-10-03T02:40:34-07:00</updated>
   <id>http://ctSkennerton.github.io/</id>
   <author>
     <name><![CDATA[Connor Skennerton]]></name>
@@ -12,6 +12,182 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Genome Bin Decontamination]]></title>
+    <link href="http://ctSkennerton.github.io/blog/2015/10/03/Bin-Decontamination/"/>
+    <updated>2015-10-03T00:00:00-07:00</updated>
+    <id>http://ctSkennerton.github.io/blog/2015/10/03/Bin-Decontamination</id>
+    <content type="html"><![CDATA[<p>Genome bins comming off automated pipelines can be contaminated
+with parts of other genomes. As part of my workflow I use
+<a href="http://genome.cshlp.org/content/early/2015/05/14/gr.186072.114.abstract">CheckM</a>
+(I&rsquo;m biased since I&rsquo;m a coauthor) to assess the contamination of
+genome bins using single-copy marker genes. If you&rsquo;re lucky then
+the genome bins that you&rsquo;re interested in will be relatively complete
+without much contamination. Unfortunately that isn&rsquo;t always the
+case. In this blog post I&rsquo;m going to run through some of the analyses
+that I did on a genome bin that was 90% complete but 70% contaminated.
+This is exploratory analysis to see if I can manually improve the
+bin over what the automated tools can do.</p>
+
+<h2>Background</h2>
+
+<p>I&rsquo;m not going into details on how I got this bin but briefly I had
+three metagenomic samples, named 3730, 5133, and 5579, which were
+assembled with
+<a href="http://bioinformatics.oxfordjournals.org/content/31/10/1674.long">megahit</a>
+and binned using <a href="https://peerj.com/articles/1165/">metabat</a>. I ran
+the genome bins from sample 3730 through CheckM. In the below analysis I&rsquo;m going to
+try to improve <strong>bin_41</strong>.</p>
+
+<h2>Analysis</h2>
+
+<h3>Creating the input files</h3>
+
+<p>For starters I want the <code>.depth.txt</code> file created by metabat, which I copied and renamed <code>3730_coverage.tsv</code>. Next I created a mapping file for which contigs belonged to which bins. I have the fasta files of all of the bins in a separate directory. To get the mapping of the fasta files I ran the following:
+<code>sh
+grep -oP '(?&lt;=^\&gt;)\S+' *fa | awk 'BEGIN{FS=":";OFS="\t"}{print $2,$1}' &gt; 3730_bin_mapping.tsv
+</code>
+And finally I wanted to know where all of the multi-copy markers were so I created a file based on the CheckM output, with a bit of reformatting in awk:
+<code>sh
+checkm qa -o 6 ckm_results/lineage.ms ckm_results | awk 'BEGIN{FS="\t";OFS=","}{n = split($3,a,",");for(i = 1; i &lt;= n; ++i){print $1,$2,a[i]}}' &gt; 3730_multiple_markers.csv
+</code></p>
+
+<h3>Exploratory analysis in R</h3>
+
+<p><div>
+  <pre><code class='r'>library(readr)
+duplicated_markers = read_csv(&amp;ldquo;3730_multiple_markers.csv&amp;rdquo;)
+coverage = read_tsv(&amp;ldquo;3730_coverage.tsv&amp;rdquo;)&lt;/p&gt;
+
+&lt;h1&gt;no header in the file, so give the columns names&lt;/h1&gt;
+
+&lt;p&gt;bin_mapping = read_tsv(&amp;ldquo;3730_bin_mapping.tsv&amp;rdquo;, col_names = c(&amp;ldquo;contigName&amp;rdquo;, &amp;ldquo;bin&amp;rdquo;))</code></pre>
+</div>
+
+Clean up the dataframes to make the column names consistent and remove a bit of unneeded text. Note that these commands are specific to how files were named on my system, you may not need to do this or change this section to meet your own needs.</p>
+
+<p><div>
+  <pre><code class='r'>bin_mapping$bin = gsub(&amp;ldquo;metabat_binned/final.contigs.fa.metabat&lt;em&gt;&amp;rdquo;, &amp;ldquo;&amp;rdquo;, bin_mapping$bin)
+bin_mapping$bin = gsub(&amp;ldquo;\.fa$&amp;rdquo;, &amp;ldquo;&amp;rdquo;, bin_mapping$bin)
+duplicated_markers$&lt;code&gt;Bin Id&lt;/code&gt; = gsub(&amp;ldquo;final.contigs.fa.metabat&lt;/em&gt;&amp;rdquo;, &amp;ldquo;&amp;rdquo;, duplicated_markers$&lt;code&gt;Bin Id&lt;/code&gt;)
+duplicated_markers$&lt;code&gt;Gene Ids&lt;/code&gt; = gsub(&amp;ldquo;_\d+$&amp;rdquo;, &amp;ldquo;&amp;rdquo;, duplicated_markers$&lt;code&gt;Gene Ids&lt;/code&gt;, perl=TRUE)
+colnames(duplicated_markers) &amp;lt;&amp;ndash; c(&amp;ldquo;bin&amp;rdquo;, &amp;ldquo;marker&amp;rdquo;, &amp;ldquo;contigName&amp;rdquo;)</code></pre>
+</div>
+
+Create a smaller dataframe of just the binned contigs</p>
+
+<p><div>
+  <pre><code class='r'>binned_contigs = merge(bin_mapping, coverage, by=&amp;ldquo;contigName&amp;rdquo;)</code></pre>
+</div>
+
+We are interested in Bin 41, lets get just the data for it.</p>
+
+<p><div>
+  <pre><code class='r'>bin_41 = binned_contigs[binned_contigs$bin == &amp;ldquo;bins_41&amp;rdquo;,]</code></pre>
+</div>
+
+Since we have three samples we can look at the coverage of the contigs in each sample as a matrix of 2D</p>
+
+<p><div>
+  <pre><code class='r'>pairs(~final.contigs.3730.bam+final.contigs.5133.bam+final.contigs.5579.bam, data=bin_41, main = &amp;ldquo;Comparison of contig coverage between samples&amp;rdquo;, labels = c(&amp;ldquo;3730&amp;rdquo;, &amp;ldquo;5133&amp;rdquo;, &amp;ldquo;5579&amp;rdquo;))</code></pre>
+</div>
+</p>
+
+<p><img src="/images/bin-decontamination-paired-coverage-1.svg" alt="plot of chunk bin-decontamination-paired-coverage" />
+The majority of the contigs are found in sample 3730 between 10-15x and with very low coverage in sample 5133. Some of the contigs also have some coverage in sample 5579, but most don&rsquo;t. It&rsquo;s tempting to remove all of the contigs that don&rsquo;t fit into the band of coverage, but from this we can&rsquo;t be certain if the duplicated markers are in these outlier contigs.</p>
+
+<p>Since the coverage of sample 5133 doesn&rsquo;t really factor into things lets look at a single 2D plot of the 3730 coverage and the 5579 coverage. As a coarse approach lets take a look at where all of the contigs with duplicated markers are in this plot. For starters make a new column in the bin_41 dataframe that tells us if the contig contains any duplicated marker.</p>
+
+<p><div>
+  <pre><code class='r'>bin_41_duplicated_markers = subset(duplicated_markers, bin == &amp;ldquo;bins_41&amp;rdquo;)
+bin_41$containsDuplicateMarker &amp;lt;&amp;ndash; bin_41$contigName %in% unique(bin_41_duplicated_markers$contigName)</code></pre>
+</div>
+
+And now lets plot the data, changing the color of the points based on the value of the &lsquo;containsDuplicateMarker&rsquo; column</p>
+
+<p><div>
+  <pre><code class='r'>plot(bin_41$final.contigs.3730.bam, bin_41$final.contigs.5579.bam, pch = 19, col = &amp;ldquo;lightgrey&amp;rdquo;, cex=0.5, xlab=&amp;ldquo;3730 coverage&amp;rdquo;, ylab=&amp;ldquo;5579 coverage&amp;rdquo;, main=&amp;ldquo;Contigs containing duplicated markers&amp;rdquo;)
+points(bin_41[bin_41$containsDuplicateMarker,]$final.contigs.3730.bam, bin_41[bin_41$containsDuplicateMarker,]$final.contigs.5579.bam, col = &amp;ldquo;red&amp;rdquo;)</code></pre>
+</div>
+</p>
+
+<p><img src="/images/bin-decontamination-all-duplicate-markers-1.svg" alt="plot of chunk bin-decontamination-all-duplicate-markers" />
+Apart from a couple of outliers, the majority of the contigs that contain multiple markers are in the central mass of contigs. There doesn&rsquo;t appear to be any way to systematically remove a substantial amount of contamination in this genome bin.</p>
+
+<p>Instead of looking at all contigs that contain any duplicated markers, we can also visualise the positions of contigs for a specific duplicated marker. You can get a list of the markers that are duplicated in the bin by using the unique command. Then create a logical vector of bin_41 of the contigs that contain any of the particular markers.</p>
+
+<p><div>
+  <pre><code class='r'>unique(bin_41_duplicated_markers$marker)</code></pre>
+</div>
+</p>
+
+<p><div>
+  <pre><code class='text'>&lt;/p&gt;
+
+&lt;h2&gt;[1] &amp;ldquo;PF03439.8&amp;rdquo;  &amp;ldquo;PF01172.13&amp;rdquo; &amp;ldquo;PF00164.20&amp;rdquo; &amp;ldquo;PF09173.6&amp;rdquo;  &amp;ldquo;PF03874.11&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[6] &amp;ldquo;PF00203.16&amp;rdquo; &amp;ldquo;PF00466.15&amp;rdquo; &amp;ldquo;PF00416.17&amp;rdquo; &amp;ldquo;PF05670.8&amp;rdquo;  &amp;ldquo;PF04127.10&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[11] &amp;ldquo;PF01090.14&amp;rdquo; &amp;ldquo;PF01193.19&amp;rdquo; &amp;ldquo;PF09249.6&amp;rdquo;  &amp;ldquo;PF11987.3&amp;rdquo;  &amp;ldquo;PF00298.14&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[16] &amp;ldquo;PF00252.13&amp;rdquo; &amp;ldquo;PF01198.14&amp;rdquo; &amp;ldquo;PF01201.17&amp;rdquo; &amp;ldquo;PF01351.13&amp;rdquo; &amp;ldquo;PF04567.12&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[21] &amp;ldquo;PF01922.12&amp;rdquo; &amp;ldquo;PF01667.12&amp;rdquo; &amp;ldquo;PF00398.15&amp;rdquo; &amp;ldquo;TIGR03685&amp;rdquo;  &amp;ldquo;PF04983.13&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[26] &amp;ldquo;TIGR03683&amp;rdquo;  &amp;ldquo;PF04561.9&amp;rdquo;  &amp;ldquo;PF04565.11&amp;rdquo; &amp;ldquo;PF04919.7&amp;rdquo;  &amp;ldquo;TIGR00425&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[31] &amp;ldquo;PF01200.13&amp;rdquo; &amp;ldquo;PF07541.7&amp;rdquo;  &amp;ldquo;PF00679.19&amp;rdquo; &amp;ldquo;PF01194.12&amp;rdquo; &amp;ldquo;PF13656.1&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[36] &amp;ldquo;PF01015.13&amp;rdquo; &amp;ldquo;PF01282.14&amp;rdquo; &amp;ldquo;PF01287.15&amp;rdquo; &amp;ldquo;PF00276.15&amp;rdquo; &amp;ldquo;PF01780.14&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[41] &amp;ldquo;TIGR00064&amp;rdquo;  &amp;ldquo;TIGR00389&amp;rdquo;  &amp;ldquo;PF04997.7&amp;rdquo;  &amp;ldquo;PF04563.10&amp;rdquo; &amp;ldquo;PF03947.13&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[46] &amp;ldquo;PF01912.13&amp;rdquo; &amp;ldquo;PF00181.18&amp;rdquo; &amp;ldquo;PF04010.8&amp;rdquo;  &amp;ldquo;TIGR00549&amp;rdquo;  &amp;ldquo;TIGR01018&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[51] &amp;ldquo;PF01157.13&amp;rdquo; &amp;ldquo;TIGR00392&amp;rdquo;  &amp;ldquo;PF00347.18&amp;rdquo; &amp;ldquo;PF00831.18&amp;rdquo; &amp;ldquo;TIGR01080&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[56] &amp;ldquo;TIGR00408&amp;rdquo;  &amp;ldquo;TIGR00270&amp;rdquo;  &amp;ldquo;PF08068.7&amp;rdquo;  &amp;ldquo;PF00687.16&amp;rdquo; &amp;ldquo;PF04560.15&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[61] &amp;ldquo;PF05000.12&amp;rdquo; &amp;ldquo;PF00380.14&amp;rdquo; &amp;ldquo;PF00752.12&amp;rdquo; &amp;ldquo;PF09377.5&amp;rdquo;  &amp;ldquo;TIGR02389&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[66] &amp;ldquo;TIGR00419&amp;rdquo;  &amp;ldquo;PF01000.21&amp;rdquo; &amp;ldquo;PF04566.8&amp;rdquo;  &amp;ldquo;PF00562.23&amp;rdquo; &amp;ldquo;PF00366.15&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[71] &amp;ldquo;TIGR00057&amp;rdquo;  &amp;ldquo;PF01191.14&amp;rdquo; &amp;ldquo;PF00572.13&amp;rdquo; &amp;ldquo;PF01981.11&amp;rdquo; &amp;ldquo;PF01984.15&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[76] &amp;ldquo;TIGR03677&amp;rdquo;  &amp;ldquo;PF00411.14&amp;rdquo; &amp;ldquo;PF01864.12&amp;rdquo; &amp;ldquo;PF00238.14&amp;rdquo; &amp;ldquo;TIGR03724&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[81] &amp;ldquo;PF00177.16&amp;rdquo; &amp;ldquo;PF00827.12&amp;rdquo; &amp;ldquo;TIGR02338&amp;rdquo;  &amp;ldquo;PF01849.13&amp;rdquo; &amp;ldquo;TIGR00468&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[86] &amp;ldquo;PF01866.12&amp;rdquo; &amp;ldquo;PF01982.11&amp;rdquo; &amp;ldquo;PF00237.14&amp;rdquo; &amp;ldquo;PF03876.12&amp;rdquo; &amp;ldquo;PF02978.14&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[91] &amp;ldquo;TIGR00670&amp;rdquo;  &amp;ldquo;PF00623.15&amp;rdquo; &amp;ldquo;PF01246.15&amp;rdquo; &amp;ldquo;PF00573.17&amp;rdquo; &amp;ldquo;PF00189.15&amp;rdquo;&lt;/h2&gt;
+
+&lt;h2&gt;[96] &amp;ldquo;TIGR01213&amp;rdquo;  &amp;ldquo;TIGR00344&amp;rdquo;  &amp;ldquo;PF01868.11&amp;rdquo; &amp;ldquo;PF03764.13&amp;rdquo; &amp;ldquo;PF00867.13&amp;rdquo;&lt;/h2&gt;
+
+&lt;p&gt;</code></pre>
+</div>
+</p>
+
+<p><div>
+  <pre><code class='r'>contains_x_marker = bin_41$contigName %in% subset(bin_41_duplicated_markers, marker == &amp;ldquo;PF01157.13&amp;rdquo;)$contigName</code></pre>
+</div>
+
+With this vector we can plot the points like we did with the complete set of duplicated markers.</p>
+
+<p><div>
+  <pre><code class='r'>plot(bin_41$final.contigs.3730.bam, bin_41$final.contigs.5579.bam, pch = 19, col = &amp;ldquo;lightgrey&amp;rdquo;, cex=0.5, main=&amp;ldquo;Position of contigs with PF01157.13&amp;rdquo;, xlab=&amp;ldquo;3730 coverage&amp;rdquo;, ylab=&amp;ldquo;5579 coverage&amp;rdquo;)
+points(bin_41[contains_x_marker,]$final.contigs.3730.bam, bin_41[contains_x_marker,]$final.contigs.5579.bam, col = &amp;ldquo;red&amp;rdquo;)</code></pre>
+</div>
+</p>
+
+<p><img src="/images/bin-decontamination-single-marker-positions-1.svg" alt="plot of chunk bin-decontamination-single-marker-positions" /></p>
+
+<p>So now we can see that ther are three contigs containing this marker, one
+appears to be an outlier, but the other two contigs have quite similar
+coverage profiles</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[The pace of genome binning from metagenomes]]></title>
@@ -253,160 +429,6 @@ first useful piece of code, at the moment only my finger memory and force of hab
 keeps it being used. But when I think about it, it&rsquo;s been an amazing four year run for something that I
 probably thought was going to be a one-off script, hopefully <code>fxtract</code> can get
 as much love from me as well.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Finding 16s/18s reads in metagenomes]]></title>
-    <link href="http://ctSkennerton.github.io/blog/2014/04/19/rRNA-read-extraction-from-metagenomes/"/>
-    <updated>2014-04-19T22:51:00-07:00</updated>
-    <id>http://ctSkennerton.github.io/blog/2014/04/19/rRNA-read-extraction-from-metagenomes</id>
-    <content type="html"><![CDATA[<p>Got a Metagenome? want to know what the community looks like?</p>
-
-<!-- more -->
-
-
-<p>rRNA operons are typically poorly assembled in metagenomic datasets due to
-highly conserved sequences.  More targeted assembly approaches may be necessary
-to obtain accurate reconstructions from short read datasets. There are a few
-ways in which we can extract reads originating from either 16S or 18S reads and
-there are a number of programs (<a href="http://selab.janelia.org/software/ssu-align/">SSU-ALIGN</a>,
-<a href="http://www.ncbi.nlm.nih.gov/pubmed/21887657">rRNASelector</a>,
-<a href="http://ribopicker.sourceforge.net/">riboPicker</a>,
-<a href="http://bioinfo.lifl.fr/RNA/sortmerna/">SortMeRNA</a>,
-blast, <a href="http://bowtie-bio.sourceforge.net/bowtie2/index.shtml">bowtie</a> or <a href="https://github.com/lh3/bwa">bwa</a>) to name a few.</p>
-
-<p>There are a other ways of looking at the communty from raw metagenomic
-reads. These are mostly kmer-based approaches like
-<a href="http://ccb.jhu.edu/software/kraken/">kraken</a> or extended marker gene
-approaches like
-<a href="http://huttenhower.sph.harvard.edu/metaphlan">MetaPhlAn</a> or
-<a href="http://phylosift.wordpress.com/">phylosift</a>. I&rsquo;m not against any of
-them, just never used them, so I&rsquo;m going to keep the following post
-specific to 16s/18s community composition</p>
-
-<h2>Extracting 16S/18S reads</h2>
-
-<p>I&rsquo;ve used SortMeRNA and bowtie/bwa in my workflows with good success. The
-difference between these two methods is that SortMeRNA that uses a kmer
-searching method using an index created from a database of previously sequenced
-genes whereas bowtie/bwa use a local alignment method to compare the query sequence to
-a previously made database. Below are instructions on how to use both methods.</p>
-
-<h2>Installing and using SortMeRNA</h2>
-
-<p>From the source page for SortMeRNA on <a href="https://github.com/biocore/sortmerna">github</a>
-copy the ssh clone url and then open up a terminal window and type
-<code>bash
-$ git clone git@github.com:biocore/sortmerna.git
-$ cd sortmerna
-$ ./configure --prefix=$PWD
-$ make install
-</code>
-<strong>Mac OSX install note:</strong> I found that there was an error with my install
-with <code>configure</code> complaining that it was missing <code>install-sh</code>. I solved this by
-copying <a href="http://sourceforge.net/projects/buildconf/">autogen.sh</a> into the same
-directory as <code>configure</code>, execute it and then try running configure again.</p>
-
-<p>The commands above should install SortMeRNA in the directory which you downloaded
-it to.</p>
-
-<h4>Building indexes for SortMeRNA</h4>
-
-<p>SortMeRNA comes packaged with 8 different rRNA databases, all derived from SILVA.
-Build either the 16S or 18S database, depending on what you want. Below is the
-command used to generate the 18S index (assuming that you&rsquo;ve installed in the
-download directory)
-<code>bash
-$ bin/indexdb_rna --ref rRNA_databases/silva-euk-18s-database-id95.fasta,index/silva-euk-18s-database-id95 --sensitive
-</code>
-If you <code>ls</code> the index directory you should see four files generated.</p>
-
-<h4>Preprocessing reads</h4>
-
-<p>Now we can use this index to extract the reads that may come from 18S using the
-<code>sortmerna</code> command. I&rsquo;m going to assume that there are files containing raw
-reads from an Illumina run called <code>file_R1.fastq.gz</code> and <code>file_R2.fastq.gz</code>.
-Unfortunately one of the limitations of SortMeRNA is that it requires that you
-only give it a single file and that the file is uncompressed. So to start with,
-unzip the files using <code>gzip</code> and then combine them into a single file using
-<code>merge-paired-reads.sh</code> found in the scripts directory of the SortMeRNA source
-code
-<code>bash
-$ gunzip file_R1.fastq.gz file_R2.fastq.gz
-$ bash scripts/merge-paired-reads.sh file_R1.fastq file_R2.fastq combined.fastq
-</code>
-To save space, it&rsquo;s probably best to re-zip the files to save on harddrive space
-<code>bash
-$ gzip file_R1.fastq file_R2.fastq
-</code></p>
-
-<h4>Extracting the reads</h4>
-
-<p>Now we can run <code>sortmerna</code>, saving matched reads (and their mates) to a file
-with the prefix &lsquo;matched-18S&rsquo; in fastq format using 4 processors.
-```bash
-$ bin/sortmerna &mdash;reads combined.fastq \</p>
-
-<pre><code>--ref rRNA_databases/silva-euk-18s-database-id95.fasta,index/silva-euk-18s-database-id95 \
---paired-in \
---fastx \
---aligned matched-18S \
--a 4
-</code></pre>
-
-<p>```</p>
-
-<h2>Installing and using BWA</h2>
-
-<p>My personal preference is to use bwa over bowtie but the merits of either are
-debatable (there are also 50 other programs out there that try to solve the same
-problem so the choice is yours). Download bwa from <a href="https://github.com/lh3/bwa">github</a>
-by copying the ssh clone url and typing the following into the terminal. (Change
-directories out of the SortMeRNA source directory before you do this)
-<code>bash
-$ git clone git@github.com:lh3/bwa.git
-$ cd bwa
-$ make
-</code>
-bwa also requires that an index of the database be made. For simplicity, lets
-use the same database that was included in SortMeRNA. To make the bwa index
-copy the files that you want from the SortMeRNA source directory into a new
-location.
-<code>bash
-$ cp ../sortmerna/rRNA_databases/silva-euk-18s-database-id95.fasta .
-$ bwa index silva-euk-18s-database-id95.fasta
-</code>
-This should make a whole bunch of files that have extra file extensions appended
-to the fasta file. With the index created we can now align the reads
-<code>bash
-$ bwa mem silva-euk-18s-database-id95.fasta file_R1.fastq.gz file_R2.fastq.gz &gt; aligned_18S.sam
-</code>
-(Notice that there is no preprocessing steps necessary for the reads)</p>
-
-<h4>Postprocessing the sam file</h4>
-
-<p>The output of bwa is a standardized format called <a href="http://samtools.github.io/hts-specs/SAMv1.pdf">sam</a>
-which many programs will now output. This format essentially describes the
-alignment of each of the query sequences to the reference sequences. This is
-not exactly what we want, which is the reads that were successful hits to the
-reference in fasta/q format. To go from a sam file to a fasta/q file is a little
-complicated (I wish it wasn&rsquo;t). To start with, download <a href="https://github.com/samtools/samtools">samtools</a>
-and <a href="https://github.com/ctSkennerton/fxtract">fxtract</a> from github, and download
-them into new source directories (bonus points for getting them installed without
-a walkthrough). First convert the sam file into its equivalent binary format and
-filter out unaligned sequences:
-<code>bash
-$ samtools view -SubF 4 aligned_18S.sam | samtools sort - aligned_18S &amp;&amp; samtools index aligned_18S.bam
-</code>
-Now get the names of all the reads that aligned:
-<code>bash
-$ samtools view aligned_18S.bam | cut -f 1 &gt;aligned_reads.txt
-</code>
-And finally extract those reads from the original fastq files:
-<code>bash
-$ fxtract -Hf aligned_reads.txt file_R1.fastq.gz file_R2.fastq.gz &gt;aligned_reads.fastq
-</code></p>
 ]]></content>
   </entry>
   
