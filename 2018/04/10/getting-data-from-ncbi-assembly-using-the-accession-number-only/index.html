@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Getting data from NCBI assembly using the accession number only | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="NCBI&rsquo;s assembly database is a great one-stop-shop for genomic data and annotations but it&rsquo;s actually kind of difficult to download data if you only know the accession number of an assembly. The documentation says that the assembly database is integrated with entrez-direct, a great set of command line utilities for accessing NCBI data from the command line. Most of the databases have an option to download data based on the ID, so I thought that something like the following would work" />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="ctSkennerton.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/ctSkennerton.github.io/style.7c6d960b20273ed88bc63a60591a57e7739fb21f243b77f27c3bc730ef6205c0.css" />
+  <script defer src="/ctSkennerton.github.io/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="ctSkennerton.github.io/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">bio(logist | informatician)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      Getting data from NCBI assembly using the accession number only
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2018-04-10T23:18:11Z">
+      10 Apr 2018
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/ctSkennerton.github.io/tags/bioinformatics">Bioinformatics</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4702866/">NCBI&rsquo;s assembly database</a> is a great one-stop-shop for genomic data and annotations but it&rsquo;s actually kind of difficult to download data if you only know the accession number of an assembly. The documentation says that the assembly database is integrated with <a href="https://www.ncbi.nlm.nih.gov/books/NBK179288/">entrez-direct</a>, a great set of command line utilities for accessing NCBI data from the command line. Most of the databases have an option to download data based on the ID, so I thought that something like the following would work</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">efetch -id GCA_000398025.1 -db assembly -format fasta 
+</code></pre></div><p>Alas it does not, however the directory structure for the assembly FTP site nicely mirrors the accession numbers so for the example above, the path looks something like this: ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/398/025/ Below is a little awk script that I wrote to generate the FTP path and for input into wget. The input for this script is a file containing the accession in the first column and optionally a second column containing the assembly name. The full FTP path contains both of these but we can get around not having the assembly name by using wildcards. Nope, you need both the accession and the assembly name for this snippet to work. But I wrote a more expansive <a href="https://github.com/ctSkennerton/scriptShed/blob/master/download_ncbi_assembly.py">script in python that do it with just the accession number</a>, you should probably use it instead.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">BEGIN{OFS=&#34;/&#34;}
+{
+  accession = $1;
+  joined_acc = accession
+  if (NF == 2) {
+    joined_acc = joined_acc&#34;_&#34;$2;
+  } else {
+    joined_acc = joined_acc&#34;*&#34;;
+  }
+  split($1, a, &#34;_&#34;);
+  sub(/\\.[[:digit:]]$/, &#34;&#34;, a[2]);
+  gsub(/.{3}/,&#34;&amp;/&#34;, a[2]);
+  print accession&#34;\tftp://ftp.ncbi.nlm.nih.gov/genomes/all&#34;,a[1],a[2],joined_acc,joined_acc&#34;_genomic.fna.gz&#34;
+}
+</code></pre></div>
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="ctSkennerton.github.io/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2020 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>

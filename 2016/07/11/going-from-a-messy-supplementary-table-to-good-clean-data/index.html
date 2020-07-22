@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Going from a messy supplementary table to good clean data | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="Bioinformatics&hellip; Or &lsquo;advanced file copying&rsquo; as I like to call it.
+— Nick Loman (@pathogenomenick) January 29, 2014
+  Get ready for some advanced file copying! I recently had to clean up some data from the supplementary material from Pereira et. al 2011, which is a very nice table of manually annotated genes in sulfate reducing bacteria. The only problem is that the table is designed for maximum human readability, which made it a real pain when trying to parse out the data." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="ctSkennerton.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/ctSkennerton.github.io/style.7c6d960b20273ed88bc63a60591a57e7739fb21f243b77f27c3bc730ef6205c0.css" />
+  <script defer src="/ctSkennerton.github.io/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="ctSkennerton.github.io/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">bio(logist | informatician)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      Going from a messy supplementary table to good clean data
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2016-07-11T21:00:53Z">
+      11 Jul 2016
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/ctSkennerton.github.io/tags/bioinformatics">Bioinformatics</a>
+    <a href="/ctSkennerton.github.io/tags/r">R</a>
+    <a href="/ctSkennerton.github.io/tags/tidy-data">tidy data</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <blockquote>
+<p>Bioinformatics&hellip; Or &lsquo;advanced file copying&rsquo; as I like to call it.</p>
+<p>— Nick Loman (@pathogenomenick) <a href="https://twitter.com/pathogenomenick/status/428616138252353536">January 29, 2014</a></p>
+</blockquote>
+<p>  Get ready for some advanced file copying! I recently had to clean up some data from the supplementary material from <a href="http://journal.frontiersin.org/article/10.3389/fmicb.2011.00069/abstract">Pereira <em>et. al</em> 2011</a>, which is a very nice table of manually annotated genes in sulfate reducing bacteria. The only problem is that the table is designed for maximum human readability, which made it a real pain when trying to parse out the data. I decided to use <code>R</code> and the “<a href="https://github.com/tidyverse">tidyverse</a>” packages to clean up the table to make things work better for downstream analyses. This isn’t part of my normal workflow, I’m more of a python guy, but after doing this analysis in <code>R</code> I’d have to say that I’m a convert.</p>
+<h4 id="getting-the-data">Getting the data</h4>
+<p>Download the supplementary material from the paper linked above, if you want to play along at home. This data is a nicely formatted excel workbook containing eight spreadsheets with the locus identifiers for a number of genes important in suflate reducing prokaryotes. While this data is nice and visually appealing, it is not <a href="https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html">tidy</a> and it’s difficult to get the information I want out of it. I want the locus identifiers for the genes of interest so that I can download them from NCBI and use them as a blast database.</p>
+<h4 id="cleaning-the-data">Cleaning the data</h4>
+<p>Some things are just easier to do in excel before tidying the data in <code>R</code> here is what I did:</p>
+<ol>
+<li>removed the empty columns and rows at the beginning. This actually isn’t difficult to do in <code>R</code>, but doing this makes inputting the data more painless cause then <code>R</code> will pick up the column names.</li>
+<li>Remove the rows that contain just the taxonomic information</li>
+<li>For some of the sheets (‘Hases’, for example) I removed rows at the beginning that gave hierarchy to the columns. These are mostly unnecessary and make it difficult to parse the excel sheet, as <code>readxl</code> does not currently handle merged cells and cause the boundaries of this hierarchy is coded visually using cell boarders in excel.</li>
+<li>For some reason there were single quotation marks in the <em>Archaeoglobus fulgidus</em> DsrK locus identifiers, which I removed</li>
+</ol>
+<p>Open up an <code>R</code> session and load the following libraries (assuming that you already have them installed)</p>
+<div class="highlight"><pre class="chroma"><code class="language-R" data-lang="R"><span class="nf">library</span><span class="p">(</span><span class="n">tidyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">readxl</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">stringr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+</code></pre></div><p>Import the data into <code>R</code> using <code>readxl</code>. Creates a list of dataframes.</p>
+<div class="highlight"><pre class="chroma"><code class="language-R" data-lang="R"><span class="n">d</span> <span class="o">&lt;-</span> <span class="nf">lapply</span><span class="p">(</span><span class="nf">excel_sheets</span><span class="p">(</span><span class="s">&#34;~/Downloads/data_sheet_2.xls&#34;</span><span class="p">),</span> <span class="n">\</span>
+<span class="n">read_excel</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="s">&#34;~/Downloads/data_sheet_2.xls&#34;</span><span class="p">)</span>
+</code></pre></div><p>remove the completely empty rows</p>
+<div class="highlight"><pre class="chroma"><code class="language-R" data-lang="R"><span class="n">d</span> <span class="o">&lt;-</span> <span class="nf">lapply</span><span class="p">(</span><span class="n">d</span><span class="p">,</span>
+<span class="nf">function</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="n">n</span><span class="nf">[rowSums</span><span class="p">(</span><span class="nf">is.na</span><span class="p">(</span><span class="n">n</span><span class="p">))</span> <span class="o">!=</span> <span class="nf">ncol</span><span class="p">(</span><span class="n">n</span><span class="p">),</span><span class="n">]</span><span class="p">)</span>
+</code></pre></div><p>Lets look at what our table looks like (Note the ‘organism’ column is not shown for brevity)</p>
+<div class="highlight"><pre class="chroma"><code class="language-R" data-lang="R"><span class="n">knitr</span><span class="o">::</span><span class="nf">kable</span><span class="p">(</span><span class="n">d[[1]][</span><span class="p">,</span><span class="m">-1</span><span class="n">]</span><span class="p">)</span>
+</code></pre></div><table>
+<thead>
+<tr>
+<th>locus</th>
+<th>SAT</th>
+<th>AprA</th>
+<th>QmoA</th>
+<th>DsrA</th>
+<th>DsrC</th>
+<th>H-Ppi</th>
+<th>FdxI</th>
+<th>FdxII</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AF</td>
+<td>1667</td>
+<td>1670</td>
+<td>0663</td>
+<td>0423</td>
+<td>2228</td>
+<td>NA</td>
+<td>00427; 1010; 0355; 0923; 2142; 0166; 1700; 0156; 0464</td>
+<td>0167</td>
+</tr>
+<tr>
+<td>Arcpr_</td>
+<td>1264</td>
+<td>1261</td>
+<td>1260</td>
+<td>0139</td>
+<td>1726</td>
+<td>NA</td>
+<td>0142; 0625; 0483; 0712; 1058</td>
+<td>NA</td>
+</tr>
+<tr>
+<td>Cmaq_</td>
+<td>0274</td>
+<td>0273</td>
+<td>NA</td>
+<td>0853</td>
+<td>0856</td>
+<td>0949</td>
+<td>0549; 1711</td>
+<td>NA</td>
+</tr>
+<tr>
+<td>DaesDRAFT_</td>
+<td>2031</td>
+<td>2029</td>
+<td>2028</td>
+<td>2438</td>
+<td>0796</td>
+<td>NA</td>
+<td>1729</td>
+<td>0903</td>
+</tr>
+<tr>
+<td>Dde_</td>
+<td>2265</td>
+<td>1110</td>
+<td>1111</td>
+<td>0526</td>
+<td>0762</td>
+<td>NA</td>
+<td>3775</td>
+<td>0286</td>
+</tr>
+<tr>
+<td>Ddes_</td>
+<td>0454</td>
+<td>2129</td>
+<td>2127</td>
+<td>2275</td>
+<td>1917</td>
+<td>NA</td>
+<td>889</td>
+<td>NA</td>
+</tr>
+<tr>
+<td>DMR_</td>
+<td>39470</td>
+<td>05400</td>
+<td>05410</td>
+<td>03600</td>
+<td>15890</td>
+<td>NA</td>
+<td>39570; 18760</td>
+<td>13970</td>
+</tr>
+<tr>
+<td>DESPIG_</td>
+<td>02241</td>
+<td>02773</td>
+<td>02771</td>
+<td>NA</td>
+<td>02353</td>
+<td>NA</td>
+<td>00991</td>
+<td>NA</td>
+</tr>
+<tr>
+<td>Desal_</td>
+<td>0228</td>
+<td>0230</td>
+<td>0231</td>
+<td>0787</td>
+<td>0984</td>
+<td>NA</td>
+<td>1299</td>
+<td>0241; 2850</td>
+</tr>
+<tr>
+<td>DFW101DRAFT_</td>
+<td>0832</td>
+<td>1162</td>
+<td>1163</td>
+<td>3451</td>
+<td>2958</td>
+<td>NA</td>
+<td>0847</td>
+<td>0729</td>
+</tr>
+<tr>
+<td>DVU</td>
+<td>1295</td>
+<td>0847</td>
+<td>0848</td>
+<td>0402</td>
+<td>2776</td>
+<td>NA</td>
+<td>3276</td>
+<td>NA</td>
+</tr>
+<tr>
+<td>Dbac_</td>
+<td>3196</td>
+<td>3198</td>
+<td>3199</td>
+<td>0279</td>
+<td>2958</td>
+<td>NA</td>
+<td>0275</td>
+<td>2977</td>
+</tr>
+<tr>
+<td>Dalk_</td>
+<td>2445</td>
+<td>1569</td>
+<td>1568</td>
+<td>4301</td>
+<td>4140</td>
+<td>3373</td>
+<td>4380; 2230; 2714</td>
+<td>2374</td>
+</tr>
+<tr>
+<td>HRM2_</td>
+<td>31180</td>
+<td>04510</td>
+<td>04500</td>
+<td>42400</td>
+<td>22050</td>
+<td>NA</td>
+<td>26720; 10680; 01580; 39570</td>
+<td>40690</td>
+</tr>
+<tr>
+<td>Dole_</td>
+<td>1002</td>
+<td>0998</td>
+<td>0999</td>
+<td>2669</td>
+<td>0463</td>
+<td>2820</td>
+<td>1168</td>
+<td>2655</td>
+</tr>
+<tr>
+<td>Dret_</td>
+<td>1968</td>
+<td>1966</td>
+<td>1965</td>
+<td>0244</td>
+<td>1739</td>
+<td>NA</td>
+<td>0240</td>
+<td>0154; 0169</td>
+</tr>
+<tr>
+<td>DthioDRAFT_</td>
+<td>1410</td>
+<td>1407</td>
+<td>1406</td>
+<td>2272</td>
+<td>2675</td>
+<td>NA</td>
+<td>2268</td>
+<td>NA</td>
+</tr>
+<tr>
+<td>DP</td>
+<td>1472</td>
+<td>1105</td>
+<td>1106</td>
+<td>0797</td>
+<td>0997</td>
+<td>NA</td>
+<td>2755; 0775</td>
+<td>1865</td>
+</tr>
+<tr>
+<td>DaAHT2_</td>
+<td>0293</td>
+<td>1471</td>
+<td>1470</td>
+<td>0296</td>
+<td>2041</td>
+<td>NA</td>
+<td>1668</td>
+<td>2532; 2287</td>
+</tr>
+<tr>
+<td>Sfum_</td>
+<td>1046</td>
+<td>1048</td>
+<td>1287</td>
+<td>4042</td>
+<td>4045</td>
+<td>3037</td>
+<td>4046</td>
+<td>2933; 3217</td>
+</tr>
+<tr>
+<td>Dtox_</td>
+<td>3579</td>
+<td>3577</td>
+<td>3576</td>
+<td>0079</td>
+<td>0077</td>
+<td>3931</td>
+<td>0074; 0532; 1221; 1608; 3208</td>
+<td>1637</td>
+</tr>
+<tr>
+<td>Dred_</td>
+<td>0635</td>
+<td>0637</td>
+<td>0638</td>
+<td>3187</td>
+<td>3197</td>
+<td>2985</td>
+<td>3200; 2937; 0466</td>
+<td>2203</td>
+</tr>
+<tr>
+<td>Daud_</td>
+<td>1076</td>
+<td>NA</td>
+<td>1884</td>
+<td>2201</td>
+<td>2190</td>
+<td>0308</td>
+<td>2193; 1963</td>
+<td>1080</td>
+</tr>
+<tr>
+<td>Adeg_</td>
+<td>1712</td>
+<td>1080</td>
+<td>1079</td>
+<td>2094</td>
+<td>0035</td>
+<td>NA</td>
+<td>0032</td>
+<td>1625</td>
+</tr>
+<tr>
+<td>THEYE_</td>
+<td>A1835</td>
+<td>A1832</td>
+<td>A1831</td>
+<td>A1994</td>
+<td>A0003</td>
+<td>NA</td>
+<td>A0789</td>
+<td>NA</td>
+</tr>
+</tbody>
+</table>
+<p>In the data, the columns for each gene are really values, not variables; they should be converted into individual rows. To do this use the <code>gather</code> function from <code>tidyr</code>. Here I specify the name of the new columns <code>gene.identifier</code> which will contain the name of the gene and <code>locus.identifier</code> which will contain the information for that gene. I’m also setting <code>na.rm</code> which will not include genes where it was not found in the organism. After the gather function is applied all of the data frames in the list will have the same columns, which means that they can all be concatenated into one big data frame. To do this I’m using <code>dpylr::bind_rows</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-R" data-lang="R"><span class="n">d</span> <span class="o">&lt;-</span> <span class="nf">lapply</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="nf">function</span><span class="p">(</span><span class="n">n</span><span class="p">){</span> <span class="n">n</span> <span class="o">%&gt;%</span> 
+<span class="nf">gather</span><span class="p">(</span><span class="n">gene.identifier</span><span class="p">,</span> <span class="n">locus.identifier</span><span class="p">,</span> 
+<span class="o">-</span><span class="nf">c</span><span class="p">(</span><span class="n">organism</span><span class="p">,</span> <span class="n">locus</span><span class="p">),</span> <span class="n">na.rm</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)})</span> 
+<span class="n">d</span> <span class="o">&lt;-</span> <span class="nf">bind_rows</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="c1">## Warning in rbind_all(x, .id): Unequal factor levels: coercing to character</span>
+<span class="n">knitr</span><span class="o">::</span><span class="nf">kable</span><span class="p">(</span><span class="n">d[130</span><span class="o">:</span><span class="m">140</span><span class="p">,</span><span class="n">]</span><span class="p">)</span>
+</code></pre></div><table>
+<thead>
+<tr>
+<th>organism</th>
+<th>locus</th>
+<th>gene.identifier</th>
+<th>locus.identifier</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Archaeoglobus fulgidus</td>
+<td>AF</td>
+<td>FdxI</td>
+<td>00427; 1010; 0355; 0923; 2142; 0166; 1700; 0156; 0464</td>
+</tr>
+<tr>
+<td>Archaeoglobus profundus</td>
+<td>Arcpr_</td>
+<td>FdxI</td>
+<td>0142; 0625; 0483; 0712; 1058</td>
+</tr>
+<tr>
+<td>Caldivirga maquilingensis</td>
+<td>Cmaq_</td>
+<td>FdxI</td>
+<td>0549; 1711</td>
+</tr>
+<tr>
+<td>Desulfovibrio aespoeensis</td>
+<td>DaesDRAFT_</td>
+<td>FdxI</td>
+<td>1729</td>
+</tr>
+<tr>
+<td>Desulfovibrio desulfuricans G20</td>
+<td>Dde_</td>
+<td>FdxI</td>
+<td>3775</td>
+</tr>
+<tr>
+<td>Desulfovibrio desulfuricans ATCC 27774</td>
+<td>Ddes_</td>
+<td>FdxI</td>
+<td>889</td>
+</tr>
+<tr>
+<td>Desulfovibrio magneticus RS-1</td>
+<td>DMR_</td>
+<td>FdxI</td>
+<td>39570; 18760</td>
+</tr>
+<tr>
+<td>Desulfovibrio piger</td>
+<td>DESPIG_</td>
+<td>FdxI</td>
+<td>00991</td>
+</tr>
+<tr>
+<td>Desulfovibrio salexigens</td>
+<td>Desal_</td>
+<td>FdxI</td>
+<td>1299</td>
+</tr>
+<tr>
+<td>Desulfovibrio sp. FW1012B</td>
+<td>DFW101DRAFT_</td>
+<td>FdxI</td>
+<td>0847</td>
+</tr>
+<tr>
+<td>Desulfovibrio vulgaris Hildenborough</td>
+<td>DVU</td>
+<td>FdxI</td>
+<td>3276</td>
+</tr>
+</tbody>
+</table>
+<p>The other untidy aspect of the dataset is that there are multiple locus identifiers for some of the genes (presumably cause there are multiple copies in the genome). We next need to split them out into separate observations (rows). The <code>str_split</code> function from <code>stringr</code> will split a string based on a regular expression and return a list of values. I then pass this to the <code>unnest</code> function, which will “flatten” the list into multiple rows as required.</p>
+<div class="highlight"><pre class="chroma"><code class="language-R" data-lang="R"><span class="n">d</span> <span class="o">%&gt;%</span> <span class="nf">mutate</span><span class="p">(</span><span class="n">locus.identifier</span> <span class="o">=</span> 
+<span class="nf">str_split</span><span class="p">(</span><span class="nf">as.character</span><span class="p">(</span><span class="n">locus.identifier</span><span class="p">),</span> <span class="s">&#34;; |\\/&#34;</span><span class="p">))</span> <span class="o">%&gt;%</span> 
+<span class="nf">unnest</span><span class="p">(</span><span class="n">locus.identifier</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">d</span>
+<span class="n">knitr</span><span class="o">::</span><span class="nf">kable</span><span class="p">(</span><span class="n">d[130</span><span class="o">:</span><span class="m">140</span><span class="p">,</span><span class="n">]</span><span class="p">)</span>
+</code></pre></div><table>
+<thead>
+<tr>
+<th>organism</th>
+<th>locus</th>
+<th>gene.identifier</th>
+<th>locus.identifier</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Archaeoglobus fulgidus</td>
+<td>AF</td>
+<td>FdxI</td>
+<td>00427</td>
+</tr>
+<tr>
+<td>Archaeoglobus fulgidus</td>
+<td>AF</td>
+<td>FdxI</td>
+<td>1010</td>
+</tr>
+<tr>
+<td>Archaeoglobus fulgidus</td>
+<td>AF</td>
+<td>FdxI</td>
+<td>0355</td>
+</tr>
+<tr>
+<td>Archaeoglobus fulgidus</td>
+<td>AF</td>
+<td>FdxI</td>
+<td>0923</td>
+</tr>
+<tr>
+<td>Archaeoglobus fulgidus</td>
+<td>AF</td>
+<td>FdxI</td>
+<td>2142</td>
+</tr>
+<tr>
+<td>Archaeoglobus fulgidus</td>
+<td>AF</td>
+<td>FdxI</td>
+<td>0166</td>
+</tr>
+<tr>
+<td>Archaeoglobus fulgidus</td>
+<td>AF</td>
+<td>FdxI</td>
+<td>1700</td>
+</tr>
+<tr>
+<td>Archaeoglobus fulgidus</td>
+<td>AF</td>
+<td>FdxI</td>
+<td>0156</td>
+</tr>
+<tr>
+<td>Archaeoglobus fulgidus</td>
+<td>AF</td>
+<td>FdxI</td>
+<td>0464</td>
+</tr>
+<tr>
+<td>Archaeoglobus profundus</td>
+<td>Arcpr_</td>
+<td>FdxI</td>
+<td>0142</td>
+</tr>
+<tr>
+<td>Archaeoglobus profundus</td>
+<td>Arcpr_</td>
+<td>FdxI</td>
+<td>0625</td>
+</tr>
+</tbody>
+</table>
+<p>Now for the final clean-up. The original data separated the locus prefix and the locus identifier, now I want to combine them back together. To do this I’m going to use a couple of calls to the <code>mutate</code> function, which modifies a column. First, in the previous command I converted the <code>locus.identifier</code> column to characters, however this has the unwanted effect of having decimal places in the strings, which I don’t want. Passing the <code>locus.identifier</code> column to the <code>sub</code> function will remove the unwanted text. The next <code>mutate</code> command combines the <code>locus</code> and <code>locus.identifier</code> columns into one and finally I select which columns I want in the final data frame using the <code>select</code> function.</p>
+<div class="highlight"><pre class="chroma"><code class="language-R" data-lang="R"><span class="n">d</span> <span class="o">%&gt;%</span> <span class="nf">mutate</span><span class="p">(</span><span class="n">locus.identifier</span> <span class="o">=</span> 
+<span class="nf">sub</span><span class="p">(</span><span class="s">&#34;\\.0+&#34;</span><span class="p">,</span><span class="s">&#34;&#34;</span><span class="p">,</span><span class="n">locus.identifier</span><span class="p">,</span> <span class="n">perl</span><span class="o">=</span><span class="bp">T</span><span class="p">))</span> <span class="o">%&gt;%</span> 
+<span class="nf">mutate</span><span class="p">(</span><span class="n">locus</span> <span class="o">=</span> <span class="nf">paste0</span><span class="p">(</span><span class="n">locus</span><span class="p">,</span><span class="n">locus.identifier</span><span class="p">))</span> <span class="o">%&gt;%</span> 
+<span class="nf">select</span><span class="p">(</span><span class="n">organism</span><span class="p">,</span> <span class="n">locus</span><span class="p">,</span> <span class="n">gene.identifier</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">d</span>
+<span class="n">knitr</span><span class="o">::</span><span class="nf">kable</span><span class="p">(</span><span class="n">d[1</span><span class="o">:</span><span class="m">10</span><span class="p">,</span><span class="n">]</span><span class="p">)</span>
+</code></pre></div><table>
+<thead>
+<tr>
+<th>organism</th>
+<th>locus</th>
+<th>gene.identifier</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Archaeoglobus fulgidus</td>
+<td>AF1667</td>
+<td>SAT</td>
+</tr>
+<tr>
+<td>Archaeoglobus profundus</td>
+<td>Arcpr_1264</td>
+<td>SAT</td>
+</tr>
+<tr>
+<td>Caldivirga maquilingensis</td>
+<td>Cmaq_0274</td>
+<td>SAT</td>
+</tr>
+<tr>
+<td>Desulfovibrio aespoeensis</td>
+<td>DaesDRAFT_2031</td>
+<td>SAT</td>
+</tr>
+<tr>
+<td>Desulfovibrio desulfuricans G20</td>
+<td>Dde_2265</td>
+<td>SAT</td>
+</tr>
+<tr>
+<td>Desulfovibrio desulfuricans ATCC 27774</td>
+<td>Ddes_0454</td>
+<td>SAT</td>
+</tr>
+<tr>
+<td>Desulfovibrio magneticus RS-1</td>
+<td>DMR_39470</td>
+<td>SAT</td>
+</tr>
+<tr>
+<td>Desulfovibrio piger</td>
+<td>DESPIG_02241</td>
+<td>SAT</td>
+</tr>
+<tr>
+<td>Desulfovibrio salexigens</td>
+<td>Desal_0228</td>
+<td>SAT</td>
+</tr>
+<tr>
+<td>Desulfovibrio sp. FW1012B</td>
+<td>DFW101DRAFT_0832</td>
+<td>SAT</td>
+</tr>
+</tbody>
+</table>
+
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="ctSkennerton.github.io/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2020 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>

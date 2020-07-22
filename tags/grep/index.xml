@@ -1,0 +1,111 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>grep on Connor Skennerton</title>
+		<link>ctSkennerton.github.io/tags/grep/</link>
+		<description>Recent content in grep on Connor Skennerton</description>
+		<generator>Hugo 0.74.1 -- gohugo.io</generator>
+		<language>en-us</language>
+		<managingEditor>c.skennerton@gmail.com (Connor Skennerton)</managingEditor>
+		<webMaster>c.skennerton@gmail.com (Connor Skennerton)</webMaster>
+		<copyright>Connor Skennerton — All rights reserved.</copyright>
+		<lastBuildDate>Fri, 27 Dec 2013 00:00:00 +0000</lastBuildDate>
+		<atom:link href="ctSkennerton.github.io/tags/grep/index.xml" rel="self" type="application/rss+xml" />
+		<item>
+			<title>Poking around inside grep</title>
+			<link>ctSkennerton.github.io/2013/12/27/poking-around-inside-grep/</link>
+			<pubDate>Fri, 27 Dec 2013 00:00:00 +0000</pubDate>
+			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
+			<guid isPermaLink="true">ctSkennerton.github.io/2013/12/27/poking-around-inside-grep/</guid>
+			<description>&lt;p&gt;Playing around with the grep source code to make it output fasta/fastq records.
+Check out the code &lt;a href=&#34;https://github.com/ctSkennerton/fagrep&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;p&gt;I&amp;rsquo;m quite interested in string searching algorithms as I&amp;rsquo;ve written a
+program, &lt;a href=&#34;http://ctskennerton.github.io/crass&#34;&gt;crass&lt;/a&gt;, which uses a few of them
+to search for CRISPR elements.  Crass is pretty fast, but I want it to be faster,
+specifically there is one point in crass where it searches for exact matches to many
+thousands of patterns.
+In a &lt;a href=&#34;ctSkennerton.github.io/2013/10/28/testing-out-seqans-multipattern-search-implementations/&#34;&gt;previous post&lt;/a&gt;
+I tried out a number of different &amp;lsquo;multi-pattern matchers&amp;rsquo; from &lt;a href=&#34;http://seqan.de&#34;&gt;seqan&lt;/a&gt;
+and was fairly unimpressed with their speed.  In this testing though I did not try
+out the most widely used implementations of multi-pattern matching: GNU grep (using &lt;code&gt;-Ff&lt;/code&gt; options).  I don&amp;rsquo;t have any graphs to show, but it was faster, like &lt;strong&gt;a lot&lt;/strong&gt; faster.&lt;/p&gt;
+&lt;p&gt;It wasn&amp;rsquo;t a fair fight though, as grep works very differently to my test program
+fxtract.  There is a great mailing list &lt;a href=&#34;http://lists.freebsd.org/pipermail/freebsd-current/2010-August/019310.html&#34;&gt;post&lt;/a&gt;
+by one of the original grep authors on ways to speed things up.  It basically
+comes down to I/O (not that the search algorithms aren&amp;rsquo;t highly optimised themselves),
+fast input from a file and not copying the data in memory is the key.  Grep doesn&amp;rsquo;t
+try to parse the file instead it just loads it into a big buffer in memory and searches
+the whole thing, if it finds a match then it figures out the boundaries of the line
+the match is on and prints it out.  This is in contrast to programs like fxtract or
+crass that parse the file first to get the individual portions of each record before
+the search is performed.&lt;/p&gt;
+&lt;p&gt;This got me thinking that I could drastically speed crass up if I switched over
+to the grep way of processing files.  I was a little worried though that determining
+the boundaries of a fasta/fastq record from an anonymous buffer might be a bit tricky
+so before I modified crass I chose to modify grep so that it would output
+fasta or fastq records.&lt;/p&gt;
+&lt;p&gt;The printing functions in grep live in &lt;code&gt;main.c&lt;/code&gt; and start with the function &lt;code&gt;grep&lt;/code&gt;, which
+in-turn calls &lt;code&gt;grepbuf&lt;/code&gt;, which in-turn calls &lt;code&gt;prtext&lt;/code&gt; etc.  The code is surprisingly simple,
+&lt;code&gt;grep&lt;/code&gt; reads from the file and fills a buffer; &lt;code&gt;grepbuf&lt;/code&gt; executes
+one of the search functions on that buffer; if a match is found, a pointer to the first
+character in the line the match was found is returned; and then the printing functions
+take over.  The printing functions get a pointer to the start of the line and the end
+of the line of the match and pass that through to &lt;code&gt;fwrite&lt;/code&gt;.  Everything is handled using
+pointer arithmetic for determining the start and end of where to print.&lt;/p&gt;
+&lt;p&gt;This is great since it&amp;rsquo;s easy to change the pointer to the beginning a end of a record, rather
+than a line.  So that just left the logic for me to write in to find the limits of
+a record.  Below is a code snippet from grep where I&amp;rsquo;ve added in the logic.  Fasta is
+easy to implement as the &lt;code&gt;&amp;gt;&lt;/code&gt; symbol is generally unique.  Fastq on the other hand takes
+a bit more work, since the &lt;code&gt;@&lt;/code&gt; symbol can also be found in the quality string.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span class=&#34;kt&#34;&gt;char&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;match_offset&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;  &lt;span class=&#34;cm&#34;&gt;/*pointer to beginning of matching line*/&lt;/span&gt;
+&lt;span class=&#34;kt&#34;&gt;char&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;endp&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;match_size&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;cm&#34;&gt;/*pointer to end of matching line*/&lt;/span&gt;
+&lt;span class=&#34;cm&#34;&gt;/* Avoid matching the empty line at the end of the buffer. */&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lim&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;break&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fasta_input&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;cm&#34;&gt;/*find the beginning of the record*/&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;while&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;sc&#34;&gt;&amp;#39;&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;--&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;cm&#34;&gt;/*find the end of the record*/&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;while&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;endp&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lim&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;endp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;sc&#34;&gt;&amp;#39;&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;++&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;endp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fastq_input&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;cm&#34;&gt;/*find the beginning of the record*/&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;while&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;beg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+      &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; 
+        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;sc&#34;&gt;&amp;#39;@&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+          &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;beg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+              &lt;span class=&#34;cm&#34;&gt;/*can&amp;#39;t go back any further therefore must be start of record*/&lt;/span&gt;
+              &lt;span class=&#34;k&#34;&gt;break&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;sc&#34;&gt;&amp;#39;\n&amp;#39;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;sc&#34;&gt;&amp;#39;+&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+              &lt;span class=&#34;cm&#34;&gt;/*@ symbol at beginning of line but not the first in the quality */&lt;/span&gt;
+              &lt;span class=&#34;k&#34;&gt;break&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+          &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+      &lt;span class=&#34;o&#34;&gt;--&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;endp&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;newline_count&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;newline_count&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;newline_count&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;++&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;newline_count&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+      &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;cm&#34;&gt;/*find the end of the record*/&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;while&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;endp&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lim&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;endp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;sc&#34;&gt;&amp;#39;\n&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; 
+          &lt;span class=&#34;o&#34;&gt;++&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;endp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    
+        &lt;span class=&#34;o&#34;&gt;++&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;endp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+      &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The fastq format parsing has fairly obvious corner cases since with this
+code there can be no text on the &amp;lsquo;comment&amp;rsquo; line and the whole
+record must be of four lines.  This version of fastq is the recommended formatting from the
+official &lt;a href=&#34;http://nar.oxfordjournals.org/content/38/6/1767.full&#34;&gt;fastq publication&lt;/a&gt;,
+which seems to have been adopted by Illumina and others, so hopefully this simple
+parsing will work most of the time.&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s been a heap of fun looking at the way this very mature piece of software works
+and I&amp;rsquo;ve gotten a usable tool out of it.  Now it&amp;rsquo;s onto the main event of
+ripping out parts of the source code that I want for crass&lt;/p&gt;
+</description>
+		</item>
+	</channel>
+</rss>

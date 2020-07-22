@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>split_by: splitting files on the command line based on content | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="Unix has so many great ways to perform text manipulation but one niche which hasn&rsquo;t been filled is splitting a tabular file into pieces based on the contents of certain columns. There are two commands, split and csplit, that do a similar role. split can split a file into a certain number of bytes or lines; csplit uses a regular expression to determine where to split the file. Often for my purposes neither of these tools is a good fit, and what I really want is an equivalent to the &ldquo;group by&rdquo; clause in SQL databases." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="ctSkennerton.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/ctSkennerton.github.io/style.7c6d960b20273ed88bc63a60591a57e7739fb21f243b77f27c3bc730ef6205c0.css" />
+  <script defer src="/ctSkennerton.github.io/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="ctSkennerton.github.io/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">bio(logist | informatician)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      split_by: splitting files on the command line based on content
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2017-04-09T08:04:41Z">
+      09 Apr 2017
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/ctSkennerton.github.io/tags/bioinformatics">Bioinformatics</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p>Unix has so many great ways to perform text manipulation but one niche which hasn&rsquo;t been filled is splitting a tabular file into pieces based on the contents of certain columns. There are two commands, <code>split</code> and <code>csplit</code>, that do a similar role. <code>split</code> can split a file into a certain number of bytes or lines; <code>csplit</code> uses a regular expression to determine where to split the file. Often for my purposes neither of these tools is a good fit, and what I really want is an equivalent to the &ldquo;group by&rdquo; clause in SQL databases. Group by sorts rows based on certain grouping columns so that you can then perform summaries on that group. <code>split_by</code> splits out a file based on the grouping columns for further processing on each chunk. For example, say I&rsquo;ve got a delimited text file containing a mix of categorical and numerical data like the following:</p>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+<th>E</th>
+<th>F</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AU</td>
+<td>BR</td>
+<td>447</td>
+<td>223.2</td>
+<td>55958</td>
+<td>US</td>
+</tr>
+<tr>
+<td>AU</td>
+<td>FR</td>
+<td>348</td>
+<td>16.8</td>
+<td>58484</td>
+<td>AU</td>
+</tr>
+<tr>
+<td>US</td>
+<td>UK</td>
+<td>12</td>
+<td>53.30</td>
+<td>129</td>
+<td>PG</td>
+</tr>
+</tbody>
+</table>
+<p>I want to split this file into smaller files based on what&rsquo;s in column A, which in this example would make two files for the 2 lines containing &ldquo;AU&rdquo; and for the 1 line containing &ldquo;US&rdquo;. Neither, <code>split</code> or <code>csplit</code> really handle this case and the only option is to use an <code>awk</code>, <code>perl</code> or other script to handle it. (It&rsquo;s also possible to do this in multiple passes with <code>grep</code>) After writing similar awk one-liners to do this sort of thing I decided to make it a bit more reusable:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">#!/usr/bin/awk -f
+BEGIN{
+    split(cols, group_by, &#34;,&#34;)
+    col_sep = &#34;_&#34;
+}
+{
+    if(header == 1 &amp;&amp; NR == 1) {
+        next
+    }
+    out_file = &#34;&#34;
+    for(col in group_by) {
+        if(col == 1) {
+            out_file = group_by[col]
+        } else {
+            out_file = out_file col_sep group_by[col]
+        }
+    }
+    out_file = (prefix out_file suffix)
+    print $0 &gt; out_file
+}
+</code></pre></div><p>That&rsquo;s the whole program! You can run it like the following, taking advantage of the variables defined in the script:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">./split_by -vFS<span class="o">=</span><span class="s2">&#34;\t&#34;</span> -vprefix<span class="o">=</span>test_split_ -vsuffix<span class="o">=</span><span class="s2">&#34;.tsv&#34;</span> -vcols<span class="o">=</span><span class="m">1</span> -vheader<span class="o">=</span><span class="m">1</span> file.tsv
+</code></pre></div><p>This will produce two files on the example above called &ldquo;test_split_AU.tsv&rdquo; and &ldquo;test_split_US.tsv&rdquo;. Only the <em>cols</em> argument is needed to say which of the columns is used to split on. If you want to split on multiple columns pass a comma separated list <code>-vcols=1,2</code>. The output file names are generated based on the contents of those columns so if there are any special characters in there that might mess up a file name, you&rsquo;re in trouble. The <em>prefix</em> and <em>suffix</em> variables default to nothing but are useful for being able to find the files for later by giving them all a common prefix. The nice thing about this is that all of the <code>awk</code> variables are still available so changing between a csv and tsv file can be achieved using the <em>FS</em> parameter on the command line.</p>
+
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="ctSkennerton.github.io/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2020 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>

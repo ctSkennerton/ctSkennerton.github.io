@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Uploading your Theis Literature Review to Wikipedia | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="Every PhD student can contribute to open science by uploading their thesis literature review onto Wikipedia!
+My thesis was entitled &ldquo;Phage-host evolution in a model ecosystem&rdquo;, where I tracked the evolution of phage genome evolution and the evolution of bacterial defense mechanisms using metagenomics. When I was writing my thesis I spent a lot of time writing up the section on CRISPRs, which are a type of bacterial adaptive immune system." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="ctSkennerton.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/ctSkennerton.github.io/style.7c6d960b20273ed88bc63a60591a57e7739fb21f243b77f27c3bc730ef6205c0.css" />
+  <script defer src="/ctSkennerton.github.io/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="ctSkennerton.github.io/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">bio(logist | informatician)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      Uploading your Theis Literature Review to Wikipedia
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2014-11-12T00:00:00Z">
+      12 Nov 2014
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/ctSkennerton.github.io/tags/bioinformatics">bioinformatics</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p>Every PhD student can contribute to open science by uploading their thesis
+literature review onto Wikipedia!</p>
+<!-- more -->
+<p>My thesis was entitled &ldquo;Phage-host evolution in a model ecosystem&rdquo;, where I
+tracked the evolution of phage genome evolution and the evolution of bacterial
+defense mechanisms using metagenomics. When I was writing my thesis I spent a
+lot of time writing up the section on
+<a href="http://en.wikipedia.org/wiki/CRISPR">CRISPRs</a>, which are a type of bacterial
+adaptive immune system. The CRISPR field has exploded in recent times due to its
+applications for genome editing which has also meant that there have been
+numerous great reviews on the ever expanding primary literature. Despite this
+though I found the CRISPR page on wikipedia to be a bit bare (of course now that
+I&rsquo;ve updated it things look better, but check out the edit history for a look at
+what I&rsquo;ve added). Since there was already a saturation of reviews on the subject
+I decided to go through and add in what I had written for my thesis to
+wikipedia. By far the most important <strong>and difficult</strong> part of this is was
+formatting the references right. So I made a simple workflow for getting what I
+wanted out of my thesis and into wikipedia.</p>
+<ol>
+<li>First thing, I wrote my thesis in word and used endnote to format my
+references using the style from nucleic acids research (which is a numbered
+style). If you want to use my method you need to have the exact formatting
+style</li>
+<li>Export the literature review from word as plain text and then removed
+all the parts that aren&rsquo;t needed</li>
+<li>Put back in some formatting for the headers using
+<a href="https://en.wikipedia.org/wiki/Help:Cheatsheet">wikipedia&rsquo;s markup</a></li>
+<li>Split out the bibliography into a separate file</li>
+<li>Then use some very dodgy <a href="http://github.com/ctSkennerton/wikipedia_reference_formatter">perl code</a>
+I wrote to format all of the in text citations into the format that wikipedia
+requires</li>
+</ol>
+<p>This perl code takes the text and looks for numbers, or lists of numbers inside
+parentheses. For example: (1,2,5), (1-7,14), (1). Then looks up what those
+references are in the bibliography, extracting the title of the journal article.
+Then it looks up what the pubmed ID is for that paper using
+<a href="http://www.ncbi.nlm.nih.gov/books/NBK179288/">entrezdirect</a> with the title as
+the search term. After getting the pubmed IDs for all the cited references it
+saves them to a file, so that it can be used later on (without looking up the
+pubmed IDs again) and any errors can be fixed manually. Finally all of those in
+text citations are replaced with the proper wikipedia markup and your ready to
+upload.</p>
+<p>There are so many scientific wikipedia pages that are way too brief for their
+subject matter and I&rsquo;m not just talking about the thousands of stubs for
+bacterial and archaeal species either. My current work is with methane seep
+sediment communities that perform <a href="https://en.wikipedia.org/wiki/Anaerobic_oxidation_of_methane">anaerobic oxidation of
+methane</a> (AOM),
+the wikipedia page contains five paragraphs. Looking at the broader topic of
+<a href="https://en.wikipedia.org/wiki/Methanogenesis">methanogenesis</a> there is still
+only three short paragraphs on the biochemistry. We know so much more than this,
+all that knowledge fills the pages of hundreds of review articles yet when
+someone, anyone types anything into google the first match that comes up is
+wikipedia. We should make it better cause it&rsquo;s ultimately the most visible
+publication on the internet.</p>
+
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="ctSkennerton.github.io/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2020 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>

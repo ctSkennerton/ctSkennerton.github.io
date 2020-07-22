@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Messing around with Phyloxml in ete3 | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="ete3 has support for phyloxml which I use with archaeopteryx tree viewer for a lot of my day-to-day phylogenetics visualisation. My main reason for using phyloxml is one of convenience as I have a script that will easily add in the proper organism name onto the tree and I think that archaeopteryx is a really good basic tree viewer. I wanted to draw a tree from phyloxml in ete using my own style and to have the proper organism name to be rendered." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="ctSkennerton.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/ctSkennerton.github.io/style.7c6d960b20273ed88bc63a60591a57e7739fb21f243b77f27c3bc730ef6205c0.css" />
+  <script defer src="/ctSkennerton.github.io/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="ctSkennerton.github.io/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">bio(logist | informatician)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      Messing around with Phyloxml in ete3
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2016-08-12T22:09:04Z">
+      12 Aug 2016
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/ctSkennerton.github.io/tags/bioinformatics">Bioinformatics</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p><a href="http://etetoolkit.org/">ete3</a> has support for <a href="http://www.phyloxml.org/">phyloxml</a> which I use with <a href="https://sites.google.com/site/cmzmasek/home/software/archaeopteryx">archaeopteryx</a> tree viewer for a lot of my day-to-day phylogenetics visualisation. My main reason for using phyloxml is one of convenience as I have a script that will easily add in the proper organism name onto the tree and I think that archaeopteryx is a really good basic tree viewer. I wanted to draw a tree from phyloxml in ete using <a href="https://connorskennerton.wordpress.com/2016/07/09/drawing-phylogenetic-trees-connor-style/">my own style</a> and to have the proper organism name to be rendered. In my phyloxml file I have this coded in as the scientific name for each leaf (see below for phyloxml snippet), so now all I needed to do was make this the node name when rendering the tree.</p>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;clade&gt;</span> 
+  <span class="nt">&lt;name&gt;</span>IMG_2526164742<span class="nt">&lt;/name&gt;</span> 
+  <span class="nt">&lt;branch_length&gt;</span>0.19955<span class="nt">&lt;/branch_length&gt;</span> 
+  <span class="nt">&lt;taxonomy&gt;</span> 
+    <span class="nt">&lt;scientific_name&gt;</span>Desulfobacterium anilini DSM 4660<span class="nt">&lt;/scientific_name&gt;</span> 
+  <span class="nt">&lt;/taxonomy&gt;</span>
+<span class="nt">&lt;/clade&gt;</span> 
+</code></pre></div><p>Easy, right? Wrong. I found that the interface for phyloxml was not the same as for newick formatted trees and unfortunately the <a href="http://etetoolkit.org/docs/latest/reference/reference_phyloxml.html">documentation for phyloxml in ete3 is a bit lacking</a> as there wasn&rsquo;t a complete listing of methods for each class. After much messing around, looking at the source code of ete3 and examining python objects using the builtin <a href="https://docs.python.org/3/library/functions.html#dir"><code>dir</code></a> function I was able to get what I wanted. turns out that for each node/leaf I needed to access the <code>phyloxml_clade</code> attribute, which has an attribute taxonomy, which implements an iterable interface (I think it&rsquo;s probably a list), which I could then use to access the scientific name and make the name of the leaf for printing. It&rsquo;s a little convoluted but easy when you know how.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">ete3</span> <span class="kn">import</span> <span class="n">Phyloxml</span>
+<span class="n">project</span> <span class="o">=</span> <span class="n">Phyloxml</span><span class="p">()</span>
+
+<span class="c1"># iterate through the trees in the phyloxml file</span>
+<span class="k">for</span> <span class="n">tree</span> <span class="ow">in</span> <span class="n">project</span><span class="o">.</span><span class="n">get_phylogeny</span><span class="p">():</span>
+    <span class="c1"># go through the node in the tree</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">tree</span><span class="p">:</span>
+        <span class="c1"># assign the node name from the data in the phyloxml file</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">phyloxml_clade</span><span class="o">.</span><span class="n">taxonomy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_scientific_name</span><span class="p">()</span>
+
+<span class="n">tree</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="ctSkennerton.github.io/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2020 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>

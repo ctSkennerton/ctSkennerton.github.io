@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Drawing Phylogenetic Trees, Connor Style | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="I do a lot of work in phylogenetics, which means that for just about every paper I&rsquo;ve written I&rsquo;ve had at least one figure that is a phylogenetic tree. Making pretty looking trees for a publication is tedious and my previous workflow involved using ARB for actually drawing the tree and producing an initial file in postscript, and then loading that into Adobe Illustrator to make everything beautiful. The problem with this is that it is not an automated process so any time I need to change the tree I need to redo all of the &lsquo;beautifying&rsquo; manually." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="ctSkennerton.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/ctSkennerton.github.io/style.7c6d960b20273ed88bc63a60591a57e7739fb21f243b77f27c3bc730ef6205c0.css" />
+  <script defer src="/ctSkennerton.github.io/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="ctSkennerton.github.io/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">bio(logist | informatician)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="ctSkennerton.github.io/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      Drawing Phylogenetic Trees, Connor Style
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2016-07-09T00:23:54Z">
+      09 Jul 2016
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/ctSkennerton.github.io/tags/bioinformatics">Bioinformatics</a>
+    <a href="/ctSkennerton.github.io/tags/phylogenetics">phylogenetics</a>
+    <a href="/ctSkennerton.github.io/tags/python">python</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p>I do a lot of work in phylogenetics, which means that for just about every paper I&rsquo;ve written I&rsquo;ve had at least one figure that is a phylogenetic tree. Making pretty looking trees for a publication is tedious and my previous workflow involved using <a href="http://arb-home.de">ARB</a> for actually drawing the tree and producing an initial file in postscript, and then loading that into Adobe Illustrator to make everything beautiful. The problem with this is that it is not an automated process so any time I need to change the tree I need to redo all of the &lsquo;beautifying&rsquo; manually. Recently I coded up an alternative approach using the excellent <a href="http://etetoolkit.org/">ete package</a> for python to draw trees exactly how I want. One of the nicest things about drawing trees in ARB is that you can collapse clades into wedges. Unfortunately, while ete does allow you to collapse clades it doesn&rsquo;t provide a way to show the collapsed node as a wedge, the only options are a square or a circle. But there is the option to create a <a href="http://etetoolkit.org/docs/latest/tutorial/tutorial_drawing.html#creating-your-custom-interactive-item-faces">custom face</a> which is exactly what I did. Below is a function to create ARB-style wedges:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"> <span class="k">def</span> <span class="nf">polygon_name_face</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width_percent</span><span class="p">):</span> 
+    <span class="s2">&#34;&#34;&#34;create a wedge shaped face in the style of ARB 
+</span><span class="s2">    
+</span><span class="s2">        Args: 
+</span><span class="s2">            width (int): size in pixels for the width of the wedge 
+</span><span class="s2">            height (int): size in pixels for the height of the wedge 
+</span><span class="s2">            width_percent (float): change the angle of the point of the wedge. This must be a number between 0 and 1
+</span><span class="s2">        
+</span><span class="s2">        Returns: QGraphicsRectItem: The Qt graphics item of the polygon 
+</span><span class="s2">    &#34;&#34;&#34;</span> 
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="c1"># top left point </span>
+               <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="c1"># top right point </span>
+               <span class="p">(</span><span class="n">width</span> <span class="o">*</span> <span class="n">width_percent</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="c1"># bottom right point </span>
+               <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="c1"># bottom left point </span>
+               <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="c1"># back to the beginning </span>
+             <span class="p">]</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">QPolygonF</span><span class="p">()</span> 
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span> 
+        <span class="n">shape</span> <span class="o">&lt;&lt;</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QPointF</span><span class="p">(</span><span class="o">*</span><span class="n">i</span><span class="p">)</span> 
+        <span class="c1">## Creates a main master Item that will contain all other elements </span>
+        <span class="c1">## Items can be standard QGraphicsItem </span>
+        <span class="n">masterItem</span> <span class="o">=</span> <span class="n">QGraphicsRectItem</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span> 
+        <span class="c1"># Keep a link within the item to access node info </span>
+        <span class="n">masterItem</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="n">node</span> 
+        <span class="c1"># I dont want a border around the masterItem </span>
+        <span class="n">masterItem</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">QPen</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">NoPen</span><span class="p">))</span> 
+        <span class="n">polygon</span> <span class="o">=</span> <span class="n">QGraphicsPolygonItem</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">masterItem</span><span class="p">)</span> 
+        <span class="c1"># Make the wedge grey in color </span>
+        <span class="n">polygon</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="n">QBrush</span><span class="p">(</span><span class="n">QColor</span><span class="p">(</span> <span class="s1">&#39;#D3D3D3&#39;</span><span class="p">)))</span> 
+        <span class="c1"># Print the name of the node </span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">QGraphicsSimpleTextItem</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> 
+        <span class="n">text</span><span class="o">.</span><span class="n">setParentItem</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span> 
+        <span class="c1"># Center text according to masterItem size </span>
+        <span class="n">tw</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">boundingRect</span><span class="p">()</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> 
+        <span class="n">th</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">boundingRect</span><span class="p">()</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> 
+        <span class="n">center</span> <span class="o">=</span> <span class="n">masterItem</span><span class="o">.</span><span class="n">boundingRect</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span> 
+        <span class="n">text</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="n">center</span><span class="o">.</span><span class="n">x</span><span class="p">()</span> <span class="o">+</span> <span class="n">tw</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">center</span><span class="o">.</span><span class="n">y</span><span class="p">()</span> <span class="o">-</span> <span class="n">th</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> 
+        <span class="n">polygon</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">masterItem</span><span class="o">.</span><span class="n">boundingRect</span><span class="p">()</span><span class="o">.</span><span class="n">y</span><span class="p">()</span><span class="o">/</span><span class="mf">1.5</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="n">masterItem</span>
+</code></pre></div><p>And then to actually use it in a script, set up the tree style. I like to mark internal nodes with bootstrap support &gt;70% with a grey circle and &gt;90% with a black circle as well. Below is the function that I use to add in the groups.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"> <span class="k">def</span> <span class="nf">master_ly</span><span class="p">(</span><span class="n">node</span><span class="p">):</span> 
+    <span class="n">style</span> <span class="o">=</span> <span class="n">NodeStyle</span><span class="p">()</span> 
+    <span class="n">style</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;circle&#39;</span> 
+    <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">support</span> <span class="o">&gt;=</span> <span class="o">.</span><span class="mi">90</span><span class="p">:</span> 
+        <span class="n">style</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span> 
+        <span class="n">style</span><span class="p">[</span><span class="s1">&#39;fgcolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span> 
+    <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">support</span> <span class="o">&gt;=</span> <span class="o">.</span><span class="mi">70</span><span class="p">:</span> 
+        <span class="n">style</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span> 
+        <span class="n">style</span><span class="p">[</span><span class="s1">&#39;fgcolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;grey&#39;</span> 
+    <span class="k">else</span><span class="p">:</span> 
+        <span class="n">style</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> 
+    
+    <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">grouping_nodes</span><span class="p">:</span> 
+        <span class="n">style</span><span class="p">[</span><span class="s1">&#39;draw_descendants&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span> 
+        <span class="c1"># Create an ItemFAce. First argument must be the pointer to </span>
+        <span class="c1"># the constructor function that returns a QGraphicsItem. It </span>
+        <span class="c1"># will be used to draw the Face. Next arguments are arbitrary, </span>
+        <span class="c1"># and they will be forwarded to the constructor Face function. </span>
+        <span class="c1"># in this case we pass through the width, height, and width_percent for </span>
+        <span class="c1"># the wedge. </span>
+        <span class="n">F</span> <span class="o">=</span> <span class="n">faces</span><span class="o">.</span><span class="n">DynamicItemFace</span><span class="p">(</span><span class="n">polygon_name_face</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span> 
+        <span class="n">faces</span><span class="o">.</span><span class="n">add_face_to_node</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> 
+        <span class="n">node</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+</code></pre></div><p>Finally putting it all together</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">ete3</span> <span class="kn">import</span> <span class="n">Tree</span><span class="p">,</span> <span class="n">faces</span><span class="p">,</span> <span class="n">NodeStyle</span><span class="p">,</span> <span class="n">TreeStyle</span> 
+<span class="c1"># We will need to create Qt4 items for making our custom polygon </span>
+<span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtCore</span> <span class="kn">from</span> <span class="nn">PyQt4.QtGui</span> 
+<span class="kn">import</span> <span class="nn">QGraphicsRectItem</span><span class="o">,</span> <span class="nn">QGraphicsSimpleTextItem</span><span class="o">,</span> \ 
+       <span class="n">QGraphicsPolygonItem</span><span class="p">,</span> <span class="n">QPolygonF</span><span class="p">,</span> <span class="n">QColor</span><span class="p">,</span> <span class="n">QPen</span><span class="p">,</span> <span class="n">QBrush</span> 
+<span class="c1"># Populate this list with the root node of a clade </span>
+<span class="c1"># that should be turned into a wedge </span>
+<span class="n">grouping_nodes</span> <span class="o">=</span> <span class="p">[]</span> 
+<span class="c1"># load in your tree from somewhere, this is for fake data </span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">()</span> <span class="n">t</span><span class="o">.</span><span class="n">populate</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span> <span class="n">ancestor</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_common_ancestor</span><span class="p">(</span><span class="s2">&#34;aaaaaaaaa&#34;</span><span class="p">,</span> <span class="s2">&#34;aaaaaaaaac&#34;</span><span class="p">)</span> 
+<span class="n">grouping_nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ancestor</span><span class="p">)</span> 
+<span class="n">ts</span> <span class="o">=</span> <span class="n">TreeStyle</span><span class="p">()</span> 
+<span class="n">ts</span><span class="o">.</span><span class="n">layout_fn</span> <span class="o">=</span> <span class="n">master_ly</span> 
+<span class="c1"># order the subtrees in ascending order </span>
+<span class="n">t</span><span class="o">.</span><span class="n">ladderize</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> 
+<span class="n">t</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">tree_style</span><span class="o">=</span><span class="n">ts</span><span class="p">)</span>
+</code></pre></div><p>There are improvements to be made with the way I&rsquo;m drawing the wedge. First, there isn&rsquo;t any border between the top of the wedge and the next leaf — you can see the name &ldquo;aaaaaaaaad&rdquo; is a bit cramped. Second, ARB has a nice feature which changes the wedge dimensions based on the number of grouped leaves which I haven&rsquo;t yet implemented.</p>
+<p><img src="/media/2016/07/orig.png" alt="the original layout">
+<img src="/media/2016/07/connor_style.png" alt="connor style"></p>
+
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="ctSkennerton.github.io/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2020 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>
