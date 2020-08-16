@@ -1,7 +1,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
 		<title>phylogenetics on Connor Skennerton</title>
-		<link>ctSkennerton.github.io/tags/phylogenetics/</link>
+		<link>/tags/phylogenetics/</link>
 		<description>Recent content in phylogenetics on Connor Skennerton</description>
 		<generator>Hugo 0.74.1 -- gohugo.io</generator>
 		<language>en-us</language>
@@ -9,13 +9,13 @@
 		<webMaster>c.skennerton@gmail.com (Connor Skennerton)</webMaster>
 		<copyright>Connor Skennerton — All rights reserved.</copyright>
 		<lastBuildDate>Sat, 09 Jul 2016 00:23:54 +0000</lastBuildDate>
-		<atom:link href="ctSkennerton.github.io/tags/phylogenetics/index.xml" rel="self" type="application/rss+xml" />
+		<atom:link href="/tags/phylogenetics/index.xml" rel="self" type="application/rss+xml" />
 		<item>
 			<title>Drawing Phylogenetic Trees, Connor Style</title>
-			<link>ctSkennerton.github.io/2016/07/09/drawing-phylogenetic-trees-connor-style/</link>
+			<link>/2016/07/09/drawing-phylogenetic-trees-connor-style/</link>
 			<pubDate>Sat, 09 Jul 2016 00:23:54 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2016/07/09/drawing-phylogenetic-trees-connor-style/</guid>
+			<guid isPermaLink="true">/2016/07/09/drawing-phylogenetic-trees-connor-style/</guid>
 			<description>&lt;p&gt;I do a lot of work in phylogenetics, which means that for just about every paper I&amp;rsquo;ve written I&amp;rsquo;ve had at least one figure that is a phylogenetic tree. Making pretty looking trees for a publication is tedious and my previous workflow involved using &lt;a href=&#34;http://arb-home.de&#34;&gt;ARB&lt;/a&gt; for actually drawing the tree and producing an initial file in postscript, and then loading that into Adobe Illustrator to make everything beautiful. The problem with this is that it is not an automated process so any time I need to change the tree I need to redo all of the &amp;lsquo;beautifying&amp;rsquo; manually. Recently I coded up an alternative approach using the excellent &lt;a href=&#34;http://etetoolkit.org/&#34;&gt;ete package&lt;/a&gt; for python to draw trees exactly how I want. One of the nicest things about drawing trees in ARB is that you can collapse clades into wedges. Unfortunately, while ete does allow you to collapse clades it doesn&amp;rsquo;t provide a way to show the collapsed node as a wedge, the only options are a square or a circle. But there is the option to create a &lt;a href=&#34;http://etetoolkit.org/docs/latest/tutorial/tutorial_drawing.html#creating-your-custom-interactive-item-faces&#34;&gt;custom face&lt;/a&gt; which is exactly what I did. Below is a function to create ARB-style wedges:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt; &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;polygon_name_face&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;node&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;width&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;height&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;width_percent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; 
     &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;create a wedge shaped face in the style of ARB 
@@ -98,8 +98,8 @@
 &lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ladderize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; 
 &lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;show&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tree_style&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ts&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;There are improvements to be made with the way I&amp;rsquo;m drawing the wedge. First, there isn&amp;rsquo;t any border between the top of the wedge and the next leaf — you can see the name &amp;ldquo;aaaaaaaaad&amp;rdquo; is a bit cramped. Second, ARB has a nice feature which changes the wedge dimensions based on the number of grouped leaves which I haven&amp;rsquo;t yet implemented.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;ctSkennerton.github.io/media/2016/07/orig.png&#34; alt=&#34;the original layout&#34;&gt;
-&lt;img src=&#34;ctSkennerton.github.io/media/2016/07/connor_style.png&#34; alt=&#34;connor style&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/media/2016/07/orig.png&#34; alt=&#34;the original layout&#34;&gt;
+&lt;img src=&#34;/media/2016/07/connor_style.png&#34; alt=&#34;connor style&#34;&gt;&lt;/p&gt;
 </description>
 		</item>
 	</channel>

@@ -1,7 +1,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
 		<title>metagenomics on Connor Skennerton</title>
-		<link>ctSkennerton.github.io/tags/metagenomics/</link>
+		<link>/tags/metagenomics/</link>
 		<description>Recent content in metagenomics on Connor Skennerton</description>
 		<generator>Hugo 0.74.1 -- gohugo.io</generator>
 		<language>en-us</language>
@@ -9,13 +9,13 @@
 		<webMaster>c.skennerton@gmail.com (Connor Skennerton)</webMaster>
 		<copyright>Connor Skennerton — All rights reserved.</copyright>
 		<lastBuildDate>Wed, 11 Dec 2013 00:00:00 +0000</lastBuildDate>
-		<atom:link href="ctSkennerton.github.io/tags/metagenomics/index.xml" rel="self" type="application/rss+xml" />
+		<atom:link href="/tags/metagenomics/index.xml" rel="self" type="application/rss+xml" />
 		<item>
 			<title>Genome Scaffolders Suck</title>
-			<link>ctSkennerton.github.io/2013/12/11/genome-scaffolders-suck/</link>
+			<link>/2013/12/11/genome-scaffolders-suck/</link>
 			<pubDate>Wed, 11 Dec 2013 00:00:00 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2013/12/11/genome-scaffolders-suck/</guid>
+			<guid isPermaLink="true">/2013/12/11/genome-scaffolders-suck/</guid>
 			<description>&lt;p&gt;Experiences using a variety of contig scaffolding tools. It was not a good experience.&lt;/p&gt;
 &lt;!-- more --&gt;
 &lt;p&gt;Recently in our lab we&amp;rsquo;ve been getting some Illumina mate-pair data to

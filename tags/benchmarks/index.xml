@@ -1,7 +1,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
 		<title>benchmarks on Connor Skennerton</title>
-		<link>ctSkennerton.github.io/tags/benchmarks/</link>
+		<link>/tags/benchmarks/</link>
 		<description>Recent content in benchmarks on Connor Skennerton</description>
 		<generator>Hugo 0.74.1 -- gohugo.io</generator>
 		<language>en-us</language>
@@ -9,13 +9,13 @@
 		<webMaster>c.skennerton@gmail.com (Connor Skennerton)</webMaster>
 		<copyright>Connor Skennerton — All rights reserved.</copyright>
 		<lastBuildDate>Mon, 28 Oct 2013 00:00:00 +0000</lastBuildDate>
-		<atom:link href="ctSkennerton.github.io/tags/benchmarks/index.xml" rel="self" type="application/rss+xml" />
+		<atom:link href="/tags/benchmarks/index.xml" rel="self" type="application/rss+xml" />
 		<item>
 			<title>Testing out Seqan&#39;s Multipattern Search Implementations</title>
-			<link>ctSkennerton.github.io/2013/10/28/testing-out-seqans-multipattern-search-implementations/</link>
+			<link>/2013/10/28/testing-out-seqans-multipattern-search-implementations/</link>
 			<pubDate>Mon, 28 Oct 2013 00:00:00 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2013/10/28/testing-out-seqans-multipattern-search-implementations/</guid>
+			<guid isPermaLink="true">/2013/10/28/testing-out-seqans-multipattern-search-implementations/</guid>
 			<description>&lt;p&gt;I recently discovered &lt;a href=&#34;http://seqan.de&#34;&gt;Seqan&lt;/a&gt;, a header-only C++ library for
 bioinformatics.  I&amp;rsquo;ve been playing around with the toolkit to make some
 small programs just to see whether I want to use it in a
@@ -61,7 +61,7 @@ implementation fails silently when given an empty string as one of the
 patterns!&lt;/strong&gt; I&amp;rsquo;ve submitted a &lt;a href=&#34;http://trac.seqan.de/ticket/1117&#34;&gt;bug report&lt;/a&gt;
 with the seqan authors.&lt;/p&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;ctSkennerton.github.io/media/seqan_multipattern_search_speed_benchmark.png&#34;
+    &lt;img src=&#34;/media/seqan_multipattern_search_speed_benchmark.png&#34;
          alt=&#34;Seqan speed test summary&#34;/&gt; &lt;figcaption&gt;
             &lt;p&gt;Seqan speed test summary&lt;/p&gt;
         &lt;/figcaption&gt;
@@ -90,7 +90,7 @@ and SetHorspool algorithms, which used 20Gb+ of memory under the worst
 case.  The multiBfam algorithm was somewhere in the middle (~7Gb under
 the worst case scenario).&lt;/p&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;ctSkennerton.github.io/media/seqan_multipattern_search_memory_benchmark.png&#34;
+    &lt;img src=&#34;/media/seqan_multipattern_search_memory_benchmark.png&#34;
          alt=&#34;Seqan speed test summary&#34;/&gt; &lt;figcaption&gt;
             &lt;p&gt;Seqan speed test summary&lt;/p&gt;
         &lt;/figcaption&gt;

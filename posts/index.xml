@@ -1,7 +1,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
 		<title>Posts on Connor Skennerton</title>
-		<link>ctSkennerton.github.io/posts/</link>
+		<link>/posts/</link>
 		<description>Recent content in Posts on Connor Skennerton</description>
 		<generator>Hugo 0.74.1 -- gohugo.io</generator>
 		<language>en-us</language>
@@ -9,13 +9,13 @@
 		<webMaster>c.skennerton@gmail.com (Connor Skennerton)</webMaster>
 		<copyright>Connor Skennerton — All rights reserved.</copyright>
 		<lastBuildDate>Tue, 01 Oct 2019 17:26:23 +0000</lastBuildDate>
-		<atom:link href="ctSkennerton.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+		<atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
 		<item>
 			<title>An update on Bioawk</title>
-			<link>ctSkennerton.github.io/2019/10/01/an-update-on-bioawk/</link>
+			<link>/2019/10/01/an-update-on-bioawk/</link>
 			<pubDate>Tue, 01 Oct 2019 17:26:23 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2019/10/01/an-update-on-bioawk/</guid>
+			<guid isPermaLink="true">/2019/10/01/an-update-on-bioawk/</guid>
 			<description>&lt;p&gt;&lt;a href=&#34;https://github.com/lh3/bioawk&#34;&gt;Bioawk&lt;/a&gt; is a great project started by Heng Li some years ago. The aim was to take the &lt;a href=&#34;https://github.com/onetrueawk/awk&#34;&gt;awk source code&lt;/a&gt; and modify it slightly for use with common biological formats and adding in some new functions. Heng&amp;rsquo;s original doesn&amp;rsquo;t accept too many pull requests so to add in some features, I maintain &lt;a href=&#34;https://github.com/ctSkennerton/bioawk&#34;&gt;my own fork&lt;/a&gt; that has a few improvements.&lt;/p&gt;
 &lt;p&gt;Long ago I added in a translate function and recently I added in a function that will take the attribute string from a GFF file and turn it into an awk array. It was possible to split the GFF attribute string in awk itself as the following awk code demonstrates&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;function gffattr(attr, array){
@@ -38,10 +38,10 @@
 		</item>
 		<item>
 			<title>Getting data from NCBI assembly using the accession number only</title>
-			<link>ctSkennerton.github.io/2018/04/10/getting-data-from-ncbi-assembly-using-the-accession-number-only/</link>
+			<link>/2018/04/10/getting-data-from-ncbi-assembly-using-the-accession-number-only/</link>
 			<pubDate>Tue, 10 Apr 2018 23:18:11 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2018/04/10/getting-data-from-ncbi-assembly-using-the-accession-number-only/</guid>
+			<guid isPermaLink="true">/2018/04/10/getting-data-from-ncbi-assembly-using-the-accession-number-only/</guid>
 			<description>&lt;p&gt;&lt;a href=&#34;https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4702866/&#34;&gt;NCBI&amp;rsquo;s assembly database&lt;/a&gt; is a great one-stop-shop for genomic data and annotations but it&amp;rsquo;s actually kind of difficult to download data if you only know the accession number of an assembly. The documentation says that the assembly database is integrated with &lt;a href=&#34;https://www.ncbi.nlm.nih.gov/books/NBK179288/&#34;&gt;entrez-direct&lt;/a&gt;, a great set of command line utilities for accessing NCBI data from the command line. Most of the databases have an option to download data based on the ID, so I thought that something like the following would work&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;efetch -id GCA_000398025.1 -db assembly -format fasta 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Alas it does not, however the directory structure for the assembly FTP site nicely mirrors the accession numbers so for the example above, the path looks something like this: ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/398/025/ Below is a little awk script that I wrote to generate the FTP path and for input into wget. The input for this script is a file containing the accession in the first column and optionally a second column containing the assembly name. The full FTP path contains both of these but we can get around not having the assembly name by using wildcards. Nope, you need both the accession and the assembly name for this snippet to work. But I wrote a more expansive &lt;a href=&#34;https://github.com/ctSkennerton/scriptShed/blob/master/download_ncbi_assembly.py&#34;&gt;script in python that do it with just the accession number&lt;/a&gt;, you should probably use it instead.&lt;/p&gt;
@@ -63,34 +63,34 @@
 		</item>
 		<item>
 			<title>Creating huge metabolic overviews for comparative genomics</title>
-			<link>ctSkennerton.github.io/2017/12/15/creating-huge-metabolic-overviews-for-comparative-genomics/</link>
+			<link>/2017/12/15/creating-huge-metabolic-overviews-for-comparative-genomics/</link>
 			<pubDate>Fri, 15 Dec 2017 19:38:46 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2017/12/15/creating-huge-metabolic-overviews-for-comparative-genomics/</guid>
+			<guid isPermaLink="true">/2017/12/15/creating-huge-metabolic-overviews-for-comparative-genomics/</guid>
 			<description>&lt;p&gt;I love looking at KEGG maps and using them to understand an organisms metabolism but they have their limitations. For starters, you&amp;rsquo;re obviously stuck with how they are drawn, which in most cases includes many variations on a particular pathway. Secondly, the tools for mapping on your own genes to a pathway are limited to one organism at a time. What I really wanted was a way of quickly comparing 10s of genomes across a common set of pathways, in this case amino acid synthesis pathways. Failing to find a suitable way to map on many genomes to KEGGs pathway images, I decided to roll my own. I mixed up manually drawing the pathways and then using code to color in the presence/absence of the reaction in each organism. My solution starts by creating a template svg image in Illustrator. This is the laborious part as I went through and redrew the amino acid pathways using information from both KEGG and MetaCyc. For each enzyme I positioned a grid of boxes, where each box represents an individual genome, that I would eventually color in based on the presence/absence of that reaction in that organism.&lt;/p&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;ctSkennerton.github.io/media/2017/12/template-pathway-part.png&#34;
+    &lt;img src=&#34;/media/2017/12/template-pathway-part.png&#34;
          alt=&#34;The TCA cycle and parts of the amino acid synthesis pathways. Each reaction is labelled with the EC number and contains a grid of 100 boxes.&#34;/&gt; &lt;figcaption&gt;
             &lt;p&gt;The TCA cycle and parts of the amino acid synthesis pathways. Each reaction is labelled with the EC number and contains a grid of 100 boxes.&lt;/p&gt;
         &lt;/figcaption&gt;
 &lt;/figure&gt;
 &lt;p&gt;Now the trick is to group the parts of the enzyme together and give that group a name in Illustrator. First the grid of 100 boxes was grouped first per row and then I grouped those 10 rows together (this is important and I&amp;rsquo;ll explain why below). And then the boxes, the arrow and the text label all got grouped together. Next name both the larger group and the boxes in Illustrator. You can do this easily by double clicking the group to enter &amp;ldquo;isolation mode&amp;rdquo;, where everything that isn&amp;rsquo;t in the group gets faded, and then changing the name in the layers panel of Illustrator.&lt;/p&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;ctSkennerton.github.io/media/2017/12/enzyme-group-hilight.png&#34;
+    &lt;img src=&#34;/media/2017/12/enzyme-group-hilight.png&#34;
          alt=&#34;When in isolation mode, the layers panel gives easy access to changing the name of the group. In this case I&amp;amp;rsquo;m calling the group after the EC number.&#34;/&gt; &lt;figcaption&gt;
             &lt;p&gt;When in isolation mode, the layers panel gives easy access to changing the name of the group. In this case I&amp;rsquo;m calling the group after the EC number.&lt;/p&gt;
         &lt;/figcaption&gt;
 &lt;/figure&gt;
 &lt;p&gt;Now comes the critical part in naming - the group containing only the 100 boxes must be start with &amp;ldquo;box-&amp;rdquo; and then what follows will be the identifier that gets used for coloring the boxes.&lt;/p&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;ctSkennerton.github.io/media/2017/12/box-hilight.png&#34;
+    &lt;img src=&#34;/media/2017/12/box-hilight.png&#34;
          alt=&#34;each enzyme has a sub-group containing the matrix of 100 boxes. This group must start with &amp;amp;lsquo;box-&amp;amp;rsquo; and then whatever follows will be used to lookup that reaction for each organism.&#34;/&gt; &lt;figcaption&gt;
             &lt;p&gt;each enzyme has a sub-group containing the matrix of 100 boxes. This group must start with &amp;lsquo;box-&amp;rsquo; and then whatever follows will be used to lookup that reaction for each organism.&lt;/p&gt;
         &lt;/figcaption&gt;
 &lt;/figure&gt;
 &lt;p&gt;In the case above I&amp;rsquo;m using the EC number again as my identifier. It is whatever is written after the &amp;ldquo;box-&amp;rdquo; in the name of the group that is important. This means that you could use any kind of label in the figure, for simplicity I&amp;rsquo;ve simply kept both the visual label of the enzyme and the name of the group to both use the EC number. Now, the reason why this is important is that we are going to save our figure as an svg file. Svg is an xml based file format, which means that it is simply text and thus is easy to modify using some scripting. Lets have a look at how each enzyme gets encoded in svg:&lt;/p&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;ctSkennerton.github.io/media/2017/12/screen-shot-2017-12-14-at-2-43-24-pm.png&#34;
+    &lt;img src=&#34;/media/2017/12/screen-shot-2017-12-14-at-2-43-24-pm.png&#34;
          alt=&#34;svg of part of one enzyme. the tag in svg is a group. You can see that the names for the whole enzyme and for the group of 100 boxes are retained from Illustrator&#34;/&gt; &lt;figcaption&gt;
             &lt;p&gt;svg of part of one enzyme. the tag in svg is a group. You can see that the names for the whole enzyme and for the group of 100 boxes are retained from Illustrator&lt;/p&gt;
         &lt;/figcaption&gt;
@@ -102,10 +102,10 @@
 		</item>
 		<item>
 			<title>Formatting scientific names in R</title>
-			<link>ctSkennerton.github.io/2017/07/22/formatting-scientific-names-in-r/</link>
+			<link>/2017/07/22/formatting-scientific-names-in-r/</link>
 			<pubDate>Sat, 22 Jul 2017 17:27:02 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2017/07/22/formatting-scientific-names-in-r/</guid>
+			<guid isPermaLink="true">/2017/07/22/formatting-scientific-names-in-r/</guid>
 			<description>&lt;p&gt;Here is a function that will take a character string in R and return an expression for fancy formatting in plots that properly italicize scientific names. The syntax for doing this is truly quite horrible, but this is how R does it.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-R&#34; data-lang=&#34;R&#34;&gt;&lt;span class=&#34;n&#34;&gt;scientific_name_formatter&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;raw_name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; 
     &lt;span class=&#34;c1&#34;&gt;# strsplit returns a list but we are passing in only &lt;/span&gt;
@@ -135,10 +135,10 @@
 		</item>
 		<item>
 			<title>split_by: splitting files on the command line based on content</title>
-			<link>ctSkennerton.github.io/2017/04/09/split_by-splitting-files-on-the-command-line-based-on-content/</link>
+			<link>/2017/04/09/split_by-splitting-files-on-the-command-line-based-on-content/</link>
 			<pubDate>Sun, 09 Apr 2017 08:04:41 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2017/04/09/split_by-splitting-files-on-the-command-line-based-on-content/</guid>
+			<guid isPermaLink="true">/2017/04/09/split_by-splitting-files-on-the-command-line-based-on-content/</guid>
 			<description>&lt;p&gt;Unix has so many great ways to perform text manipulation but one niche which hasn&amp;rsquo;t been filled is splitting a tabular file into pieces based on the contents of certain columns. There are two commands, &lt;code&gt;split&lt;/code&gt; and &lt;code&gt;csplit&lt;/code&gt;, that do a similar role. &lt;code&gt;split&lt;/code&gt; can split a file into a certain number of bytes or lines; &lt;code&gt;csplit&lt;/code&gt; uses a regular expression to determine where to split the file. Often for my purposes neither of these tools is a good fit, and what I really want is an equivalent to the &amp;ldquo;group by&amp;rdquo; clause in SQL databases. Group by sorts rows based on certain grouping columns so that you can then perform summaries on that group. &lt;code&gt;split_by&lt;/code&gt; splits out a file based on the grouping columns for further processing on each chunk. For example, say I&amp;rsquo;ve got a delimited text file containing a mix of categorical and numerical data like the following:&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
@@ -206,10 +206,10 @@ BEGIN{
 		</item>
 		<item>
 			<title>Downloading NCBI genomes from a given taxonomy</title>
-			<link>ctSkennerton.github.io/2016/11/20/downloading-ncbi-genomes-from-a-given-taxonomy/</link>
+			<link>/2016/11/20/downloading-ncbi-genomes-from-a-given-taxonomy/</link>
 			<pubDate>Sun, 20 Nov 2016 05:18:43 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2016/11/20/downloading-ncbi-genomes-from-a-given-taxonomy/</guid>
+			<guid isPermaLink="true">/2016/11/20/downloading-ncbi-genomes-from-a-given-taxonomy/</guid>
 			<description>&lt;p&gt;The &lt;a href=&#34;https://www.ncbi.nlm.nih.gov/books/NBK179288/&#34;&gt;Entrez Direct&lt;/a&gt; toolkit is great for programmatic access to all of NCBI&amp;rsquo;s resources. This little snippet below finds all of the refseq representative genomes for a given NCBI taxonomy ID, makes a little summary of the genomes downloaded and uses &lt;code&gt;wget&lt;/code&gt; to download the genbank files from the Assembly FTP. Change the inital query in the first call to &lt;code&gt;esearch&lt;/code&gt; to change what genomes are downloaded.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;esearch -db assembly -query &lt;span class=&#34;s2&#34;&gt;&amp;#34;txid28890[Organism:exp] AND representative [PROP]&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;
  efetch -format docsum &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;
@@ -225,11 +225,11 @@ BEGIN{
 		</item>
 		<item>
 			<title>Python ete3: formatting organism names the way I want</title>
-			<link>ctSkennerton.github.io/2016/11/17/python-ete3-formatting-organism-names-the-way-i-want/</link>
+			<link>/2016/11/17/python-ete3-formatting-organism-names-the-way-i-want/</link>
 			<pubDate>Thu, 17 Nov 2016 00:58:40 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2016/11/17/python-ete3-formatting-organism-names-the-way-i-want/</guid>
-			<description>&lt;p&gt;I feel like I&amp;rsquo;m on a life-long quest to make all of my phylogenetic tree figures completely programmatically. The best tool I&amp;rsquo;ve found for making them is the &lt;a href=&#34;http://etetoolkit.org&#34;&gt;ete library&lt;/a&gt; for the python programing language. I&amp;rsquo;ve already figured out how to get &lt;a href=&#34;ctSkennerton.github.io/2016/07/09/drawing-phylogenetic-trees-connor-style/&#34;&gt;trees drawn in the style that I like&lt;/a&gt; but there was still one thing left to do: making organism names italicize correctly. I work with microorganisms where the convention is for the genus and species names to be italicized but the strain name to be in regular font. For example: &lt;em&gt;Methanoregula formicica&lt;/em&gt; SMSP, DSM 22288. There are exceptions to this as well; if an organism is not in pure culture then the name &lt;em&gt;Candidatus&lt;/em&gt; is prepended and any genus and species names remain in regular format. Unfortunately, ete doesn&amp;rsquo;t have an interface for doing this kind of name formatting, you can either have it italic, bold or regular, but you can&amp;rsquo;t mix and match. Happily though it does contain an interface for dropping down into the lower-level drawing engine (pyQt4), which enables you to do all sorts of custom things. Below is my solution to making fancy formatted organism names. I think it might be a little hacky but seems to work. The organism name should be in the &amp;ldquo;name&amp;rdquo; attribute of the leaf for this to work. (See the example below) Here are the formatting rules:&lt;/p&gt;
+			<guid isPermaLink="true">/2016/11/17/python-ete3-formatting-organism-names-the-way-i-want/</guid>
+			<description>&lt;p&gt;I feel like I&amp;rsquo;m on a life-long quest to make all of my phylogenetic tree figures completely programmatically. The best tool I&amp;rsquo;ve found for making them is the &lt;a href=&#34;http://etetoolkit.org&#34;&gt;ete library&lt;/a&gt; for the python programing language. I&amp;rsquo;ve already figured out how to get &lt;a href=&#34;/2016/07/09/drawing-phylogenetic-trees-connor-style/&#34;&gt;trees drawn in the style that I like&lt;/a&gt; but there was still one thing left to do: making organism names italicize correctly. I work with microorganisms where the convention is for the genus and species names to be italicized but the strain name to be in regular font. For example: &lt;em&gt;Methanoregula formicica&lt;/em&gt; SMSP, DSM 22288. There are exceptions to this as well; if an organism is not in pure culture then the name &lt;em&gt;Candidatus&lt;/em&gt; is prepended and any genus and species names remain in regular format. Unfortunately, ete doesn&amp;rsquo;t have an interface for doing this kind of name formatting, you can either have it italic, bold or regular, but you can&amp;rsquo;t mix and match. Happily though it does contain an interface for dropping down into the lower-level drawing engine (pyQt4), which enables you to do all sorts of custom things. Below is my solution to making fancy formatted organism names. I think it might be a little hacky but seems to work. The organism name should be in the &amp;ldquo;name&amp;rdquo; attribute of the leaf for this to work. (See the example below) Here are the formatting rules:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;If the name has less than 2 words: do nothing. This is to catch internal names or accession numbers that are not valid scientific names&lt;/li&gt;
 &lt;li&gt;If the first word of the name is &amp;ldquo;Candidatus&amp;rdquo;: abbreviate it to &amp;ldquo;Ca.&amp;rdquo; and italicize just that part.&lt;/li&gt;
@@ -309,10 +309,10 @@ BEGIN{
 		</item>
 		<item>
 			<title>My guide to annotating proteins and pathways</title>
-			<link>ctSkennerton.github.io/2016/09/22/my-guide-to-annotating-proteins-and-pathways/</link>
+			<link>/2016/09/22/my-guide-to-annotating-proteins-and-pathways/</link>
 			<pubDate>Thu, 22 Sep 2016 22:14:50 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2016/09/22/my-guide-to-annotating-proteins-and-pathways/</guid>
+			<guid isPermaLink="true">/2016/09/22/my-guide-to-annotating-proteins-and-pathways/</guid>
 			<description>&lt;p&gt;So. You&amp;rsquo;ve got yourself a nice new genome sequence and you want to know what kind of metabolism it has. There is a good chance that you have some idea already — you think it&amp;rsquo;s a nitrogen fixer or a sulfate reducer etc. — based on other analyses and now it&amp;rsquo;s time to strengthen your paper with a bit of genomic evidence.&lt;/p&gt;
 &lt;h2 id=&#34;getting-an-initial-annotation&#34;&gt;Getting an initial annotation&lt;/h2&gt;
 &lt;p&gt;The vast majority of the genes in the genome are going to be hypothetical proteins; of the rest, a sizable chunk are going to be genes with a general sort of annotation like &amp;ldquo;ABC transporter&amp;rdquo; (which says nothing about what it&amp;rsquo;s transporting), and the rest are going to be metabolic genes that you probably care about. The first thing that you want to do is to throw your genome into one of the automatic annotation pipelines (&lt;a href=&#34;https://github.com/tseemann/prokka&#34;&gt;prokka&lt;/a&gt;, &lt;a href=&#34;http://rast.nmpdr.org/&#34;&gt;rast&lt;/a&gt;, &lt;a href=&#34;https://img.jgi.doe.gov/&#34;&gt;img&lt;/a&gt;, &lt;a href=&#34;https://www.ncbi.nlm.nih.gov/genome/annotation_prok/&#34;&gt;ncbi&lt;/a&gt;, &lt;a href=&#34;http://www.genome.jp/tools/kaas/&#34;&gt;kaas&lt;/a&gt;) to get an initial annotation. You can then search through these to look for pathways of interest. However, don&amp;rsquo;t just straight out believe what these pipelines say, they will definitely miss some genes and report annotations that aren&amp;rsquo;t correct, but they are a good start since in most cases you will only be interested in a portion of the genes. The most important thing to remember is to be a scientist. Have a sceptical mindset and interrogate your data. You can&amp;rsquo;t look at every gene (well you can but probably don&amp;rsquo;t have time) so my rule of thumb is that you should manually check all of the genes in all of the pathways that you are going to write about in your paper.&lt;/p&gt;
@@ -331,10 +331,10 @@ BEGIN{
 		</item>
 		<item>
 			<title>Messing around with Phyloxml in ete3</title>
-			<link>ctSkennerton.github.io/2016/08/12/messing-around-with-phyloxml-in-ete3/</link>
+			<link>/2016/08/12/messing-around-with-phyloxml-in-ete3/</link>
 			<pubDate>Fri, 12 Aug 2016 22:09:04 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2016/08/12/messing-around-with-phyloxml-in-ete3/</guid>
+			<guid isPermaLink="true">/2016/08/12/messing-around-with-phyloxml-in-ete3/</guid>
 			<description>&lt;p&gt;&lt;a href=&#34;http://etetoolkit.org/&#34;&gt;ete3&lt;/a&gt; has support for &lt;a href=&#34;http://www.phyloxml.org/&#34;&gt;phyloxml&lt;/a&gt; which I use with &lt;a href=&#34;https://sites.google.com/site/cmzmasek/home/software/archaeopteryx&#34;&gt;archaeopteryx&lt;/a&gt; tree viewer for a lot of my day-to-day phylogenetics visualisation. My main reason for using phyloxml is one of convenience as I have a script that will easily add in the proper organism name onto the tree and I think that archaeopteryx is a really good basic tree viewer. I wanted to draw a tree from phyloxml in ete using &lt;a href=&#34;https://connorskennerton.wordpress.com/2016/07/09/drawing-phylogenetic-trees-connor-style/&#34;&gt;my own style&lt;/a&gt; and to have the proper organism name to be rendered. In my phyloxml file I have this coded in as the scientific name for each leaf (see below for phyloxml snippet), so now all I needed to do was make this the node name when rendering the tree.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-xml&#34; data-lang=&#34;xml&#34;&gt;&lt;span class=&#34;nt&#34;&gt;&amp;lt;clade&amp;gt;&lt;/span&gt; 
   &lt;span class=&#34;nt&#34;&gt;&amp;lt;name&amp;gt;&lt;/span&gt;IMG_2526164742&lt;span class=&#34;nt&#34;&gt;&amp;lt;/name&amp;gt;&lt;/span&gt; 
@@ -359,10 +359,10 @@ BEGIN{
 		</item>
 		<item>
 			<title>Going from a messy supplementary table to good clean data</title>
-			<link>ctSkennerton.github.io/2016/07/11/going-from-a-messy-supplementary-table-to-good-clean-data/</link>
+			<link>/2016/07/11/going-from-a-messy-supplementary-table-to-good-clean-data/</link>
 			<pubDate>Mon, 11 Jul 2016 21:00:53 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2016/07/11/going-from-a-messy-supplementary-table-to-good-clean-data/</guid>
+			<guid isPermaLink="true">/2016/07/11/going-from-a-messy-supplementary-table-to-good-clean-data/</guid>
 			<description>&lt;blockquote&gt;
 &lt;p&gt;Bioinformatics&amp;hellip; Or &amp;lsquo;advanced file copying&amp;rsquo; as I like to call it.&lt;/p&gt;
 &lt;p&gt;— Nick Loman (@pathogenomenick) &lt;a href=&#34;https://twitter.com/pathogenomenick/status/428616138252353536&#34;&gt;January 29, 2014&lt;/a&gt;&lt;/p&gt;
@@ -922,10 +922,10 @@ BEGIN{
 		</item>
 		<item>
 			<title>Drawing Phylogenetic Trees, Connor Style</title>
-			<link>ctSkennerton.github.io/2016/07/09/drawing-phylogenetic-trees-connor-style/</link>
+			<link>/2016/07/09/drawing-phylogenetic-trees-connor-style/</link>
 			<pubDate>Sat, 09 Jul 2016 00:23:54 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2016/07/09/drawing-phylogenetic-trees-connor-style/</guid>
+			<guid isPermaLink="true">/2016/07/09/drawing-phylogenetic-trees-connor-style/</guid>
 			<description>&lt;p&gt;I do a lot of work in phylogenetics, which means that for just about every paper I&amp;rsquo;ve written I&amp;rsquo;ve had at least one figure that is a phylogenetic tree. Making pretty looking trees for a publication is tedious and my previous workflow involved using &lt;a href=&#34;http://arb-home.de&#34;&gt;ARB&lt;/a&gt; for actually drawing the tree and producing an initial file in postscript, and then loading that into Adobe Illustrator to make everything beautiful. The problem with this is that it is not an automated process so any time I need to change the tree I need to redo all of the &amp;lsquo;beautifying&amp;rsquo; manually. Recently I coded up an alternative approach using the excellent &lt;a href=&#34;http://etetoolkit.org/&#34;&gt;ete package&lt;/a&gt; for python to draw trees exactly how I want. One of the nicest things about drawing trees in ARB is that you can collapse clades into wedges. Unfortunately, while ete does allow you to collapse clades it doesn&amp;rsquo;t provide a way to show the collapsed node as a wedge, the only options are a square or a circle. But there is the option to create a &lt;a href=&#34;http://etetoolkit.org/docs/latest/tutorial/tutorial_drawing.html#creating-your-custom-interactive-item-faces&#34;&gt;custom face&lt;/a&gt; which is exactly what I did. Below is a function to create ARB-style wedges:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt; &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;polygon_name_face&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;node&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;width&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;height&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;width_percent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; 
     &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;create a wedge shaped face in the style of ARB 
@@ -1008,16 +1008,16 @@ BEGIN{
 &lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ladderize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; 
 &lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;show&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tree_style&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ts&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;There are improvements to be made with the way I&amp;rsquo;m drawing the wedge. First, there isn&amp;rsquo;t any border between the top of the wedge and the next leaf — you can see the name &amp;ldquo;aaaaaaaaad&amp;rdquo; is a bit cramped. Second, ARB has a nice feature which changes the wedge dimensions based on the number of grouped leaves which I haven&amp;rsquo;t yet implemented.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;ctSkennerton.github.io/media/2016/07/orig.png&#34; alt=&#34;the original layout&#34;&gt;
-&lt;img src=&#34;ctSkennerton.github.io/media/2016/07/connor_style.png&#34; alt=&#34;connor style&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/media/2016/07/orig.png&#34; alt=&#34;the original layout&#34;&gt;
+&lt;img src=&#34;/media/2016/07/connor_style.png&#34; alt=&#34;connor style&#34;&gt;&lt;/p&gt;
 </description>
 		</item>
 		<item>
 			<title>Genome Bin Decontamination</title>
-			<link>ctSkennerton.github.io/2015/10/03/genome-bin-decontamination/</link>
+			<link>/2015/10/03/genome-bin-decontamination/</link>
 			<pubDate>Sat, 03 Oct 2015 00:00:00 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2015/10/03/genome-bin-decontamination/</guid>
+			<guid isPermaLink="true">/2015/10/03/genome-bin-decontamination/</guid>
 			<description>&lt;p&gt;Genome bins comming off automated pipelines can be contaminated
 with parts of other genomes. As part of my workflow I use
 &lt;a href=&#34;http://genome.cshlp.org/content/early/2015/05/14/gr.186072.114.abstract&#34;&gt;CheckM&lt;/a&gt;
@@ -1061,7 +1061,7 @@ try to improve &lt;strong&gt;bin_41&lt;/strong&gt;.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-R&#34; data-lang=&#34;R&#34;&gt;&lt;span class=&#34;n&#34;&gt;bin_41&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;binned_contigs[binned_contigs&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bin&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;bins_41&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Since we have three samples we can look at the coverage of the contigs in each sample as a matrix of 2D&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-R&#34; data-lang=&#34;R&#34;&gt;&lt;span class=&#34;nf&#34;&gt;pairs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;~&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;final.contigs.3730.bam&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;final.contigs.5133.bam&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;final.contigs.5579.bam&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bin_41&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;main&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;Comparison of contig coverage between samples&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;labels&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;3730&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;5133&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;5579&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;ctSkennerton.github.io/media/bin-decontamination-paired-coverage-1.svg&#34; alt=&#34;plot of chunk bin-decontamination-paired-coverage&#34;&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;/media/bin-decontamination-paired-coverage-1.svg&#34; alt=&#34;plot of chunk bin-decontamination-paired-coverage&#34;&gt;
 The majority of the contigs are found in sample 3730 between 10-15x and with very low coverage in sample 5133. Some of the contigs also have some coverage in sample 5579, but most don&amp;rsquo;t. It&amp;rsquo;s tempting to remove all of the contigs that don&amp;rsquo;t fit into the band of coverage, but from this we can&amp;rsquo;t be certain if the duplicated markers are in these outlier contigs.&lt;/p&gt;
 &lt;p&gt;Since the coverage of sample 5133 doesn&amp;rsquo;t really factor into things lets look at a single 2D plot of the 3730 coverage and the 5579 coverage. As a coarse approach lets take a look at where all of the contigs with duplicated markers are in this plot. For starters make a new column in the bin_41 dataframe that tells us if the contig contains any duplicated marker.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-R&#34; data-lang=&#34;R&#34;&gt;&lt;span class=&#34;n&#34;&gt;bin_41_duplicated_markers&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;subset&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duplicated_markers&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;bin&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;bins_41&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
@@ -1070,7 +1070,7 @@ The majority of the contigs are found in sample 3730 between 10-15x and with ver
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-R&#34; data-lang=&#34;R&#34;&gt;&lt;span class=&#34;nf&#34;&gt;plot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bin_41&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;final.contigs.3730.bam&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;bin_41&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;final.contigs.5579.bam&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;19&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;col&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;lightgrey&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;cex&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0.5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;xlab&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;3730 coverage&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ylab&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;5579 coverage&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;Contigs containing duplicated markers&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;nf&#34;&gt;points&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bin_41[bin_41&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;containsDuplicateMarker&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;final.contigs.3730.bam&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;bin_41[bin_41&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;containsDuplicateMarker&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;final.contigs.5579.bam&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;col&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;red&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;figure&gt;
-    &lt;img src=&#34;ctSkennerton.github.io/media/bin-decontamination-all-duplicate-markers-1.svg&#34;/&gt; 
+    &lt;img src=&#34;/media/bin-decontamination-all-duplicate-markers-1.svg&#34;/&gt; 
 &lt;/figure&gt;
 &lt;p&gt;Apart from a couple of outliers, the majority of the contigs that contain multiple markers are in the central mass of contigs. There doesn&amp;rsquo;t appear to be any way to systematically remove a substantial amount of contamination in this genome bin.&lt;/p&gt;
 &lt;p&gt;Instead of looking at all contigs that contain any duplicated markers, we can also visualise the positions of contigs for a specific duplicated marker. You can get a list of the markers that are duplicated in the bin by using the unique command. Then create a logical vector of bin_41 of the contigs that contain any of the particular markers.&lt;/p&gt;
@@ -1102,7 +1102,7 @@ The majority of the contigs are found in sample 3730 between 10-15x and with ver
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-R&#34; data-lang=&#34;R&#34;&gt;&lt;span class=&#34;nf&#34;&gt;plot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bin_41&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;final.contigs.3730.bam&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;bin_41&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;final.contigs.5579.bam&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;19&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;col&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;lightgrey&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;cex&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0.5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;Position of contigs with PF01157.13&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;xlab&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;3730 coverage&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ylab&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;5579 coverage&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;nf&#34;&gt;points&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bin_41[contains_x_marker&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;final.contigs.3730.bam&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;bin_41[contains_x_marker&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;final.contigs.5579.bam&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;col&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;red&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;figure&gt;
-    &lt;img src=&#34;ctSkennerton.github.io/media/bin-decontamination-single-marker-positions-1.svg&#34;/&gt; 
+    &lt;img src=&#34;/media/bin-decontamination-single-marker-positions-1.svg&#34;/&gt; 
 &lt;/figure&gt;
 &lt;p&gt;So now we can see that ther are three contigs containing this marker, one
 appears to be an outlier, but the other two contigs have quite similar
@@ -1110,10 +1110,10 @@ coverage profiles&lt;/p&gt;</description>
 		</item>
 		<item>
 			<title>The pace of genome binning from metagenomes</title>
-			<link>ctSkennerton.github.io/2015/06/17/the-pace-of-genome-binning-from-metagenomes/</link>
+			<link>/2015/06/17/the-pace-of-genome-binning-from-metagenomes/</link>
 			<pubDate>Wed, 17 Jun 2015 00:00:00 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2015/06/17/the-pace-of-genome-binning-from-metagenomes/</guid>
+			<guid isPermaLink="true">/2015/06/17/the-pace-of-genome-binning-from-metagenomes/</guid>
 			<description>&lt;p&gt;With the pace of science what seemed top stuff three years ago is now an
 order of magnitude less than what just got published.&lt;/p&gt;
 &lt;p&gt;When I was in my PhD I was working on
@@ -1139,10 +1139,10 @@ It seems like the magnitude of the cutting edge just went up a notch&amp;hellip;
 		</item>
 		<item>
 			<title>Genome Bin Completeness and Contamination</title>
-			<link>ctSkennerton.github.io/2015/01/29/genome-bin-completeness-and-contamination/</link>
+			<link>/2015/01/29/genome-bin-completeness-and-contamination/</link>
 			<pubDate>Thu, 29 Jan 2015 00:00:00 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2015/01/29/genome-bin-completeness-and-contamination/</guid>
+			<guid isPermaLink="true">/2015/01/29/genome-bin-completeness-and-contamination/</guid>
 			<description>&lt;p&gt;The question that most people ask when looking at a metagenomic draft genome bin
 is: should this gene really be there? The answer is that sometimes it&amp;rsquo;s not easy to know&lt;/p&gt;
 &lt;p&gt;I spend a lot of my time looking at genome assemblies. They are almost always
@@ -1209,10 +1209,10 @@ to point me in the right direction of what I should work on first.&lt;/p&gt;</de
 		</item>
 		<item>
 			<title>Uploading your Theis Literature Review to Wikipedia</title>
-			<link>ctSkennerton.github.io/2014/11/12/uploading-your-theis-literature-review-to-wikipedia/</link>
+			<link>/2014/11/12/uploading-your-theis-literature-review-to-wikipedia/</link>
 			<pubDate>Wed, 12 Nov 2014 00:00:00 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2014/11/12/uploading-your-theis-literature-review-to-wikipedia/</guid>
+			<guid isPermaLink="true">/2014/11/12/uploading-your-theis-literature-review-to-wikipedia/</guid>
 			<description>&lt;p&gt;Every PhD student can contribute to open science by uploading their thesis
 literature review onto Wikipedia!&lt;/p&gt;
 &lt;!-- more --&gt;
@@ -1271,15 +1271,15 @@ publication on the internet.&lt;/p&gt;
 		</item>
 		<item>
 			<title>My First Useful Script</title>
-			<link>ctSkennerton.github.io/2014/06/23/my-first-useful-script/</link>
+			<link>/2014/06/23/my-first-useful-script/</link>
 			<pubDate>Mon, 23 Jun 2014 00:00:00 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2014/06/23/my-first-useful-script/</guid>
+			<guid isPermaLink="true">/2014/06/23/my-first-useful-script/</guid>
 			<description>&lt;p&gt;Can you remember the first useful thing that you ever coded? I sure can, and I&amp;rsquo;m
 thankful for it every day.&lt;/p&gt;
 &lt;!-- more --&gt;
 &lt;p&gt;I&amp;rsquo;ve recently finished writing a little program called &lt;a href=&#34;https://github.com/ctSkennerton/fxtract&#34;&gt;&lt;code&gt;fxtract&lt;/code&gt;&lt;/a&gt;
-(which I&amp;rsquo;ve blogged about &lt;a href=&#34;ctSkennerton.github.io/posts/2013/10/28/testing-out-seqans-multipattern-search-implementations/&#34;&gt;before&lt;/a&gt;)
+(which I&amp;rsquo;ve blogged about &lt;a href=&#34;/posts/2013/10/28/testing-out-seqans-multipattern-search-implementations/&#34;&gt;before&lt;/a&gt;)
 that acts like grep but returns whole fasta or fastq records from a file. It&amp;rsquo;s
 taken me a very long time to write this thing, primarily cause I&amp;rsquo;m writing it
 in C++ but now that it&amp;rsquo;s pretty much done I&amp;rsquo;m feeling nostalgic about why I&amp;rsquo;m
@@ -1322,10 +1322,10 @@ as much love from me as well.&lt;/p&gt;
 		</item>
 		<item>
 			<title>Finding 16s/18s reads in metagenomes</title>
-			<link>ctSkennerton.github.io/2014/04/19/finding-16s/18s-reads-in-metagenomes/</link>
+			<link>/2014/04/19/finding-16s/18s-reads-in-metagenomes/</link>
 			<pubDate>Sat, 19 Apr 2014 00:00:00 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2014/04/19/finding-16s/18s-reads-in-metagenomes/</guid>
+			<guid isPermaLink="true">/2014/04/19/finding-16s/18s-reads-in-metagenomes/</guid>
 			<description>&lt;p&gt;Got a Metagenome? want to know what the community looks like?&lt;/p&gt;
 &lt;!-- more --&gt;
 &lt;p&gt;rRNA operons are typically poorly assembled in metagenomic datasets due to
@@ -1432,10 +1432,10 @@ filter out unaligned sequences:&lt;/p&gt;
 		</item>
 		<item>
 			<title>Poking around inside grep</title>
-			<link>ctSkennerton.github.io/2013/12/27/poking-around-inside-grep/</link>
+			<link>/2013/12/27/poking-around-inside-grep/</link>
 			<pubDate>Fri, 27 Dec 2013 00:00:00 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2013/12/27/poking-around-inside-grep/</guid>
+			<guid isPermaLink="true">/2013/12/27/poking-around-inside-grep/</guid>
 			<description>&lt;p&gt;Playing around with the grep source code to make it output fasta/fastq records.
 Check out the code &lt;a href=&#34;https://github.com/ctSkennerton/fagrep&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;!-- more --&gt;
@@ -1444,7 +1444,7 @@ program, &lt;a href=&#34;http://ctskennerton.github.io/crass&#34;&gt;crass&lt;/a
 to search for CRISPR elements.  Crass is pretty fast, but I want it to be faster,
 specifically there is one point in crass where it searches for exact matches to many
 thousands of patterns.
-In a &lt;a href=&#34;ctSkennerton.github.io/2013/10/28/testing-out-seqans-multipattern-search-implementations/&#34;&gt;previous post&lt;/a&gt;
+In a &lt;a href=&#34;/2013/10/28/testing-out-seqans-multipattern-search-implementations/&#34;&gt;previous post&lt;/a&gt;
 I tried out a number of different &amp;lsquo;multi-pattern matchers&amp;rsquo; from &lt;a href=&#34;http://seqan.de&#34;&gt;seqan&lt;/a&gt;
 and was fairly unimpressed with their speed.  In this testing though I did not try
 out the most widely used implementations of multi-pattern matching: GNU grep (using &lt;code&gt;-Ff&lt;/code&gt; options).  I don&amp;rsquo;t have any graphs to show, but it was faster, like &lt;strong&gt;a lot&lt;/strong&gt; faster.&lt;/p&gt;
@@ -1529,10 +1529,10 @@ ripping out parts of the source code that I want for crass&lt;/p&gt;
 		</item>
 		<item>
 			<title>Genome Scaffolders Suck</title>
-			<link>ctSkennerton.github.io/2013/12/11/genome-scaffolders-suck/</link>
+			<link>/2013/12/11/genome-scaffolders-suck/</link>
 			<pubDate>Wed, 11 Dec 2013 00:00:00 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2013/12/11/genome-scaffolders-suck/</guid>
+			<guid isPermaLink="true">/2013/12/11/genome-scaffolders-suck/</guid>
 			<description>&lt;p&gt;Experiences using a variety of contig scaffolding tools. It was not a good experience.&lt;/p&gt;
 &lt;!-- more --&gt;
 &lt;p&gt;Recently in our lab we&amp;rsquo;ve been getting some Illumina mate-pair data to
@@ -1659,10 +1659,10 @@ which is required by NCBI when uploading scaffolds.&lt;/li&gt;
 		</item>
 		<item>
 			<title>Testing out Seqan&#39;s Multipattern Search Implementations</title>
-			<link>ctSkennerton.github.io/2013/10/28/testing-out-seqans-multipattern-search-implementations/</link>
+			<link>/2013/10/28/testing-out-seqans-multipattern-search-implementations/</link>
 			<pubDate>Mon, 28 Oct 2013 00:00:00 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2013/10/28/testing-out-seqans-multipattern-search-implementations/</guid>
+			<guid isPermaLink="true">/2013/10/28/testing-out-seqans-multipattern-search-implementations/</guid>
 			<description>&lt;p&gt;I recently discovered &lt;a href=&#34;http://seqan.de&#34;&gt;Seqan&lt;/a&gt;, a header-only C++ library for
 bioinformatics.  I&amp;rsquo;ve been playing around with the toolkit to make some
 small programs just to see whether I want to use it in a
@@ -1708,7 +1708,7 @@ implementation fails silently when given an empty string as one of the
 patterns!&lt;/strong&gt; I&amp;rsquo;ve submitted a &lt;a href=&#34;http://trac.seqan.de/ticket/1117&#34;&gt;bug report&lt;/a&gt;
 with the seqan authors.&lt;/p&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;ctSkennerton.github.io/media/seqan_multipattern_search_speed_benchmark.png&#34;
+    &lt;img src=&#34;/media/seqan_multipattern_search_speed_benchmark.png&#34;
          alt=&#34;Seqan speed test summary&#34;/&gt; &lt;figcaption&gt;
             &lt;p&gt;Seqan speed test summary&lt;/p&gt;
         &lt;/figcaption&gt;
@@ -1737,7 +1737,7 @@ and SetHorspool algorithms, which used 20Gb+ of memory under the worst
 case.  The multiBfam algorithm was somewhere in the middle (~7Gb under
 the worst case scenario).&lt;/p&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;ctSkennerton.github.io/media/seqan_multipattern_search_memory_benchmark.png&#34;
+    &lt;img src=&#34;/media/seqan_multipattern_search_memory_benchmark.png&#34;
          alt=&#34;Seqan speed test summary&#34;/&gt; &lt;figcaption&gt;
             &lt;p&gt;Seqan speed test summary&lt;/p&gt;
         &lt;/figcaption&gt;

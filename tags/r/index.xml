@@ -1,7 +1,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
 		<title>R on Connor Skennerton</title>
-		<link>ctSkennerton.github.io/tags/r/</link>
+		<link>/tags/r/</link>
 		<description>Recent content in R on Connor Skennerton</description>
 		<generator>Hugo 0.74.1 -- gohugo.io</generator>
 		<language>en-us</language>
@@ -9,13 +9,13 @@
 		<webMaster>c.skennerton@gmail.com (Connor Skennerton)</webMaster>
 		<copyright>Connor Skennerton — All rights reserved.</copyright>
 		<lastBuildDate>Sat, 22 Jul 2017 17:27:02 +0000</lastBuildDate>
-		<atom:link href="ctSkennerton.github.io/tags/r/index.xml" rel="self" type="application/rss+xml" />
+		<atom:link href="/tags/r/index.xml" rel="self" type="application/rss+xml" />
 		<item>
 			<title>Formatting scientific names in R</title>
-			<link>ctSkennerton.github.io/2017/07/22/formatting-scientific-names-in-r/</link>
+			<link>/2017/07/22/formatting-scientific-names-in-r/</link>
 			<pubDate>Sat, 22 Jul 2017 17:27:02 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2017/07/22/formatting-scientific-names-in-r/</guid>
+			<guid isPermaLink="true">/2017/07/22/formatting-scientific-names-in-r/</guid>
 			<description>&lt;p&gt;Here is a function that will take a character string in R and return an expression for fancy formatting in plots that properly italicize scientific names. The syntax for doing this is truly quite horrible, but this is how R does it.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-R&#34; data-lang=&#34;R&#34;&gt;&lt;span class=&#34;n&#34;&gt;scientific_name_formatter&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;raw_name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; 
     &lt;span class=&#34;c1&#34;&gt;# strsplit returns a list but we are passing in only &lt;/span&gt;
@@ -45,10 +45,10 @@
 		</item>
 		<item>
 			<title>Going from a messy supplementary table to good clean data</title>
-			<link>ctSkennerton.github.io/2016/07/11/going-from-a-messy-supplementary-table-to-good-clean-data/</link>
+			<link>/2016/07/11/going-from-a-messy-supplementary-table-to-good-clean-data/</link>
 			<pubDate>Mon, 11 Jul 2016 21:00:53 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">ctSkennerton.github.io/2016/07/11/going-from-a-messy-supplementary-table-to-good-clean-data/</guid>
+			<guid isPermaLink="true">/2016/07/11/going-from-a-messy-supplementary-table-to-good-clean-data/</guid>
 			<description>&lt;blockquote&gt;
 &lt;p&gt;Bioinformatics&amp;hellip; Or &amp;lsquo;advanced file copying&amp;rsquo; as I like to call it.&lt;/p&gt;
 &lt;p&gt;— Nick Loman (@pathogenomenick) &lt;a href=&#34;https://twitter.com/pathogenomenick/status/428616138252353536&#34;&gt;January 29, 2014&lt;/a&gt;&lt;/p&gt;
