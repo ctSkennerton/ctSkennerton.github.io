@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Using Amazon Neptune full text search | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="I&rsquo;ve been trying out Amazon Neptune&rsquo;s full text search feature. Overall it&rsquo;s been a great experience although there are a few caveats when searching that means that you&rsquo;ll have to craft your queries carefully to make full use of the feature.
+The tinkerpop standard has some text searching features however it lacks any advanced features such as searching using regular expressions or even case-insensitive searching. It&rsquo;s left to different implementations to augment this text searching capability." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/style.7c6d960b20273ed88bc63a60591a57e7739fb21f243b77f27c3bc730ef6205c0.css" />
+  <script defer src="/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">bio(logist | informatician)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      Using Amazon Neptune full text search
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2020-08-23T22:14:10-07:00">
+      23 Aug 2020
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/tags/neptune">Neptune</a>
+    <a href="/tags/aws">AWS</a>
+    <a href="/tags/full-text-search">full text search</a>
+    <a href="/tags/elasticsearch">elasticsearch</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p>I&rsquo;ve been trying out <a href="https://aws.amazon.com/neptune/">Amazon Neptune&rsquo;s</a>
+<a href="https://docs.aws.amazon.com/neptune/latest/userguide/full-text-search.html">full text search</a>
+feature. Overall it&rsquo;s been a great experience although there are a few caveats when
+searching that means that you&rsquo;ll have to craft your queries carefully to make full use
+of the feature.</p>
+<p>The tinkerpop standard has <a href="http://tinkerpop.apache.org/docs/current/reference/#a-note-on-predicates">some text searching features</a>
+however it lacks any advanced features such as searching using regular expressions or even
+case-insensitive searching. It&rsquo;s left to different implementations to augment this text
+searching capability.</p>
+<p>The developers at Amazon Neptune chose to integrate <a href="https://www.elastic.co">Elasticsearch</a> as
+their text searching engine, which offers a rich searching ability.</p>
+<p>The integration between Elasticsearch and Neptune is pretty seamless with clear documentation.
+I used AWS&rsquo;s managed elastic search service and I&rsquo;m not sure if an external elasticsearch
+setup could work. I already had a Neptune database however to work with elastic search I needed
+to turn on the <a href="https://docs.aws.amazon.com/neptune/latest/userguide/streams.html">streams feature</a>
+so that data could be replicated from one service to another. After turning on the streams feature
+I had to manually reboot my Neptune instances for it to take effect. With the streams feature
+turned on I used the <a href="https://github.com/awslabs/amazon-neptune-tools/tree/master/export-neptune-to-elasticsearch">export to elasticsearch</a>
+cloudformation template to mirror the data into elastic search. This is a one time operation
+as long as the you also use the <a href="https://docs.aws.amazon.com/neptune/latest/userguide/full-text-search-cfn-create.html">second cloudformation template</a>
+that uses the Neptune stream to constantly update the elasticsearch index when changes are made
+to the neptune database.</p>
+<p>Using the feature with gremlin also works great. When you want to run a query using full text search
+you need to add a <code>withSideEffect</code> step at the begining of the traversal</p>
+<div class="highlight"><pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="n">g</span><span class="o">.</span><span class="na">withSideEffect</span><span class="o">(</span><span class="s2">&#34;Neptune#fts.endpoint&#34;</span><span class="o">,</span> <span class="s2">&#34;&lt;ENDPOINT_URL&gt;&#34;</span><span class="o">)</span>
+</code></pre></div><p>And then after that you can use full text searching in a <code>has</code> step. The AWS docs have some
+<a href="https://docs.aws.amazon.com/neptune/latest/userguide/full-text-search-gremlin.html">good examples</a>
+that show most of the features. Below are a couple of additional observations I made.</p>
+<p>Full text searching is overloaded in the <code>has</code>-step. You by default you can search in a single property
+by using the form <code>has(&quot;&lt;property_key&gt;&quot;, &quot;Neptune#fts &lt;query_string&gt;&quot;</code>.</p>
+<p>The following searches for all nodes in the graph that have <code>foobar</code> in their <code>name</code> property.</p>
+<div class="highlight"><pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="n">g</span><span class="o">.</span><span class="na">withSideEffect</span><span class="o">(</span><span class="s2">&#34;Neptune#fts.endpoint&#34;</span><span class="o">,</span> <span class="s2">&#34;&lt;ENDPOINT_URL&gt;&#34;</span><span class="o">).</span>
+    <span class="n">V</span><span class="o">().</span>
+    <span class="n">has</span><span class="o">(</span><span class="s1">&#39;name&#39;</span><span class="o">,</span> <span class="s1">&#39;Neptune#fts foobar&#39;</span><span class="o">).</span>
+    <span class="n">valueMap</span><span class="o">()</span>
+</code></pre></div><p>But you don&rsquo;t have to specify a property. Using a <code>*</code> character in place of the property key
+allows you to search for the term in all of the properties of the nodes.</p>
+<div class="highlight"><pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="n">g</span><span class="o">.</span><span class="na">withSideEffect</span><span class="o">(</span><span class="s2">&#34;Neptune#fts.endpoint&#34;</span><span class="o">,</span> <span class="s2">&#34;&lt;ENDPOINT_URL&gt;&#34;</span><span class="o">).</span>
+    <span class="n">V</span><span class="o">().</span>
+    <span class="n">has</span><span class="o">(</span><span class="s1">&#39;*&#39;</span><span class="o">,</span> <span class="s1">&#39;Neptune#fts foobar&#39;</span><span class="o">).</span>
+    <span class="n">valueMap</span><span class="o">()</span>
+</code></pre></div><p>Using this simple method is an all or one approach, you can&rsquo;t restrict the search to multiple, known
+properties. To get this functionality you need to be a little more low-level and use the Lucene syntax,
+which the <a href="https://docs.aws.amazon.com/neptune/latest/userguide/full-text-search-gremlin.html">docs has some examples of near the end</a>.
+To make use of this you&rsquo;ll need to know a bit about <a href="https://docs.aws.amazon.com/neptune/latest/userguide/full-text-search-model.html">how Neptune data is translated into elasticsearch documents</a>
+and also read up on the <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html">query string</a>
+syntax of elastic search.</p>
+<p>Below the <code>has</code>-step makes use of a full text search looking at both the value of the <code>name</code> property
+and the <code>other_name</code> property. Due to the way Neptune data is translated into elasticsearch documents
+we need to refer to them as <code>predicates.name.value</code> and <code>predicates.other_name.value</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="c1">// note that there is an extra query hint to Neptune to use the query_string syntax for full text search
+</span><span class="c1"></span><span class="n">g</span><span class="o">.</span><span class="na">withSideEffect</span><span class="o">(</span><span class="s2">&#34;Neptune#fts.endpoint&#34;</span><span class="o">,</span> <span class="s2">&#34;&lt;ENDPOINT_URL&gt;&#34;</span><span class="o">).</span>
+    <span class="n">withSideEffect</span><span class="o">(</span><span class="s2">&#34;Neptune#fts.queryType&#34;</span><span class="o">,</span> <span class="s2">&#34;query_string&#34;</span><span class="o">).</span>
+    <span class="n">V</span><span class="o">().</span>
+    <span class="n">has</span><span class="o">(</span><span class="s1">&#39;*&#39;</span><span class="o">,</span> <span class="s1">&#39;Neptune#fts predicates.name.value:foo* OR predicates.other_name.value:bar~&#39;</span><span class="o">).</span>
+    <span class="n">valueMap</span><span class="o">()</span>
+</code></pre></div><p>When looking at the query above you could try to formulate it in a more &ldquo;gremlin&rdquo; way by
+having the separate search terms inside a <code>union</code>-step, like below.</p>
+<div class="highlight"><pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="n">g</span><span class="o">.</span><span class="na">withSideEffect</span><span class="o">(</span><span class="s2">&#34;Neptune#fts.endpoint&#34;</span><span class="o">,</span> <span class="s2">&#34;&lt;ENDPOINT_URL&gt;&#34;</span><span class="o">).</span>
+    <span class="n">V</span><span class="o">().</span>
+    <span class="n">union</span><span class="o">(</span>
+        <span class="n">has</span><span class="o">(</span><span class="s1">&#39;name&#39;</span><span class="o">,</span> <span class="s1">&#39;Neptune#fts foo*&#39;</span><span class="o">),</span>
+        <span class="n">has</span><span class="o">(</span><span class="s1">&#39;other_name&#39;</span><span class="o">,</span> <span class="s1">&#39;Neptune#fts bar~&#39;</span><span class="o">)</span>
+    <span class="o">).</span>
+    <span class="n">valueMap</span><span class="o">()</span>
+</code></pre></div><p>However in my tests, I&rsquo;ve found this to be very slow in comparison. Although I don&rsquo;t know
+why that is we do have to remember that these queries are using two different engines and
+any full text search traversal has to go from Neptune through elasticsearch&rsquo;s API and back again;
+so it&rsquo;s probably best to make use of as much as the elasticsearch query language can offer
+so the two services have to interact the least amount.</p>
+
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2020 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>

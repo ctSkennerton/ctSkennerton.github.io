@@ -1,0 +1,92 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Neptune on Connor Skennerton</title>
+		<link>/tags/neptune/</link>
+		<description>Recent content in Neptune on Connor Skennerton</description>
+		<generator>Hugo 0.74.1 -- gohugo.io</generator>
+		<language>en-us</language>
+		<managingEditor>c.skennerton@gmail.com (Connor Skennerton)</managingEditor>
+		<webMaster>c.skennerton@gmail.com (Connor Skennerton)</webMaster>
+		<copyright>Connor Skennerton — All rights reserved.</copyright>
+		<lastBuildDate>Sun, 23 Aug 2020 22:14:10 -0700</lastBuildDate>
+		<atom:link href="/tags/neptune/index.xml" rel="self" type="application/rss+xml" />
+		<item>
+			<title>Using Amazon Neptune full text search</title>
+			<link>/2020/08/23/using-amazon-neptune-full-text-search/</link>
+			<pubDate>Sun, 23 Aug 2020 22:14:10 -0700</pubDate>
+			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
+			<guid isPermaLink="true">/2020/08/23/using-amazon-neptune-full-text-search/</guid>
+			<description>&lt;p&gt;I&amp;rsquo;ve been trying out &lt;a href=&#34;https://aws.amazon.com/neptune/&#34;&gt;Amazon Neptune&amp;rsquo;s&lt;/a&gt;
+&lt;a href=&#34;https://docs.aws.amazon.com/neptune/latest/userguide/full-text-search.html&#34;&gt;full text search&lt;/a&gt;
+feature. Overall it&amp;rsquo;s been a great experience although there are a few caveats when
+searching that means that you&amp;rsquo;ll have to craft your queries carefully to make full use
+of the feature.&lt;/p&gt;
+&lt;p&gt;The tinkerpop standard has &lt;a href=&#34;http://tinkerpop.apache.org/docs/current/reference/#a-note-on-predicates&#34;&gt;some text searching features&lt;/a&gt;
+however it lacks any advanced features such as searching using regular expressions or even
+case-insensitive searching. It&amp;rsquo;s left to different implementations to augment this text
+searching capability.&lt;/p&gt;
+&lt;p&gt;The developers at Amazon Neptune chose to integrate &lt;a href=&#34;https://www.elastic.co&#34;&gt;Elasticsearch&lt;/a&gt; as
+their text searching engine, which offers a rich searching ability.&lt;/p&gt;
+&lt;p&gt;The integration between Elasticsearch and Neptune is pretty seamless with clear documentation.
+I used AWS&amp;rsquo;s managed elastic search service and I&amp;rsquo;m not sure if an external elasticsearch
+setup could work. I already had a Neptune database however to work with elastic search I needed
+to turn on the &lt;a href=&#34;https://docs.aws.amazon.com/neptune/latest/userguide/streams.html&#34;&gt;streams feature&lt;/a&gt;
+so that data could be replicated from one service to another. After turning on the streams feature
+I had to manually reboot my Neptune instances for it to take effect. With the streams feature
+turned on I used the &lt;a href=&#34;https://github.com/awslabs/amazon-neptune-tools/tree/master/export-neptune-to-elasticsearch&#34;&gt;export to elasticsearch&lt;/a&gt;
+cloudformation template to mirror the data into elastic search. This is a one time operation
+as long as the you also use the &lt;a href=&#34;https://docs.aws.amazon.com/neptune/latest/userguide/full-text-search-cfn-create.html&#34;&gt;second cloudformation template&lt;/a&gt;
+that uses the Neptune stream to constantly update the elasticsearch index when changes are made
+to the neptune database.&lt;/p&gt;
+&lt;p&gt;Using the feature with gremlin also works great. When you want to run a query using full text search
+you need to add a &lt;code&gt;withSideEffect&lt;/code&gt; step at the begining of the traversal&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-groovy&#34; data-lang=&#34;groovy&#34;&gt;&lt;span class=&#34;n&#34;&gt;g&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;withSideEffect&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Neptune#fts.endpoint&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;lt;ENDPOINT_URL&amp;gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;And then after that you can use full text searching in a &lt;code&gt;has&lt;/code&gt; step. The AWS docs have some
+&lt;a href=&#34;https://docs.aws.amazon.com/neptune/latest/userguide/full-text-search-gremlin.html&#34;&gt;good examples&lt;/a&gt;
+that show most of the features. Below are a couple of additional observations I made.&lt;/p&gt;
+&lt;p&gt;Full text searching is overloaded in the &lt;code&gt;has&lt;/code&gt;-step. You by default you can search in a single property
+by using the form &lt;code&gt;has(&amp;quot;&amp;lt;property_key&amp;gt;&amp;quot;, &amp;quot;Neptune#fts &amp;lt;query_string&amp;gt;&amp;quot;&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The following searches for all nodes in the graph that have &lt;code&gt;foobar&lt;/code&gt; in their &lt;code&gt;name&lt;/code&gt; property.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-groovy&#34; data-lang=&#34;groovy&#34;&gt;&lt;span class=&#34;n&#34;&gt;g&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;withSideEffect&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Neptune#fts.endpoint&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;lt;ENDPOINT_URL&amp;gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;V&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;().&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;has&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;Neptune#fts foobar&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;valueMap&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;But you don&amp;rsquo;t have to specify a property. Using a &lt;code&gt;*&lt;/code&gt; character in place of the property key
+allows you to search for the term in all of the properties of the nodes.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-groovy&#34; data-lang=&#34;groovy&#34;&gt;&lt;span class=&#34;n&#34;&gt;g&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;withSideEffect&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Neptune#fts.endpoint&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;lt;ENDPOINT_URL&amp;gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;V&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;().&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;has&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;*&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;Neptune#fts foobar&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;valueMap&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Using this simple method is an all or one approach, you can&amp;rsquo;t restrict the search to multiple, known
+properties. To get this functionality you need to be a little more low-level and use the Lucene syntax,
+which the &lt;a href=&#34;https://docs.aws.amazon.com/neptune/latest/userguide/full-text-search-gremlin.html&#34;&gt;docs has some examples of near the end&lt;/a&gt;.
+To make use of this you&amp;rsquo;ll need to know a bit about &lt;a href=&#34;https://docs.aws.amazon.com/neptune/latest/userguide/full-text-search-model.html&#34;&gt;how Neptune data is translated into elasticsearch documents&lt;/a&gt;
+and also read up on the &lt;a href=&#34;https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html&#34;&gt;query string&lt;/a&gt;
+syntax of elastic search.&lt;/p&gt;
+&lt;p&gt;Below the &lt;code&gt;has&lt;/code&gt;-step makes use of a full text search looking at both the value of the &lt;code&gt;name&lt;/code&gt; property
+and the &lt;code&gt;other_name&lt;/code&gt; property. Due to the way Neptune data is translated into elasticsearch documents
+we need to refer to them as &lt;code&gt;predicates.name.value&lt;/code&gt; and &lt;code&gt;predicates.other_name.value&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-groovy&#34; data-lang=&#34;groovy&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// note that there is an extra query hint to Neptune to use the query_string syntax for full text search
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;g&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;withSideEffect&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Neptune#fts.endpoint&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;lt;ENDPOINT_URL&amp;gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;withSideEffect&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Neptune#fts.queryType&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;query_string&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;V&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;().&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;has&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;*&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;Neptune#fts predicates.name.value:foo* OR predicates.other_name.value:bar~&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;valueMap&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;When looking at the query above you could try to formulate it in a more &amp;ldquo;gremlin&amp;rdquo; way by
+having the separate search terms inside a &lt;code&gt;union&lt;/code&gt;-step, like below.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-groovy&#34; data-lang=&#34;groovy&#34;&gt;&lt;span class=&#34;n&#34;&gt;g&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;withSideEffect&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Neptune#fts.endpoint&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;lt;ENDPOINT_URL&amp;gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;V&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;().&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;union&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;has&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;Neptune#fts foo*&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;),&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;has&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;other_name&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;Neptune#fts bar~&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;valueMap&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;However in my tests, I&amp;rsquo;ve found this to be very slow in comparison. Although I don&amp;rsquo;t know
+why that is we do have to remember that these queries are using two different engines and
+any full text search traversal has to go from Neptune through elasticsearch&amp;rsquo;s API and back again;
+so it&amp;rsquo;s probably best to make use of as much as the elasticsearch query language can offer
+so the two services have to interact the least amount.&lt;/p&gt;
+</description>
+		</item>
+	</channel>
+</rss>
