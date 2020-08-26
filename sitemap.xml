@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/resume/</loc>
+    <lastmod>2020-08-25T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/tags/aws/</loc>
     <lastmod>2020-08-23T22:14:10-07:00</lastmod>
   </url>
@@ -55,11 +60,6 @@
   <url>
     <loc>/about/</loc>
     <lastmod>2019-07-07T23:34:11+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/resume/</loc>
-    <lastmod>2019-07-07T00:00:00+00:00</lastmod>
   </url>
   
   <url>

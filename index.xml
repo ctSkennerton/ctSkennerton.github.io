@@ -11,6 +11,55 @@
 		<lastBuildDate>Sun, 23 Aug 2020 22:14:10 -0700</lastBuildDate>
 		<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
 		<item>
+			<title>Résumé</title>
+			<link>/resume/</link>
+			<pubDate>Tue, 25 Aug 2020 00:00:00 +0000</pubDate>
+			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
+			<guid isPermaLink="true">/resume/</guid>
+			<description>&lt;h2 id=&#34;experience&#34;&gt;Experience&lt;/h2&gt;
+&lt;h3 id=&#34;data-engineer&#34;&gt;Data Engineer&lt;/h3&gt;
+&lt;h4 id=&#34;pendulum-therapeutics-2019present&#34;&gt;Pendulum Therapeutics 2019 — Present&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Developed data analysis pipelines for processing genomics data&lt;/li&gt;
+&lt;li&gt;Primary developer on an internal web application using a graph database backend, a python API layer and a VueJS frontend&lt;/li&gt;
+&lt;li&gt;Developed client libraries so data scientists could easily access internal REST APIs&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;bioinformatics-cloud-engineer&#34;&gt;Bioinformatics Cloud Engineer&lt;/h3&gt;
+&lt;h4 id=&#34;second-genome-2018--2019&#34;&gt;Second Genome 2018 — 2019&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Converted &lt;em&gt;Holmes&lt;/em&gt;, Second Genome&amp;rsquo;s genomic processing pipeline, to a serverless architecture using Docker, AWS lambda, AWS Batch, and AWS SQS.&lt;/li&gt;
+&lt;li&gt;Helped convert &lt;em&gt;Gallifrey&lt;/em&gt;, Second Genome&amp;rsquo;s metagenomic/metatranscriptomic processing pipeline to a server less architecture using Docker, AWS Batch&lt;/li&gt;
+&lt;li&gt;Worked to unify Second Genome&amp;rsquo;s python code base so that all teams could work from the same library &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;postdoctoral-research-fellow&#34;&gt;Postdoctoral Research Fellow&lt;/h3&gt;
+&lt;h4 id=&#34;caltech-20142018&#34;&gt;Caltech 2014―2018&lt;/h4&gt;
+&lt;p&gt;My role was the head bioinformatician for a diverse group of microbiologists, chemists and data scientists at the California Institute of Technology (Caltech). My day to day tasks included the processing of genomic and proteomic data, and generating analysis summaries and plots using statistical software and programing tools such as R and python. As part of this role I was responsible for the production of automated pipelines for data analysis and have developed numerous tools and scripts for processing genomic data. I implemented SQL databases to store the extensive genomic and proteomic data that were generated and developed simple interfaces such that other members of the group could access this information without in-depth knowledge of SQL.&lt;/p&gt;
+&lt;h3 id=&#34;graduate-student&#34;&gt;Graduate Student&lt;/h3&gt;
+&lt;h4 id=&#34;university-of-quensland-20102014&#34;&gt;University of Quensland 2010―2014&lt;/h4&gt;
+&lt;p&gt;My PhD research focused on metagenomic analysis of microbial and viral communities from engineered ecosystems found in wastewater treatment plants. Throughout my PhD I was at the interface of microbial ecology, chemical engineering, and computational biology and have gained many skills ranging from microscopy, reactor operation and computer programming. I developed a number of bioinformatic pipelines and substantial computer software in perl, python and C++. My background in molecular biology allowed me to place the inferences of metagenomic data into a broader biological framework and work with other members of the lab that did not have computer skills.&lt;/p&gt;
+&lt;h2 id=&#34;education&#34;&gt;Education&lt;/h2&gt;
+&lt;h3 id=&#34;university-of-queensland&#34;&gt;University of Queensland&lt;/h3&gt;
+&lt;p&gt;2014, PhD in Microbial Ecology&lt;/p&gt;
+&lt;p&gt;2010, Bachelor of Biotechnology&lt;/p&gt;
+&lt;h3 id=&#34;honors--awards&#34;&gt;Honors &amp;amp; Awards&lt;/h3&gt;
+&lt;p&gt;2015, Dean&amp;rsquo;s award for outstanding PhD dissertation, University of Queensland&lt;/p&gt;
+&lt;p&gt;2010, Australian Research Council PhD Fellowship&lt;/p&gt;
+&lt;h2 id=&#34;publications&#34;&gt;Publications&lt;/h2&gt;
+&lt;p&gt;Yu, H., Susanti, D., McGlynn, S. E., &lt;strong&gt;Skennerton, C. T.,&lt;/strong&gt; Chourey, K., Iyer, R., Scheller, S., Tavormina, P. L., Hettich, R. L., Mukhopadhyay, B., Orphan V. J. (2018) &amp;ldquo;&lt;a href=&#34;https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6286981/&#34;&gt;Comparative Genomics and Proteomic Analysis of Assimilatory Sulfate Reduction Pathways in Anaerobic Methanotrophic Archaea&lt;/a&gt;&amp;rdquo;. Frontiers Microbiol. 9: 2917&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Chourey, K., Iyer, R., Hettich, R. L., Tyson, G. W., Orphan, V. J. (2017) &amp;ldquo;&lt;a href=&#34;https://www.ncbi.nlm.nih.gov/pubmed/28765215&#34;&gt;Methane-Fueled Syntrophy through Extracellular Electron Transfer: Uncovering the Genomic Traits Conserved within Diverse Bacterial Partners of Anaerobic Methanotrophic Archaea&lt;/a&gt;&amp;rdquo;. mBio 8(4):e00530-17&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Haroon, M. F., Briegel, A., Shi, J., Jensen, G. J., Tyson, G. W., Orphan, V. J. (2016) &amp;ldquo;&lt;a href=&#34;http://www.ncbi.nlm.nih.gov/pubmed/27058507&#34;&gt;Phylogenomic analysis of &lt;em&gt;Candidatus&lt;/em&gt; ‘Izimaplasma’ species: free-living representatives from a Tenericutes clade found in methane seeps&lt;/a&gt;&amp;rdquo;. ISMEJ. 10: 2679–2692&lt;/p&gt;
+&lt;p&gt;Marlow, J. J., &lt;strong&gt;Skennerton, C. T.,&lt;/strong&gt; Li, Z., Chourey, K., Hettich, R. L., Pan, C., Orphan, V. J. (2016). &amp;ldquo;&lt;a href=&#34;http://journal.frontiersin.org/article/10.3389/fmicb.2016.00563/full&#34;&gt;Proteomic Stable Isotope Probing Reveals Biosynthesis Dynamics of Slow Growing Methane Based Microbial Communities&lt;/a&gt;&amp;rdquo;. Frontiers Microbiol. 7: 563&lt;/p&gt;
+&lt;p&gt;Barr, J. J., Dutilh, B. E., &lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Fukushima, T., Hastie, M. L., Gorman, J. J., Tyson, G. W., Bond, P. L. (2016). “&lt;a href=&#34;http://www.ncbi.nlm.nih.gov/pubmed/26279094&#34;&gt;Metagenomic and metaproteomic analyses of Accumulibacter phosphatis enriched floccular and granular biofilm&lt;/a&gt;”. Environ. Microbiol. 18(1): 273–287&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Skennerton, C. T.,&lt;/strong&gt; Ward, L. M., Michel, A., Metcalfe, K., Valiente, C., Mullin, S., Chan, K. Y., Gradinaru, V., Orphan, V. J. (2015). &amp;ldquo;&lt;a href=&#34;http://journal.frontiersin.org/article/10.3389/fmicb.2015.01425/full&#34;&gt;Genomic Reconstruction of an Uncultured Hydrothermal Vent Gammaproteobacterial Methanotroph (Family &lt;em&gt;Methylothermaceae&lt;/em&gt;) Indicates Multiple Adaptations to Oxygen Limitation&lt;/a&gt;&amp;quot;. Frontiers Microbiol. 6&lt;/p&gt;
+&lt;p&gt;Parks, D. H., Imelfort, M., &lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Hugenholtz, P., Tyson, G. W. (2015). “&lt;a href=&#34;http://genome.cshlp.org/content/25/7/1043.long&#34;&gt;CheckM: assessing the quality of microbial genomes recovered from isolates, single cells, and metagenomes&lt;/a&gt;”. Genome Res. 25: 1043–1055.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Barr, J. J., Slater, F. R., Bond, P. L., Tyson, G. W. (2015). “&lt;a href=&#34;http://www.ncbi.nlm.nih.gov/pubmed/25088527&#34;&gt;Expanding our view of genomic diversity in &lt;em&gt;Candidatus&lt;/em&gt; Accumulibacter clades&lt;/a&gt;”. Environ. Microbiol. 17 (5): 1574–1585.&lt;/p&gt;
+&lt;p&gt;Soo, R. M., &lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Sekiguchi, Y., Imelfort, M., Paech, S. J., Dennis, P. G., Steen, J. A., Parks, D. H., Tyson, G. W., Hugenholtz, P. (2014). “&lt;a href=&#34;http://gbe.oxfordjournals.org/content/6/5/1031.long&#34;&gt;An expanded genomic representation of the phylum cyanobacteria&lt;/a&gt;”. Genome Biol. Evol. 6 (5): 1031– 1045.&lt;/p&gt;
+&lt;p&gt;Haroon, M. F., &lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Steen, J. A., Lachner, N., Hugenholtz, P., Tyson, G. W. (2013). “&lt;a href=&#34;http://www.ncbi.nlm.nih.gov/pubmed/24060113&#34;&gt;In-Solution Fluorescence In Situ Hybridization and Fluorescence-Activated Cell Sorting for Single Cell and Population Genome Recovery&lt;/a&gt;”. In: Microbial Metagenomics, Metatranscriptomics, and Metaproteomics. Ed. by Edward F. DeLong. Vol. 531. Academic Press, 3–19.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Imelfort, M., Tyson, G. W. (2013). “&lt;a href=&#34;http://nar.oxfordjournals.org/content/41/10/e105.long&#34;&gt;Crass: identification and reconstruction of CRISPR from unassembled metagenomic data&lt;/a&gt;”. Nucleic Acids Res. 41 (10): e105.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Angly, F. E., Breitbart, M., Bragg, L., He, S., McMahon, K. D., Hugenholtz, P., Tyson, G. W. (2011) “&lt;a href=&#34;http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0020095&#34;&gt;Phage encoded H-NS: a potential achilles heel in the bacterial defence system&lt;/a&gt;”. PLoS One, 6 (5): e20095.&lt;/p&gt;
+</description>
+		</item>
+		<item>
 			<title>Using Amazon Neptune full text search</title>
 			<link>/2020/08/23/using-amazon-neptune-full-text-search/</link>
 			<pubDate>Sun, 23 Aug 2020 22:14:10 -0700</pubDate>
@@ -121,50 +170,6 @@ so the two services have to interact the least amount.&lt;/p&gt;
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
 			<guid isPermaLink="true">/about/</guid>
 			<description>&lt;p&gt;I am a Data Engineer currently working at &lt;a href=&#34;http://pendulum.co&#34;&gt;Pendulum Therapeutics&lt;/a&gt; . I received my PhD at &lt;a href=&#34;http://uq.edu.au&#34;&gt;UQ&lt;/a&gt; in the &lt;a href=&#34;http://ecogenomic.org&#34;&gt;Australian Centre for Ecogenomics&lt;/a&gt;. Throughout my PhD I was at the interface of microbial ecology, chemical engineering, and computational biology and have gained many skills ranging from microscopy, reactor operation and computer programming. I love looking at genomes and developing hypotheses on ecology and physiology based on genomic data. My current role is developing and engineering serverless bioinformatics pipelines using &lt;a href=&#34;https://aws.amazon.com&#34;&gt;AWS&lt;/a&gt;, however my background in molecular biology allows me to effectively work in collaboration with wet-lab scientists and to place the inferences of metagenomic data into a broader biological framework.&lt;/p&gt;
-</description>
-		</item>
-		<item>
-			<title>Résumé</title>
-			<link>/resume/</link>
-			<pubDate>Sun, 07 Jul 2019 00:00:00 +0000</pubDate>
-			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">/resume/</guid>
-			<description>&lt;h2 id=&#34;experience&#34;&gt;Experience&lt;/h2&gt;
-&lt;h3 id=&#34;data-engineer&#34;&gt;Data Engineer&lt;/h3&gt;
-&lt;h4 id=&#34;pendulum-therapeutics-2019present&#34;&gt;Pendulum Therapeutics 2019 — Present&lt;/h4&gt;
-&lt;h3 id=&#34;bioinformatics-cloud-engineer&#34;&gt;Bioinformatics Cloud Engineer&lt;/h3&gt;
-&lt;h4 id=&#34;second-genome-2018--2019&#34;&gt;Second Genome 2018 — 2019&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;Converted &lt;em&gt;Holmes&lt;/em&gt;, Second Genome&amp;rsquo;s genomic processing pipeline, to a serverless architecture using Docker, AWS lambda, AWS Batch, and AWS SQS.&lt;/li&gt;
-&lt;li&gt;Helped convert &lt;em&gt;Gallifrey&lt;/em&gt;, Second Genome&amp;rsquo;s metagenomic/metatranscriptomic processing pipeline to a server less architecture using Docker, AWS Batch&lt;/li&gt;
-&lt;li&gt;Worked to unify Second Genome&amp;rsquo;s python code base so that all teams could work from the same library &lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&#34;postdoctoral-research-fellow&#34;&gt;Postdoctoral Research Fellow&lt;/h3&gt;
-&lt;h4 id=&#34;caltech-20142018&#34;&gt;Caltech 2014―2018&lt;/h4&gt;
-&lt;p&gt;My role was the head bioinformatician for a diverse group of microbiologists, chemists and data scientists at the California Institute of Technology (Caltech). My day to day tasks included the processing of genomic and proteomic data, and generating analysis summaries and plots using statistical software and programing tools such as R and python. As part of this role I was responsible for the production of automated pipelines for data analysis and have developed numerous tools and scripts for processing genomic data. I implemented SQL databases to store the extensive genomic and proteomic data that were generated and developed simple interfaces such that other members of the group could access this information without in-depth knowledge of SQL.&lt;/p&gt;
-&lt;h3 id=&#34;graduate-student&#34;&gt;Graduate Student&lt;/h3&gt;
-&lt;h4 id=&#34;university-of-quensland-20102014&#34;&gt;University of Quensland 2010―2014&lt;/h4&gt;
-&lt;p&gt;My PhD research focused on metagenomic analysis of microbial and viral communities from engineered ecosystems found in wastewater treatment plants. Throughout my PhD I was at the interface of microbial ecology, chemical engineering, and computational biology and have gained many skills ranging from microscopy, reactor operation and computer programming. I developed a number of bioinformatic pipelines and substantial computer software in perl, python and C++. My background in molecular biology allowed me to place the inferences of metagenomic data into a broader biological framework and work with other members of the lab that did not have computer skills.&lt;/p&gt;
-&lt;h2 id=&#34;education&#34;&gt;Education&lt;/h2&gt;
-&lt;h3 id=&#34;university-of-queensland&#34;&gt;University of Queensland&lt;/h3&gt;
-&lt;p&gt;2014, PhD in Microbial Ecology&lt;/p&gt;
-&lt;p&gt;2010, Bachelor of Biotechnology&lt;/p&gt;
-&lt;h3 id=&#34;honors--awards&#34;&gt;Honors &amp;amp; Awards&lt;/h3&gt;
-&lt;p&gt;2015, Dean&amp;rsquo;s award for outstanding PhD dissertation, University of Queensland&lt;/p&gt;
-&lt;p&gt;2010, Australian Research Council PhD Fellowship&lt;/p&gt;
-&lt;h2 id=&#34;publications&#34;&gt;Publications&lt;/h2&gt;
-&lt;p&gt;Yu, H., Susanti, D., McGlynn, S. E., &lt;strong&gt;Skennerton, C. T.,&lt;/strong&gt; Chourey, K., Iyer, R., Scheller, S., Tavormina, P. L., Hettich, R. L., Mukhopadhyay, B., Orphan V. J. (2018) &amp;ldquo;&lt;a href=&#34;https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6286981/&#34;&gt;Comparative Genomics and Proteomic Analysis of Assimilatory Sulfate Reduction Pathways in Anaerobic Methanotrophic Archaea&lt;/a&gt;&amp;rdquo;. Frontiers Microbiol. 9: 2917&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Chourey, K., Iyer, R., Hettich, R. L., Tyson, G. W., Orphan, V. J. (2017) &amp;ldquo;&lt;a href=&#34;https://www.ncbi.nlm.nih.gov/pubmed/28765215&#34;&gt;Methane-Fueled Syntrophy through Extracellular Electron Transfer: Uncovering the Genomic Traits Conserved within Diverse Bacterial Partners of Anaerobic Methanotrophic Archaea&lt;/a&gt;&amp;rdquo;. mBio 8(4):e00530-17&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Haroon, M. F., Briegel, A., Shi, J., Jensen, G. J., Tyson, G. W., Orphan, V. J. (2016) &amp;ldquo;&lt;a href=&#34;http://www.ncbi.nlm.nih.gov/pubmed/27058507&#34;&gt;Phylogenomic analysis of &lt;em&gt;Candidatus&lt;/em&gt; ‘Izimaplasma’ species: free-living representatives from a Tenericutes clade found in methane seeps&lt;/a&gt;&amp;rdquo;. ISMEJ. 10: 2679–2692&lt;/p&gt;
-&lt;p&gt;Marlow, J. J., &lt;strong&gt;Skennerton, C. T.,&lt;/strong&gt; Li, Z., Chourey, K., Hettich, R. L., Pan, C., Orphan, V. J. (2016). &amp;ldquo;&lt;a href=&#34;http://journal.frontiersin.org/article/10.3389/fmicb.2016.00563/full&#34;&gt;Proteomic Stable Isotope Probing Reveals Biosynthesis Dynamics of Slow Growing Methane Based Microbial Communities&lt;/a&gt;&amp;rdquo;. Frontiers Microbiol. 7: 563&lt;/p&gt;
-&lt;p&gt;Barr, J. J., Dutilh, B. E., &lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Fukushima, T., Hastie, M. L., Gorman, J. J., Tyson, G. W., Bond, P. L. (2016). “&lt;a href=&#34;http://www.ncbi.nlm.nih.gov/pubmed/26279094&#34;&gt;Metagenomic and metaproteomic analyses of Accumulibacter phosphatis enriched floccular and granular biofilm&lt;/a&gt;”. Environ. Microbiol. 18(1): 273–287&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Skennerton, C. T.,&lt;/strong&gt; Ward, L. M., Michel, A., Metcalfe, K., Valiente, C., Mullin, S., Chan, K. Y., Gradinaru, V., Orphan, V. J. (2015). &amp;ldquo;&lt;a href=&#34;http://journal.frontiersin.org/article/10.3389/fmicb.2015.01425/full&#34;&gt;Genomic Reconstruction of an Uncultured Hydrothermal Vent Gammaproteobacterial Methanotroph (Family &lt;em&gt;Methylothermaceae&lt;/em&gt;) Indicates Multiple Adaptations to Oxygen Limitation&lt;/a&gt;&amp;quot;. Frontiers Microbiol. 6&lt;/p&gt;
-&lt;p&gt;Parks, D. H., Imelfort, M., &lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Hugenholtz, P., Tyson, G. W. (2015). “&lt;a href=&#34;http://genome.cshlp.org/content/25/7/1043.long&#34;&gt;CheckM: assessing the quality of microbial genomes recovered from isolates, single cells, and metagenomes&lt;/a&gt;”. Genome Res. 25: 1043–1055.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Barr, J. J., Slater, F. R., Bond, P. L., Tyson, G. W. (2015). “&lt;a href=&#34;http://www.ncbi.nlm.nih.gov/pubmed/25088527&#34;&gt;Expanding our view of genomic diversity in &lt;em&gt;Candidatus&lt;/em&gt; Accumulibacter clades&lt;/a&gt;”. Environ. Microbiol. 17 (5): 1574–1585.&lt;/p&gt;
-&lt;p&gt;Soo, R. M., &lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Sekiguchi, Y., Imelfort, M., Paech, S. J., Dennis, P. G., Steen, J. A., Parks, D. H., Tyson, G. W., Hugenholtz, P. (2014). “&lt;a href=&#34;http://gbe.oxfordjournals.org/content/6/5/1031.long&#34;&gt;An expanded genomic representation of the phylum cyanobacteria&lt;/a&gt;”. Genome Biol. Evol. 6 (5): 1031– 1045.&lt;/p&gt;
-&lt;p&gt;Haroon, M. F., &lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Steen, J. A., Lachner, N., Hugenholtz, P., Tyson, G. W. (2013). “&lt;a href=&#34;http://www.ncbi.nlm.nih.gov/pubmed/24060113&#34;&gt;In-Solution Fluorescence In Situ Hybridization and Fluorescence-Activated Cell Sorting for Single Cell and Population Genome Recovery&lt;/a&gt;”. In: Microbial Metagenomics, Metatranscriptomics, and Metaproteomics. Ed. by Edward F. DeLong. Vol. 531. Academic Press, 3–19.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Imelfort, M., Tyson, G. W. (2013). “&lt;a href=&#34;http://nar.oxfordjournals.org/content/41/10/e105.long&#34;&gt;Crass: identification and reconstruction of CRISPR from unassembled metagenomic data&lt;/a&gt;”. Nucleic Acids Res. 41 (10): e105.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Skennerton, C. T.&lt;/strong&gt;, Angly, F. E., Breitbart, M., Bragg, L., He, S., McMahon, K. D., Hugenholtz, P., Tyson, G. W. (2011) “&lt;a href=&#34;http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0020095&#34;&gt;Phage encoded H-NS: a potential achilles heel in the bacterial defence system&lt;/a&gt;”. PLoS One, 6 (5): e20095.&lt;/p&gt;
 </description>
 		</item>
 		<item>
