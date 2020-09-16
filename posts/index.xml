@@ -8,8 +8,109 @@
 		<managingEditor>c.skennerton@gmail.com (Connor Skennerton)</managingEditor>
 		<webMaster>c.skennerton@gmail.com (Connor Skennerton)</webMaster>
 		<copyright>Connor Skennerton — All rights reserved.</copyright>
-		<lastBuildDate>Sun, 23 Aug 2020 22:14:10 -0700</lastBuildDate>
+		<lastBuildDate>Mon, 07 Sep 2020 20:34:14 -0700</lastBuildDate>
 		<atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+		<item>
+			<title>A personal CRISPR retrospective</title>
+			<link>/2020/09/07/a-personal-crispr-retrospective/</link>
+			<pubDate>Mon, 07 Sep 2020 20:34:14 -0700</pubDate>
+			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
+			<guid isPermaLink="true">/2020/09/07/a-personal-crispr-retrospective/</guid>
+			<description>&lt;p&gt;As part of my PhD thesis I studied an emerging field of bacterial
+adaptive immunity, known as &lt;a href=&#34;https://en.wikipedia.org/wiki/CRISPR&#34;&gt;CRISPR&lt;/a&gt;.
+At the time I was interested in tracking this type of immune system
+in bacterial communities to track co-evolution between bacteria and
+their viruses.&lt;label for=&#34;sn-thesis_link&#34; class=&#34;margin-toggle sidenote-number&#34;&gt;
+&lt;/label&gt;
+&lt;input type=&#34;checkbox&#34; id=&#34;sn-thesis_link&#34; class=&#34;margin-toggle&#34; /&gt;
+&lt;span class=&#34;sidenote&#34;&gt;
+For anyone interested and brave enough,
+&lt;a href=&#34;&#34;&gt;here&lt;/a&gt; is a link to my thesis.
+&lt;/span&gt;
+  After I finished up
+writing, submitting, and ultimately obtaining my PhD I realised that
+large portions of the literature review section would never be
+published in a scientific journal. I came to the realisation that
+if this summary of CRISPR (of which I was very proud of) would ever
+be read I needed it to be published in an &amp;ldquo;alternative&amp;rdquo; way.&lt;/p&gt;
+&lt;p&gt;That way was Wikipedia and one of my very
+first blog posts summarized my method for &lt;a href=&#34;/2014/11/12/uploading-your-theis-literature-review-to-wikipedia/&#34;&gt;turning my literature
+review into a Wikipedia article&lt;/a&gt;.  Perhaps my biggest motivation
+for contributing to the Wikipedia page was how out of date the page
+was. My literature review from my thesis had dozens of references
+and was many pages long yet much of this new information wasn&amp;rsquo;t in
+Wikipedia at all.&lt;/p&gt;
+&lt;p&gt;Towards the very end of my PhD the research community began studying
+&lt;a href=&#34;https://en.wikipedia.org/wiki/CRISPR_gene_editing&#34;&gt;CRISPR for gene
+editing&lt;/a&gt; which
+has resulted in amazing (and &lt;a href=&#34;https://www.nature.com/articles/d41586-019-00673-1&#34;&gt;controversial&lt;/a&gt;)
+advances in science using this technique. While CRISPR research
+exploded I went off on a different research direction and eventually
+left academic research for a position in the biotechnology industry.
+Despite not being directly involved with CRISPR research anymore I
+still maintain two pieces of software,
+&lt;a href=&#34;https://github.com/ctSkennerton/minced&#34;&gt;minced&lt;/a&gt; and
+&lt;a href=&#34;https://github.com/ctSkennerton/crass&#34;&gt;crass&lt;/a&gt;, that are designed
+to detect CRISPR arrays in either genomes or metagenomes; and
+recently I got interested in how the CRISPR page on Wikipedia had
+changed since I made my contributions.&lt;/p&gt;
+&lt;p&gt;Not surprisingly the number of contributions has increased drastically
+from 2014 onwards as CRISPR gene editing got significantly more press
+coverage. But what did surprise me was Wikipedia&amp;rsquo;s &lt;a href=&#34;https://xtools.wmflabs.org/articleinfo/en.wikipedia.org/CRISPR&#34;&gt;inbuilt page statistics showing I&amp;rsquo;m the second
+highest author&lt;/a&gt; in terms of characters contributed.
+It&amp;rsquo;s been years since I contributed so my
+assumption was that most of what I wrote would have been edited
+away. Seeing my name so prominent really filled me with pride
+as this contribution is likely my most read piece of scientific
+literature I&amp;rsquo;ve ever made. Digging into the history of the article&amp;rsquo;s revisions it became clear that my
+name is still so high on the list due to the
+organic nature of Wikipedia article growth. I could see in the history section
+that large parts of the CRISPR page had been split off into the
+separate &lt;a href=&#34;https://en.wikipedia.org/wiki/CRISPR_gene_editing&#34;&gt;CRISPR gene editing&lt;/a&gt; page,
+which is itself a huge page; and the large
+&lt;a href=&#34;https://en.wikipedia.org/wiki/Cas9&#34;&gt;cas9&lt;/a&gt; page, which details the
+primary enzyme used in CRISPR gene editing. Intuitively this makes sense,
+people contribute small amounts to a page that already exists until someone
+decides that much of that information is better suited under a different title.&lt;/p&gt;
+&lt;p&gt;Some elements for my original contribution are still present including the table of
+signature CRISPR genes and a &lt;a href=&#34;https://en.wikipedia.org/wiki/CRISPR#/media/File:The_Stages_of_CRISPR_immunity.svg&#34;&gt;summary figure of the different types
+of CRISPR systems&lt;/a&gt;.
+Both of these elements are sorely out of date.
+I was disappointed to see that the table in particular hadn&amp;rsquo;t been
+updated as many of the rows still contained descriptions stating
+&amp;ldquo;function unknown&amp;rdquo;. Surely with the increased interest in CRISPR
+all of the proteins would have some more information about them.&lt;/p&gt;
+&lt;p&gt;Thankfully this assumption was true, much research on CRISPR has
+taken place but the information has yet to be disseminated back to
+Wikipedia. A quick literature search on Pubmed showed amazing
+research on many of the different cas genes. This let me
+change a few &amp;ldquo;function unknown&amp;rdquo; rows in the table and let me create a few
+new enzyme stubs on Wikipedia for
+&lt;a href=&#34;https://en.wikipedia.org/wiki/Cas2&#34;&gt;cas2&lt;/a&gt;,
+&lt;a href=&#34;https://en.wikipedia.org/wiki/Cas3&#34;&gt;cas3&lt;/a&gt;, and
+&lt;a href=&#34;https://en.wikipedia.org/wiki/Cas4&#34;&gt;cas4&lt;/a&gt;.
+I hope that the additional
+pages will spurn either myself or others to add information.
+&lt;label for=&#34;sn-new_additions&#34; class=&#34;margin-toggle sidenote-number&#34;&gt;
+&lt;/label&gt;
+&lt;input type=&#34;checkbox&#34; id=&#34;sn-new_additions&#34; class=&#34;margin-toggle&#34; /&gt;
+&lt;span class=&#34;sidenote&#34;&gt;
+Right after I created the cas3 page another user added in some more information within a day!
+&lt;/span&gt;
+&lt;/p&gt;
+&lt;p&gt;Looking back at this has kindled my own interest in CRISPR again.
+A short summary of the information I found and integrated into Wikipedia
+while writing this blog post&amp;hellip;&lt;/p&gt;
+&lt;h3 id=&#34;cas4&#34;&gt;cas4&lt;/h3&gt;
+&lt;p&gt;Is an endonuclease that works with cas1 and cas2 to generate spacer sequences. It looks for PAM sequences and processes
+the spacer before insertion into the CRISPR array.&lt;/p&gt;
+&lt;h3 id=&#34;cas5-cas6-cas7&#34;&gt;cas5, cas6, cas7&lt;/h3&gt;
+&lt;p&gt;These are essential for generating crispr-RNAs (crRNAs) which are used to target foreign DNA.&lt;/p&gt;
+&lt;h3 id=&#34;cas10&#34;&gt;cas10&lt;/h3&gt;
+&lt;p&gt;Binds to the 5&amp;rsquo;-end of the CRISPR RNA and promotes the oligomerization of other cas proteins creating the interference
+complex that destroys foreign DNA/RNA&lt;/p&gt;
+</description>
+		</item>
 		<item>
 			<title>Using Amazon Neptune full text search</title>
 			<link>/2020/08/23/using-amazon-neptune-full-text-search/</link>
