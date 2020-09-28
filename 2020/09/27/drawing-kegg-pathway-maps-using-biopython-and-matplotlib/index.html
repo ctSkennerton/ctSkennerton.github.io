@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Drawing KEGG pathway maps using biopython and matplotlib | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="I use KEGG a lot to understand microbial metabolism. KEGG is one of the largest resources of enzymes, biochemical reactions, genes, and molecules, all cross-linked and organized into what&rsquo;s called metabolic maps. These maps are well-constructed images of enzymes that functions together for the same overall purpose like amino acid synthesis, or the metabolism of glucose. One of the great things about the website is the ability to color on your data to their metabolic maps." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/style.7c6d960b20273ed88bc63a60591a57e7739fb21f243b77f27c3bc730ef6205c0.css" />
+  <link rel="stylesheet" href="/custom.css" />
+  <script defer src="/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">bio(logist | informatician)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      Drawing KEGG pathway maps using biopython and matplotlib
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2020-09-27T22:11:47-07:00">
+      27 Sep 2020
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/tags/bioinformatics">Bioinformatics</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p>I use <a href="https://kegg.jp">KEGG</a> a lot to understand microbial metabolism.
+KEGG is one of the largest resources of enzymes, biochemical
+reactions, genes, and molecules, all cross-linked and organized
+into what&rsquo;s called metabolic maps. These maps are well-constructed
+images of enzymes that functions together for the same overall
+purpose like amino acid synthesis, or the metabolism of glucose.
+One of the great things about the website is the ability to color
+on your data to their metabolic maps. Doing this in bulk though can
+be very tedious as you need to view and download individual maps.
+Luckily, there is a <a href="https://nbviewer.jupyter.org/github/widdowquinn/notebooks/blob/master/Biopython_KGML_intro.ipynb">great tutorial on how to dynamically color KEGG maps</a>
+using biopython that I&rsquo;ve used in the past to create PDF images.</p>
+<p>While this works well, the current biopython graphics module is
+based on <a href="https://www.reportlab.com">reportlab</a>, which is a more niche graphics system than
+<a href="https://matplotlib.org">matplotlib</a>. This means that the images made in biopython can&rsquo;t
+easily be combined with other plots generated with matplotlib and
+the biopython implementation of drawing KEGG maps is restricted to
+producing PDF documents.</p>
+<p>I was recently working on a project where I needed to combine the
+KEGG maps with other types of plots, generated via matplotlib and
+didn&rsquo;t want to do it manually in a separate program. Instead I
+looked into converting the <code>KEGG_vis</code> module of biopython from
+reportlab to matplotlib. Thankfully, the code is quite short and
+self-contained, thus making the conversion process easy.</p>
+<p>Visualizing KEGG data in biopython is driven by KGML, an XML markup
+which describes the placement of objects in a pathway map. Biopython
+parses this file and draws on the graphics elements based on
+this information. Converting the drawing code was pretty
+straightforward as many of the concepts between reportlab and
+matplotlib are the same. The bulk of the drawing code happens in
+the <code>__add_graphics</code> method, which is responsible for adding in the
+lines, circles, and rectangles described in KGML. There is almost
+a 1:1 mapping between the reportlab constructs and the equivalent
+matplotlib Patch API.  For example drawing a line path in the
+original reportlab version looked like</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">drawing</span><span class="o">.</span><span class="n">beginPath</span><span class="p">()</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">graphics</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="n">graphics</span><span class="o">.</span><span class="n">coords</span><span class="p">:</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">lineTo</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">drawing</span><span class="o">.</span><span class="n">drawPath</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">drawing</span><span class="o">.</span><span class="n">setLineWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Return to default</span>
+</code></pre></div><p>Which starts a line at an xy-coordinate and then iterates through all of the remaining point in the path
+using the <code>p.lineTo</code> method. The translation to matplotlib results in very similar code</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">graphics</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">verts</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>  <span class="c1"># left, bottom</span>
+<span class="p">]</span>
+
+<span class="n">codes</span> <span class="o">=</span> <span class="p">[</span>
+	<span class="n">Path</span><span class="o">.</span><span class="n">MOVETO</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="n">graphics</span><span class="o">.</span><span class="n">coords</span><span class="p">:</span>
+	<span class="n">codes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">LINETO</span><span class="p">)</span>
+	<span class="n">verts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">))</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">verts</span><span class="p">,</span> <span class="n">codes</span><span class="p">)</span>
+<span class="n">patch</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">PathPatch</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>    
+<span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">patch</span><span class="p">)</span>        
+</code></pre></div><p>The only major difference was that reportlab seems to use a global
+state to keep track of things like the line color and weight;
+throughout the original code there are calls to set the font, color,
+and line and then return to the original state after certain calls
+to draw a graphics object have been made. Alternatively, in matplotlib,
+these modifications are passed in directly when creating a new patch
+object. Internally I made this change to the API by adding a
+<code>**kwargs</code> argument to the <code>__add_graphics</code> method.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># The following code snippet demonstrates the change from reportlab</span>
+<span class="c1"># which used calls like setStrokeColor to globally change the state</span>
+<span class="c1"># and the new interface which passes these arguments into __add_graphics</span>
+<span class="c1"># as kwargs, which will be applied to the matplotlib patches.</span>
+<span class="k">for</span> <span class="n">ortholog</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pathway</span><span class="o">.</span><span class="n">orthologs</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ortholog</span><span class="o">.</span><span class="n">graphics</span><span class="p">:</span>
+	<span class="c1">#self.drawing.setStrokeColor(color_to_reportlab(g.fgcolor))</span>
+	<span class="c1">#self.drawing.setFillColor(color_to_reportlab(g.bgcolor))</span>
+	<span class="bp">self</span><span class="o">.</span><span class="n">__add_graphics</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">bgcolor</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">fgcolor</span><span class="p">)</span>
+</code></pre></div><p>This new version of the <code>KEGG_vis</code> library lives on <a href="https://github.com/ctSkennerton/biopython/tree/kegg_matplotlib">my fork of biopython</a> for now.</p>
+
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2020 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>
