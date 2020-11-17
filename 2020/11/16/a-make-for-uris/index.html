@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>A Make for URIs | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="Make has been a one of the key tools in my arsenal for gettings things done. Although it was developed for compiling code, its functionality can be generalized to any process that requires files to be generated based on dependancies. I recommend you look at these slides by Vince Buffalo as a good introduction to using make for scientific workflows. Make works by creating a dependancy graph of files and their prerequisites using the last time the file was modified as a way to determine if a file needs to be remade." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/style.7c6d960b20273ed88bc63a60591a57e7739fb21f243b77f27c3bc730ef6205c0.css" />
+  <link rel="stylesheet" href="/custom.css" />
+  <script defer src="/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">bio(logist | informatician)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      A Make for URIs
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2020-11-16T18:07:45-08:00">
+      16 Nov 2020
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/tags/mk">Mk</a>
+    <a href="/tags/make">Make</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p><code>Make</code> has been a one of the key tools in my arsenal for gettings
+things done. Although it was developed for compiling code, its
+functionality can be generalized to any process that requires files
+to be generated based on dependancies.
+I recommend you look at these <a href="https://github.com/vsbuffalo/makefiles-in-bioinfo/blob/master/makefile-slides.pdf">slides by Vince Buffalo</a>
+as a good introduction to using <code>make</code> for scientific workflows.
+<code>Make</code> works by creating a
+dependancy graph of files and their prerequisites
+using the last time the file was
+modified as a way to determine if a file needs to be remade.
+This general concept is great for
+reproducable scientific research or many other repeating
+tasks and workflows. However it&rsquo;s not without it&rsquo;s flaws.</p>
+<p>Make&rsquo;s syntax is very obtuse using many shorthand variables like
+to describe rules that make it difficult to start using. But
+even after leaning its syntax I&rsquo;ve continually found one fatal flaw:
+all of the files need to be local, on your current computer.
+This makes sense given its original function
+of compiling code. However in data analysis and scientific workflows
+we often have to interact with remote files on AWS S3 or files that
+we download from a web resourse. These files don&rsquo;t have a time stamp
+that <code>make</code> can use and so their presense completely breaks the
+dependancy graph.</p>
+<p>There are work arounds of course. I&rsquo;ve used dummy empty files as a
+way of keeping track of the last time a URL was downloaded or
+just downloaded all of the external files at the beginning and
+end of an analysis, which is used in the popular
+<a href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science template</a>.
+But both of these solutions are brittle and don&rsquo;t really solve the
+problem.</p>
+<p>I looked for a URL enabled make, one that could integrate in remote
+files to the dependancy graph, but didn&rsquo;t find anything suitable.
+So instead I set out to add this functionality to one myself.</p>
+<p>I first looked at the source for <a href="https://www.gnu.org/software/make/">GNU make</a>
+however I couldn&rsquo;t understand the <a href="http://git.savannah.gnu.org/cgit/make.git/tree/">source code</a>
+so modifying that was out of the question.
+Instead I used <code>mk</code>
+as the base for my modifications. <a href="http://doc.cat-v.org/plan_9/4th_edition/papers/mk">Mk was originally developed
+Plan 9 operating system</a>
+as a re-write of make without many of its annoyances.
+I had stumbled upon a simple <a href="https://github.com/dcjones/mk">re-implementation of mk in Go by Daniel Jones</a>
+a number of years ago and decided to add remote file support to that.
+The changes I describe below are available on <a href="https://github.com/ctSkennerton/mk">my fork</a>
+of <code>mk</code> on Github.</p>
+<p>The goal of my improvemnts was to make the following rule work:</p>
+<div class="highlight"><pre class="chroma"><code class="language-make" data-lang="make"><span class="nf">file.txt.gz</span><span class="o">:</span> &#34;<span class="n">https</span>://<span class="n">ftp</span>.<span class="n">ncbi</span>.<span class="n">nlm</span>.<span class="n">nih</span>.<span class="n">gov</span>/<span class="n">genomes</span>/<span class="n">all</span>/<span class="n">GCF</span>/001/696/305/<span class="n">GCF_</span>001696305.1<span class="n">_UCN</span>72.1/<span class="n">GCF_</span>001696305.1<span class="n">_UCN</span>72.1<span class="n">_feature_count</span>.<span class="n">txt</span>.<span class="n">gz</span>&#34;
+    curl <span class="nv">$prereq</span> &gt; <span class="nv">$target</span>
+</code></pre></div><p>That is, that <code>mk</code> would recognise the prerequisite as a URL,
+determine if that URL was newer or older than the target and
+proceed accordingly.
+<label for="sn-rule_quotes" class="margin-toggle sidenote-number">
+</label>
+<input type="checkbox" id="sn-rule_quotes" class="margin-toggle" />
+<span class="sidenote">
+Since there is an extra colon
+in the URL we need to protect it with quotes so the mkfile parser
+doesn&rsquo;t get confused.
+</span>
+</p>
+<p>The core of <code>make</code> and <code>mk</code> is deciding to remake a file based
+on whether its prerequisites are newer than it. It does this by
+looking at the last modified timestamp of a file. Sure enough inside
+<a href="https://github.com/ctSkennerton/mk/blob/1e476df682360a522b993508429a13ae64d20685/graph.go#L64"><code>graph.go</code></a>
+there was a function <code>updateTimestamp</code> that gets the
+last modified time of a file or sets that the file doesn&rsquo;t exist.</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">info</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Stat</span><span class="p">(</span><span class="nx">u</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+<span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+	<span class="nx">u</span><span class="p">.</span><span class="nx">t</span> <span class="p">=</span> <span class="nx">info</span><span class="p">.</span><span class="nf">ModTime</span><span class="p">()</span>
+	<span class="nx">u</span><span class="p">.</span><span class="nx">exists</span> <span class="p">=</span> <span class="kc">true</span>
+	<span class="nx">u</span><span class="p">.</span><span class="nx">flags</span> <span class="o">|=</span> <span class="nx">nodeFlagProbable</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+	<span class="nx">_</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">err</span><span class="p">.(</span><span class="o">*</span><span class="nx">os</span><span class="p">.</span><span class="nx">PathError</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">ok</span> <span class="p">{</span>
+		<span class="nx">u</span><span class="p">.</span><span class="nx">t</span> <span class="p">=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Unix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+		<span class="nx">u</span><span class="p">.</span><span class="nx">exists</span> <span class="p">=</span> <span class="kc">false</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nf">mkError</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nf">Error</span><span class="p">())</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>This was the function to modify to look at time stamps of remote
+files. To do this we just need to identify files that look like
+remote files, i.e. start with http(s):// or s3://. The following
+simple modification makes that check and farms out the modification
+checking based on if it&rsquo;s a http(s) or s3 remote file.</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// u is a node in the dependancy graph.
+</span><span class="c1">// its name member is the full path of the file
+</span><span class="c1"></span><span class="k">if</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">HasPrefix</span><span class="p">(</span><span class="nx">u</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="s">&#34;s3://&#34;</span><span class="p">)</span> <span class="o">||</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">HasPrefix</span><span class="p">(</span><span class="nx">u</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="s">&#34;https://&#34;</span><span class="p">)</span> <span class="o">||</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">HasPrefix</span><span class="p">(</span><span class="nx">u</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="s">&#34;http://&#34;</span><span class="p">)</span> <span class="p">{</span>
+<span class="nx">up</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">url</span><span class="p">.</span><span class="nf">Parse</span><span class="p">(</span><span class="nx">u</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+	<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="nx">up</span><span class="p">.</span><span class="nx">Scheme</span> <span class="o">==</span> <span class="s">&#34;http&#34;</span> <span class="o">||</span> <span class="nx">up</span><span class="p">.</span><span class="nx">Scheme</span> <span class="o">==</span> <span class="s">&#34;https&#34;</span> <span class="p">{</span>
+	<span class="nf">updateHttpTimestamp</span><span class="p">(</span><span class="nx">u</span><span class="p">)</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">up</span><span class="p">.</span><span class="nx">Scheme</span> <span class="o">==</span> <span class="s">&#34;s3&#34;</span> <span class="p">{</span>
+	<span class="nf">updateS3Timestamp</span><span class="p">(</span><span class="nx">u</span><span class="p">,</span> <span class="nx">up</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>The implementation of <code>updateHttpTimestamp</code> is pretty simple.
+A <code>HEAD</code> request is made to the URL and the <code>Last-Modified</code>
+header is read. If that header is present the time is parsed
+and used in the dependancy graph. If the header isn&rsquo;t found
+it&rsquo;s assumed that the URL doesn&rsquo;t exist causing it to be remade.</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">updateHttpTimestamp</span><span class="p">(</span><span class="nx">u</span> <span class="o">*</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
+	<span class="c1">// get the headers of the URL
+</span><span class="c1"></span>	<span class="nx">resp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">Head</span><span class="p">(</span><span class="nx">u</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">lastModified</span> <span class="o">:=</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">Header</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;Last-Modified&#34;</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">lastModified</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+		<span class="c1">// no Last-Modified header so lets assume that it
+</span><span class="c1"></span>		<span class="c1">// doesn&#39;t exist
+</span><span class="c1"></span>		<span class="nx">u</span><span class="p">.</span><span class="nx">t</span> <span class="p">=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Unix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+		<span class="nx">u</span><span class="p">.</span><span class="nx">exists</span> <span class="p">=</span> <span class="kc">false</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">tmptime</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Parse</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">RFC1123</span><span class="p">,</span> <span class="nx">lastModified</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+			<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">u</span><span class="p">.</span><span class="nx">t</span> <span class="p">=</span> <span class="nx">tmptime</span>
+		<span class="nx">u</span><span class="p">.</span><span class="nx">exists</span> <span class="p">=</span> <span class="kc">true</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>The implementation for updating an S3 file is similar but uses the
+AWS API to get the last modified time.</p>
+<p>And with those small modifications the basic example I showed at the
+beginning now works. These modifications can be found in <a href="https://github.com/ctSkennerton/mk">my fork</a>
+of <code>mk</code>, try it out and see how much easier your make-ing becomes!</p>
+
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2020 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>

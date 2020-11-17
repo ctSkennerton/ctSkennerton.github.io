@@ -3,27 +3,42 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/2020/11/16/a-make-for-uris/</loc>
+    <lastmod>2020-11-16T18:07:45-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2020-11-16T18:07:45-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/make/</loc>
+    <lastmod>2020-11-16T18:07:45-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/mk/</loc>
+    <lastmod>2020-11-16T18:07:45-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/</loc>
+    <lastmod>2020-11-16T18:07:45-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2020-11-16T18:07:45-08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/tags/bioinformatics/</loc>
     <lastmod>2020-09-27T22:11:47-07:00</lastmod>
   </url>
   
   <url>
-    <loc>/</loc>
-    <lastmod>2020-09-27T22:11:47-07:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/2020/09/27/drawing-kegg-pathway-maps-using-biopython-and-matplotlib/</loc>
-    <lastmod>2020-09-27T22:11:47-07:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/posts/</loc>
-    <lastmod>2020-09-27T22:11:47-07:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
     <lastmod>2020-09-27T22:11:47-07:00</lastmod>
   </url>
   
