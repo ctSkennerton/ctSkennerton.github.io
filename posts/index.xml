@@ -8,8 +8,184 @@
 		<managingEditor>c.skennerton@gmail.com (Connor Skennerton)</managingEditor>
 		<webMaster>c.skennerton@gmail.com (Connor Skennerton)</webMaster>
 		<copyright>Connor Skennerton — All rights reserved.</copyright>
-		<lastBuildDate>Mon, 16 Nov 2020 18:07:45 -0800</lastBuildDate>
+		<lastBuildDate>Thu, 10 Dec 2020 20:19:12 -0800</lastBuildDate>
 		<atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+		<item>
+			<title>Exploratory data analysis with Pharo Smalltalk</title>
+			<link>/2020/12/10/exploratory-data-analysis-with-pharo-smalltalk/</link>
+			<pubDate>Thu, 10 Dec 2020 20:19:12 -0800</pubDate>
+			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
+			<guid isPermaLink="true">/2020/12/10/exploratory-data-analysis-with-pharo-smalltalk/</guid>
+			<description>&lt;p&gt;The first time I heard about &lt;a href=&#34;https://en.wikipedia.org/wiki/Smalltalk&#34;&gt;Smalltalk&lt;/a&gt;
+was reading through the &lt;a href=&#34;https://en.wikipedia.org/wiki/Ruby_(programming_language)&#34;&gt;wikipedia page for Ruby&lt;/a&gt;,
+which mentioned it as an influence. At the time I was just a few months into my
+transition from a wet-lab biologist into a bioinformatician and trying to decide
+between Perl, Python, and Ruby as a scripting language to learn. &lt;label for=&#34;sn-who_won&#34; class=&#34;margin-toggle sidenote-number&#34;&gt;
+&lt;/label&gt;
+&lt;input type=&#34;checkbox&#34; id=&#34;sn-who_won&#34; class=&#34;margin-toggle&#34; /&gt;
+&lt;span class=&#34;sidenote&#34;&gt;
+Python became my language of choice after a long battle with Perl
+(this was some years ago and Perl was much more relevant).
+&lt;/span&gt;
+
+I remember being really intrigued at Smalltalk&amp;rsquo;s syntax and it&amp;rsquo;s pure object-oriented
+approach; I was just starting to userstand what these concepts meant but
+was already gravitating to OOP. This was a language that seemed very alien to what I was picking up
+in C-derived scripting languages. I learned that you made a file with your
+program in it and then passed that file as an argument to another program to
+interpret it — that&amp;rsquo;s just how programming worked.&lt;/p&gt;
+&lt;p&gt;In contrast, instead of code existing in files that are
+run by an interpreter or compiled into a binary program, Smalltalk has the concept
+of &lt;a href=&#34;https://en.wikipedia.org/wiki/Smalltalk#Image-based_persistence&#34;&gt;image-based persistence&lt;/a&gt;,
+which encapsulates the current program state and all of the code into one. Editing your
+code is equivelent to changing the program itself rather than a static copy that
+gets turned into your program. This is a pretty wild concept and makes programming
+much more interactive. An example of how this might streamline your workflow is in
+debugging. Often programmers will use a debugger to step through the running code
+line by line to see how variable change and find the place where are bug happens.
+When the bug is found you then have to go to the line in the source and make the
+required change (and either run the program again or re-compile). But with Smalltalk
+you&amp;rsquo;re running &amp;ldquo;live&amp;rdquo; code so modifying it during debugging fixes it once. While I
+can appreciate this now as a more accomplished programmer, as a newbie I was
+utterly confused by it. I never picked it up Smalltalk.&lt;/p&gt;
+&lt;p&gt;Recently I was back on wikipedia looking at some other programming language&amp;rsquo;s page
+and again there was that smalltalk influence. So I scratched the itch and finally
+downloaded Pharo — which seems to be one of the more popular implementations —
+and tried out some basic data visualization.&lt;/p&gt;
+&lt;p&gt;Pharo is an integrated environment, there isn&amp;rsquo;t really separate source code for writing
+programs; they get written one method at a time in the IDE. But there is a playground
+feature that allows you to write short scripts and generally play around. The code snippets
+I show below are all taken from the playground.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;First we need to install some external packages. Unlike python or R there doesn&amp;rsquo;t seem to
+be a single source of packages, instead repositories can be downloaded from URLs:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;nc&#34;&gt;Metacello&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;new&lt;/span&gt;
+    &lt;span class=&#34;nf&#34;&gt;baseline:&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;Roassal3Exporters&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;nf&#34;&gt;repository:&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;github://ObjectProfile/Roassal3Exporters&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;nf&#34;&gt;load&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+
+&lt;span class=&#34;nc&#34;&gt;Metacello&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;new&lt;/span&gt;
+  &lt;span class=&#34;nf&#34;&gt;baseline:&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;DataFrame&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;nf&#34;&gt;repository:&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;github://PolyMathOrg/DataFrame/src&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;nf&#34;&gt;load&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now let&amp;rsquo;s look at some penguin data! I&amp;rsquo;m using the &lt;a href=&#34;https://allisonhorst.github.io/palmerpenguins/articles/palmerpenguins.html&#34;&gt;palmerpenduins&lt;/a&gt;
+dataset that was built
+with R in mind. The &lt;code&gt;DataFrame&lt;/code&gt; package can&amp;rsquo;t load from URLs directly but Pharo provides
+some niffty built-in objects that allow us to convert the string URL into a &lt;code&gt;ZnURL&lt;/code&gt; object,
+which we can retrieve the contents of (i.e. download).&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;c&#34;&gt;&amp;#34;Convert the url string to a Url object and download the contents, passing that into the 
+&lt;/span&gt;&lt;span class=&#34;c&#34;&gt; data frame constructor.
+&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;df&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;DataFrame&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;readFromCsv:&lt;/span&gt; 
+    &lt;span class=&#34;s&#34;&gt;&amp;#39;https://raw.githubusercontent.com/allisonhorst/palmerpenguins/master/inst/extdata/penguins_raw.csv&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asUrl&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;retrieveContents&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;After that we can then set up the plot using the various Roassal classes. In the example
+below I&amp;rsquo;m plotting the Culmen Length versus the Egg Date columns. It shows off a couple of
+tricks I had to learn: first, was how to plot a date on the axis; and second, was how to
+deal with &lt;code&gt;NA&lt;/code&gt; values in the data frame.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;nv&#34;&gt;chart&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;RSChart&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;lineaxes&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;RSScatterPlot&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;&amp;#34;Importing the CSV file doesn&amp;#39;t recognize NA so convert them to NaN&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;lineaxes&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;x:&lt;/span&gt; ((&lt;span class=&#34;nv&#34;&gt;df&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;column:&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;Date Egg&amp;#39;&lt;/span&gt;) &lt;span class=&#34;nf&#34;&gt;collect:&lt;/span&gt; 
+            [ &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;d&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;d&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;julianDayNumber&lt;/span&gt; ]) 
+         &lt;span class=&#34;nf&#34;&gt;y:&lt;/span&gt; ((&lt;span class=&#34;nv&#34;&gt;df&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;column:&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;Culmen Length (mm)&amp;#39;&lt;/span&gt;) &lt;span class=&#34;nf&#34;&gt;collect:&lt;/span&gt; 
+            [ &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;NA&amp;#39;&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;ifTrue:&lt;/span&gt; [&lt;span class=&#34;s&#34;&gt;&amp;#39;NaN&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asNumber&lt;/span&gt;] 
+                            &lt;span class=&#34;nb&#34;&gt;ifFalse:&lt;/span&gt; [&lt;span class=&#34;nv&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asNumber&lt;/span&gt;] ])&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+
+&lt;span class=&#34;nv&#34;&gt;chart&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;addPlot:&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;lineaxes&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;vticks&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;RSVerticalTick&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+ 
+&lt;span class=&#34;c&#34;&gt;&amp;#34;Offset controls the horizontal position&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;chart&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;ylabel:&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;Culmen Length (mm)&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;offset:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;-20&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+
+&lt;span class=&#34;nv&#34;&gt;chart&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;addDecoration:&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;vticks&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;hticks&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;RSHorizontalTick&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;hticks&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;numberOfTicks:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;span class=&#34;c&#34;&gt;&amp;#34;Convert the julian day numbers back to Date objects. The asString message will
+&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;be sent during rendering to make it look pretty&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;hticks&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;labelConversion:&lt;/span&gt; [ &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Date&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;julianDayNumber:&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;x&lt;/span&gt;]&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;useDiagonalLabel&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+
+&lt;span class=&#34;nv&#34;&gt;chart&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;addDecoration:&lt;/span&gt;  &lt;span class=&#34;nv&#34;&gt;hticks&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;chart&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;openOnce&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;figure&gt;
+    &lt;img src=&#34;/media/2020/12/penguins.png&#34;
+         alt=&#34;Basic plot of Penguins with the date as the X-axis&#34; width=&#34;400&#34;/&gt; &lt;figcaption&gt;
+            &lt;p&gt;Basic plot of Penguins with the date as the X-axis&lt;/p&gt;
+        &lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;p&gt;Next I wanted to try and replicate a Facet Grid one of the best features of
+&lt;a href=&#34;https://seaborn.pydata.org&#34;&gt;seaborn&lt;/a&gt; and &lt;a href=&#34;https://ggplot2.tidyverse.org&#34;&gt;ggplot2&lt;/a&gt;
+for plotting &lt;a href=&#34;https://en.wikipedia.org/wiki/Small_multiple&#34;&gt;small multiples&lt;/a&gt;. I couldn&amp;rsquo;t
+find anything built in that would be the equivelent but Roassal has all of the primatives
+to make this happen. My solution below is based on the examples in the Roassal package:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;c&#34;&gt;&amp;#34;Create a canvas to add our charts to&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;c&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;RSCanvas&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;span class=&#34;c&#34;&gt;&amp;#34;First find the unique values in the species column and then loop through the values&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;groups&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; ((&lt;span class=&#34;nv&#34;&gt;df&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;column:&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;Species&amp;#39;&lt;/span&gt;) &lt;span class=&#34;nf&#34;&gt;uniqueValues&lt;/span&gt;) &lt;span class=&#34;nf&#34;&gt;collect:&lt;/span&gt; [ &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;species&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; 
+
+    &lt;span class=&#34;c&#34;&gt;&amp;#34;Subset the main dataset returning just the rows for the current species&amp;#34;&lt;/span&gt;
+	&lt;span class=&#34;nv&#34;&gt;spdf&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;df&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;select:&lt;/span&gt; [&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; (&lt;span class=&#34;nv&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;at:&lt;/span&gt; &lt;span class=&#34;ss&#34;&gt;#Species&lt;/span&gt;) &lt;span class=&#34;nf&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;species&lt;/span&gt; ]&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+    
+    &lt;span class=&#34;c&#34;&gt;&amp;#34;Make a new group that will hold this chart&amp;#34;&lt;/span&gt;
+	&lt;span class=&#34;nv&#34;&gt;g&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;RSGroup&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+	&lt;span class=&#34;nv&#34;&gt;chart&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;RSChart&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+	&lt;span class=&#34;nv&#34;&gt;chart&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;container:&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;g&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+
+    &lt;span class=&#34;c&#34;&gt;&amp;#34;Make a scatterplot&amp;#34;&lt;/span&gt;
+    &lt;span class=&#34;nv&#34;&gt;plot&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;RSScatterPlot&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+    
+    &lt;span class=&#34;c&#34;&gt;&amp;#34;Get the x and y values the same as above&amp;#34;&lt;/span&gt;
+	&lt;span class=&#34;nv&#34;&gt;plot&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;x:&lt;/span&gt; ((&lt;span class=&#34;nv&#34;&gt;spdf&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;column:&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;Date Egg&amp;#39;&lt;/span&gt;) &lt;span class=&#34;nf&#34;&gt;asArray&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;collect:&lt;/span&gt; 
+            [ &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;d&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;d&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;julianDayNumber&lt;/span&gt; ]) 
+         &lt;span class=&#34;nf&#34;&gt;y:&lt;/span&gt; ((&lt;span class=&#34;nv&#34;&gt;spdf&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;column:&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;Culmen Length (mm)&amp;#39;&lt;/span&gt;) &lt;span class=&#34;nf&#34;&gt;asArray&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;collect:&lt;/span&gt; 
+            [ &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;ifNil:&lt;/span&gt; [&lt;span class=&#34;s&#34;&gt;&amp;#39;NaN&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asNumber&lt;/span&gt;] 
+                     &lt;span class=&#34;nf&#34;&gt;ifNotNil:&lt;/span&gt; [&lt;span class=&#34;nv&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asNumber&lt;/span&gt;] ])&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+	&lt;span class=&#34;nv&#34;&gt;chart&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;addPlot:&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;plot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+	&lt;span class=&#34;nv&#34;&gt;chart&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;title:&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;species&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+	&lt;span class=&#34;nv&#34;&gt;chart&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;build&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+    &lt;span class=&#34;c&#34;&gt;&amp;#34;The final statement of a block is returned... so here
+&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;     we are converting the group object, which holds the chart
+&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;     into a shape, which is needed to add onto the canvas
+&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;    &amp;#34;&lt;/span&gt;
+	&lt;span class=&#34;nv&#34;&gt;g&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asShape&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+	]&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+
+&lt;span class=&#34;nv&#34;&gt;c&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;addAll:&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;groups&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;&amp;#34;Layout the three groups horizontally on the canvas&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nc&#34;&gt;RSHorizontalLineLayout&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;on:&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;c&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;shapes&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;c&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;@&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;RSCanvasController&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;c&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;openOnce&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;figure&gt;
+    &lt;img src=&#34;/media/2020/12/penguins-by-species.png&#34;
+         alt=&#34;Split out the into three charts, one for each species&#34; width=&#34;800&#34;/&gt; &lt;figcaption&gt;
+            &lt;p&gt;Split out the into three charts, one for each species&lt;/p&gt;
+        &lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;p&gt;As you can tell from the code samples above there is a lot of boilerplate to set this up.
+Roassal isn&amp;rsquo;t a ggplot clone, it&amp;rsquo;s much more low level like base plotting in R or matplotlib.
+It&amp;rsquo;s still impressive the variety of things that you can accomplish with it, 2D charts are
+just one aspect of Roassal, which is probably why there is a bit more boiler plate than you
+might want for just making a chart.&lt;/p&gt;
+&lt;p&gt;There is also a bit of roughness to the DataFrame package. The type detection isn&amp;rsquo;t as smart as
+in R so columns containing &lt;code&gt;NA&lt;/code&gt; were being left as strings. I fixed this in my examples above wtih:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;(&lt;span class=&#34;nv&#34;&gt;df&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;column:&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;Culmen Length (mm)&amp;#39;&lt;/span&gt;) &lt;span class=&#34;nf&#34;&gt;collect:&lt;/span&gt; 
+            [ &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;NA&amp;#39;&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;ifTrue:&lt;/span&gt; [&lt;span class=&#34;s&#34;&gt;&amp;#39;NaN&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asNumber&lt;/span&gt;] 
+                            &lt;span class=&#34;nb&#34;&gt;ifFalse:&lt;/span&gt; [&lt;span class=&#34;nv&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asNumber&lt;/span&gt;] ]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The &lt;code&gt;collect&lt;/code&gt; method returns a new data series where each element has been transformed using the
+code block as it&amp;rsquo;s argument. In this can I&amp;rsquo;m checking for &lt;code&gt;NA&lt;/code&gt; and converting to &lt;code&gt;NaN&lt;/code&gt; or the
+real number. Similarily, dealing with a date axis involved manually transforming it into a
+julian day representation (so basically just a number) and back again for the label. Despite this
+I&amp;rsquo;ve come away with a pretty positive opinion of both these packages. The code in DataFrame is easy
+to approach and &lt;a href=&#34;https://github.com/PolyMathOrg/DataFrame/pull/134&#34;&gt;I&amp;rsquo;ve already tried to add in a small fix&lt;/a&gt;
+that improves the parsing of boolean types from CSV files. I also picked up a bug in the &lt;code&gt;RSScatterPlot&lt;/code&gt;
+class that was fixed by the developers almost instantly. It&amp;rsquo;s definitely a small community
+but smalltalk makes it easy to investigate and patch bugs on the fly. It&amp;rsquo;s really quite cool
+and lends itself to agile development.&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;m going to keep using Pharo on the side. For the moment I don&amp;rsquo;t think it could replace python/R
+in my professional work but the language is easy and good for quicker analyses.&lt;/p&gt;
+</description>
+		</item>
 		<item>
 			<title>A Make for URIs</title>
 			<link>/2020/11/16/a-make-for-uris/</link>

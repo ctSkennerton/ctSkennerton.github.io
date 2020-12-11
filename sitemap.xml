@@ -3,12 +3,47 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/2020/11/16/a-make-for-uris/</loc>
-    <lastmod>2020-11-16T18:07:45-08:00</lastmod>
+    <loc>/</loc>
+    <lastmod>2020-12-10T20:19:12-08:00</lastmod>
   </url>
   
   <url>
-    <loc>/</loc>
+    <loc>/tags/dataframe/</loc>
+    <lastmod>2020-12-10T20:19:12-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2020/12/10/exploratory-data-analysis-with-pharo-smalltalk/</loc>
+    <lastmod>2020-12-10T20:19:12-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/pharo/</loc>
+    <lastmod>2020-12-10T20:19:12-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/</loc>
+    <lastmod>2020-12-10T20:19:12-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/roassal/</loc>
+    <lastmod>2020-12-10T20:19:12-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/smalltalk/</loc>
+    <lastmod>2020-12-10T20:19:12-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2020-12-10T20:19:12-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2020/11/16/a-make-for-uris/</loc>
     <lastmod>2020-11-16T18:07:45-08:00</lastmod>
   </url>
   
@@ -19,16 +54,6 @@
   
   <url>
     <loc>/tags/mk/</loc>
-    <lastmod>2020-11-16T18:07:45-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/posts/</loc>
-    <lastmod>2020-11-16T18:07:45-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
     <lastmod>2020-11-16T18:07:45-08:00</lastmod>
   </url>
   

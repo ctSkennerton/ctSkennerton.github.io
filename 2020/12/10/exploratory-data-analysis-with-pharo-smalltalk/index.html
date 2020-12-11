@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Exploratory data analysis with Pharo Smalltalk | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="The first time I heard about Smalltalk was reading through the wikipedia page for Ruby, which mentioned it as an influence. At the time I was just a few months into my transition from a wet-lab biologist into a bioinformatician and trying to decide between Perl, Python, and Ruby as a scripting language to learn.  Python became my language of choice after a long battle with Perl (this was some years ago and Perl was much more relevant)." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/style.7c6d960b20273ed88bc63a60591a57e7739fb21f243b77f27c3bc730ef6205c0.css" />
+  <link rel="stylesheet" href="/custom.css" />
+  <script defer src="/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">bio(logist | informatician)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      Exploratory data analysis with Pharo Smalltalk
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2020-12-10T20:19:12-08:00">
+      10 Dec 2020
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/tags/pharo">Pharo</a>
+    <a href="/tags/smalltalk">Smalltalk</a>
+    <a href="/tags/roassal">Roassal</a>
+    <a href="/tags/dataframe">DataFrame</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p>The first time I heard about <a href="https://en.wikipedia.org/wiki/Smalltalk">Smalltalk</a>
+was reading through the <a href="https://en.wikipedia.org/wiki/Ruby_(programming_language)">wikipedia page for Ruby</a>,
+which mentioned it as an influence. At the time I was just a few months into my
+transition from a wet-lab biologist into a bioinformatician and trying to decide
+between Perl, Python, and Ruby as a scripting language to learn. <label for="sn-who_won" class="margin-toggle sidenote-number">
+</label>
+<input type="checkbox" id="sn-who_won" class="margin-toggle" />
+<span class="sidenote">
+Python became my language of choice after a long battle with Perl
+(this was some years ago and Perl was much more relevant).
+</span>
+
+I remember being really intrigued at Smalltalk&rsquo;s syntax and it&rsquo;s pure object-oriented
+approach; I was just starting to userstand what these concepts meant but
+was already gravitating to OOP. This was a language that seemed very alien to what I was picking up
+in C-derived scripting languages. I learned that you made a file with your
+program in it and then passed that file as an argument to another program to
+interpret it — that&rsquo;s just how programming worked.</p>
+<p>In contrast, instead of code existing in files that are
+run by an interpreter or compiled into a binary program, Smalltalk has the concept
+of <a href="https://en.wikipedia.org/wiki/Smalltalk#Image-based_persistence">image-based persistence</a>,
+which encapsulates the current program state and all of the code into one. Editing your
+code is equivelent to changing the program itself rather than a static copy that
+gets turned into your program. This is a pretty wild concept and makes programming
+much more interactive. An example of how this might streamline your workflow is in
+debugging. Often programmers will use a debugger to step through the running code
+line by line to see how variable change and find the place where are bug happens.
+When the bug is found you then have to go to the line in the source and make the
+required change (and either run the program again or re-compile). But with Smalltalk
+you&rsquo;re running &ldquo;live&rdquo; code so modifying it during debugging fixes it once. While I
+can appreciate this now as a more accomplished programmer, as a newbie I was
+utterly confused by it. I never picked it up Smalltalk.</p>
+<p>Recently I was back on wikipedia looking at some other programming language&rsquo;s page
+and again there was that smalltalk influence. So I scratched the itch and finally
+downloaded Pharo — which seems to be one of the more popular implementations —
+and tried out some basic data visualization.</p>
+<p>Pharo is an integrated environment, there isn&rsquo;t really separate source code for writing
+programs; they get written one method at a time in the IDE. But there is a playground
+feature that allows you to write short scripts and generally play around. The code snippets
+I show below are all taken from the playground.</p>
+<hr>
+<p>First we need to install some external packages. Unlike python or R there doesn&rsquo;t seem to
+be a single source of packages, instead repositories can be downloaded from URLs:</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="nc">Metacello</span> <span class="nb">new</span>
+    <span class="nf">baseline:</span> <span class="s">&#39;Roassal3Exporters&#39;</span><span class="p">;</span>
+    <span class="nf">repository:</span> <span class="s">&#39;github://ObjectProfile/Roassal3Exporters&#39;</span><span class="p">;</span>
+    <span class="nf">load</span><span class="p">.</span>
+
+<span class="nc">Metacello</span> <span class="nb">new</span>
+  <span class="nf">baseline:</span> <span class="s">&#39;DataFrame&#39;</span><span class="p">;</span>
+  <span class="nf">repository:</span> <span class="s">&#39;github://PolyMathOrg/DataFrame/src&#39;</span><span class="p">;</span>
+  <span class="nf">load</span><span class="p">.</span>
+</code></pre></div><p>Now let&rsquo;s look at some penguin data! I&rsquo;m using the <a href="https://allisonhorst.github.io/palmerpenguins/articles/palmerpenguins.html">palmerpenduins</a>
+dataset that was built
+with R in mind. The <code>DataFrame</code> package can&rsquo;t load from URLs directly but Pharo provides
+some niffty built-in objects that allow us to convert the string URL into a <code>ZnURL</code> object,
+which we can retrieve the contents of (i.e. download).</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="c">&#34;Convert the url string to a Url object and download the contents, passing that into the 
+</span><span class="c"> data frame constructor.
+</span><span class="c">&#34;</span>
+<span class="nv">df</span> <span class="o">:=</span> <span class="nc">DataFrame</span> <span class="nf">readFromCsv:</span> 
+    <span class="s">&#39;https://raw.githubusercontent.com/allisonhorst/palmerpenguins/master/inst/extdata/penguins_raw.csv&#39;</span> <span class="nf">asUrl</span> <span class="nf">retrieveContents</span> <span class="p">.</span>
+</code></pre></div><p>After that we can then set up the plot using the various Roassal classes. In the example
+below I&rsquo;m plotting the Culmen Length versus the Egg Date columns. It shows off a couple of
+tricks I had to learn: first, was how to plot a date on the axis; and second, was how to
+deal with <code>NA</code> values in the data frame.</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="nv">chart</span> <span class="o">:=</span> <span class="nc">RSChart</span> <span class="nb">new</span><span class="p">.</span>
+<span class="nv">lineaxes</span> <span class="o">:=</span> <span class="nc">RSScatterPlot</span> <span class="nb">new</span><span class="p">.</span>
+
+<span class="c">&#34;Importing the CSV file doesn&#39;t recognize NA so convert them to NaN&#34;</span>
+<span class="nv">lineaxes</span> <span class="nf">x:</span> ((<span class="nv">df</span> <span class="nf">column:</span> <span class="s">&#39;Date Egg&#39;</span>) <span class="nf">collect:</span> 
+            [ <span class="o">:</span><span class="nv">d</span> <span class="o">|</span> <span class="nv">d</span> <span class="nf">julianDayNumber</span> ]) 
+         <span class="nf">y:</span> ((<span class="nv">df</span> <span class="nf">column:</span> <span class="s">&#39;Culmen Length (mm)&#39;</span>) <span class="nf">collect:</span> 
+            [ <span class="o">:</span><span class="nv">s</span> <span class="o">|</span> <span class="nv">s</span> <span class="nf">=</span> <span class="s">&#39;NA&#39;</span> <span class="nb">ifTrue:</span> [<span class="s">&#39;NaN&#39;</span> <span class="nf">asNumber</span>] 
+                            <span class="nb">ifFalse:</span> [<span class="nv">s</span> <span class="nf">asNumber</span>] ])<span class="p">.</span>
+
+<span class="nv">chart</span> <span class="nf">addPlot:</span> <span class="nv">lineaxes</span><span class="p">.</span>
+<span class="nv">vticks</span> <span class="o">:=</span> <span class="nc">RSVerticalTick</span> <span class="nb">new</span><span class="p">.</span>
+ 
+<span class="c">&#34;Offset controls the horizontal position&#34;</span>
+<span class="nv">chart</span> <span class="nf">ylabel:</span> <span class="s">&#39;Culmen Length (mm)&#39;</span> <span class="nf">offset:</span> <span class="m">-20</span><span class="p">.</span>
+
+<span class="nv">chart</span> <span class="nf">addDecoration:</span> <span class="nv">vticks</span><span class="p">.</span>
+<span class="nv">hticks</span> <span class="o">:=</span> <span class="nc">RSHorizontalTick</span> <span class="nb">new</span><span class="p">.</span>
+<span class="nv">hticks</span> <span class="nf">numberOfTicks:</span> <span class="m">8</span><span class="p">.</span>
+<span class="c">&#34;Convert the julian day numbers back to Date objects. The asString message will
+</span><span class="c">be sent during rendering to make it look pretty&#34;</span>
+<span class="nv">hticks</span> <span class="nf">labelConversion:</span> [ <span class="o">:</span><span class="nv">x</span> <span class="o">|</span> <span class="nc">Date</span> <span class="nf">julianDayNumber:</span> <span class="nv">x</span>]<span class="p">;</span> <span class="nf">useDiagonalLabel</span> <span class="p">.</span>
+
+<span class="nv">chart</span> <span class="nf">addDecoration:</span>  <span class="nv">hticks</span><span class="p">.</span>
+<span class="nv">chart</span> <span class="nf">openOnce</span><span class="p">.</span>
+</code></pre></div><figure>
+    <img src="/media/2020/12/penguins.png"
+         alt="Basic plot of Penguins with the date as the X-axis" width="400"/> <figcaption>
+            <p>Basic plot of Penguins with the date as the X-axis</p>
+        </figcaption>
+</figure>
+<p>Next I wanted to try and replicate a Facet Grid one of the best features of
+<a href="https://seaborn.pydata.org">seaborn</a> and <a href="https://ggplot2.tidyverse.org">ggplot2</a>
+for plotting <a href="https://en.wikipedia.org/wiki/Small_multiple">small multiples</a>. I couldn&rsquo;t
+find anything built in that would be the equivelent but Roassal has all of the primatives
+to make this happen. My solution below is based on the examples in the Roassal package:</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="c">&#34;Create a canvas to add our charts to&#34;</span>
+<span class="nv">c</span> <span class="o">:=</span> <span class="nc">RSCanvas</span> <span class="nb">new</span><span class="p">.</span>
+<span class="c">&#34;First find the unique values in the species column and then loop through the values&#34;</span>
+<span class="nv">groups</span> <span class="o">:=</span> ((<span class="nv">df</span> <span class="nf">column:</span> <span class="s">&#39;Species&#39;</span>) <span class="nf">uniqueValues</span>) <span class="nf">collect:</span> [ <span class="o">:</span><span class="nv">species</span> <span class="o">|</span> 
+
+    <span class="c">&#34;Subset the main dataset returning just the rows for the current species&#34;</span>
+	<span class="nv">spdf</span> <span class="o">:=</span> <span class="nv">df</span> <span class="nf">select:</span> [<span class="o">:</span><span class="nv">row</span> <span class="o">|</span> (<span class="nv">row</span> <span class="nf">at:</span> <span class="ss">#Species</span>) <span class="nf">=</span> <span class="nv">species</span> ]<span class="p">.</span>
+    
+    <span class="c">&#34;Make a new group that will hold this chart&#34;</span>
+	<span class="nv">g</span> <span class="o">:=</span> <span class="nc">RSGroup</span> <span class="nb">new</span><span class="p">.</span>
+	<span class="nv">chart</span> <span class="o">:=</span> <span class="nc">RSChart</span> <span class="nb">new</span><span class="p">.</span>
+	<span class="nv">chart</span> <span class="nf">container:</span> <span class="nv">g</span><span class="p">.</span>
+
+    <span class="c">&#34;Make a scatterplot&#34;</span>
+    <span class="nv">plot</span> <span class="o">:=</span> <span class="nc">RSScatterPlot</span> <span class="nb">new</span><span class="p">.</span>
+    
+    <span class="c">&#34;Get the x and y values the same as above&#34;</span>
+	<span class="nv">plot</span> <span class="nf">x:</span> ((<span class="nv">spdf</span> <span class="nf">column:</span> <span class="s">&#39;Date Egg&#39;</span>) <span class="nf">asArray</span> <span class="nf">collect:</span> 
+            [ <span class="o">:</span><span class="nv">d</span> <span class="o">|</span> <span class="nv">d</span> <span class="nf">julianDayNumber</span> ]) 
+         <span class="nf">y:</span> ((<span class="nv">spdf</span> <span class="nf">column:</span> <span class="s">&#39;Culmen Length (mm)&#39;</span>) <span class="nf">asArray</span> <span class="nf">collect:</span> 
+            [ <span class="o">:</span><span class="nv">s</span> <span class="o">|</span> <span class="nv">s</span> <span class="nf">ifNil:</span> [<span class="s">&#39;NaN&#39;</span> <span class="nf">asNumber</span>] 
+                     <span class="nf">ifNotNil:</span> [<span class="nv">s</span> <span class="nf">asNumber</span>] ])<span class="p">.</span>
+	<span class="nv">chart</span> <span class="nf">addPlot:</span> <span class="nv">plot</span><span class="p">.</span>
+	<span class="nv">chart</span> <span class="nf">title:</span> <span class="nv">species</span><span class="p">.</span>
+	<span class="nv">chart</span> <span class="nf">build</span><span class="p">.</span>
+    <span class="c">&#34;The final statement of a block is returned... so here
+</span><span class="c">     we are converting the group object, which holds the chart
+</span><span class="c">     into a shape, which is needed to add onto the canvas
+</span><span class="c">    &#34;</span>
+	<span class="nv">g</span> <span class="nf">asShape</span> <span class="p">.</span>
+	]<span class="p">.</span>
+
+<span class="nv">c</span> <span class="nf">addAll:</span> <span class="nv">groups</span><span class="p">.</span>
+
+<span class="c">&#34;Layout the three groups horizontally on the canvas&#34;</span>
+<span class="nc">RSHorizontalLineLayout</span> <span class="nf">on:</span> <span class="nv">c</span> <span class="nf">shapes</span><span class="p">.</span>
+<span class="nv">c</span> <span class="nf">@</span> <span class="nc">RSCanvasController</span><span class="p">.</span>
+<span class="nv">c</span> <span class="nf">openOnce</span><span class="p">.</span>
+</code></pre></div><figure>
+    <img src="/media/2020/12/penguins-by-species.png"
+         alt="Split out the into three charts, one for each species" width="800"/> <figcaption>
+            <p>Split out the into three charts, one for each species</p>
+        </figcaption>
+</figure>
+<p>As you can tell from the code samples above there is a lot of boilerplate to set this up.
+Roassal isn&rsquo;t a ggplot clone, it&rsquo;s much more low level like base plotting in R or matplotlib.
+It&rsquo;s still impressive the variety of things that you can accomplish with it, 2D charts are
+just one aspect of Roassal, which is probably why there is a bit more boiler plate than you
+might want for just making a chart.</p>
+<p>There is also a bit of roughness to the DataFrame package. The type detection isn&rsquo;t as smart as
+in R so columns containing <code>NA</code> were being left as strings. I fixed this in my examples above wtih:</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk">(<span class="nv">df</span> <span class="nf">column:</span> <span class="s">&#39;Culmen Length (mm)&#39;</span>) <span class="nf">collect:</span> 
+            [ <span class="o">:</span><span class="nv">s</span> <span class="o">|</span> <span class="nv">s</span> <span class="nf">=</span> <span class="s">&#39;NA&#39;</span> <span class="nb">ifTrue:</span> [<span class="s">&#39;NaN&#39;</span> <span class="nf">asNumber</span>] 
+                            <span class="nb">ifFalse:</span> [<span class="nv">s</span> <span class="nf">asNumber</span>] ]
+</code></pre></div><p>The <code>collect</code> method returns a new data series where each element has been transformed using the
+code block as it&rsquo;s argument. In this can I&rsquo;m checking for <code>NA</code> and converting to <code>NaN</code> or the
+real number. Similarily, dealing with a date axis involved manually transforming it into a
+julian day representation (so basically just a number) and back again for the label. Despite this
+I&rsquo;ve come away with a pretty positive opinion of both these packages. The code in DataFrame is easy
+to approach and <a href="https://github.com/PolyMathOrg/DataFrame/pull/134">I&rsquo;ve already tried to add in a small fix</a>
+that improves the parsing of boolean types from CSV files. I also picked up a bug in the <code>RSScatterPlot</code>
+class that was fixed by the developers almost instantly. It&rsquo;s definitely a small community
+but smalltalk makes it easy to investigate and patch bugs on the fly. It&rsquo;s really quite cool
+and lends itself to agile development.</p>
+<p>I&rsquo;m going to keep using Pharo on the side. For the moment I don&rsquo;t think it could replace python/R
+in my professional work but the language is easy and good for quicker analyses.</p>
+
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2020 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>
