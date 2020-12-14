@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Combining properites from different nodes in Gremlin | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="One of the key differences between SQL databases and graph databases is the concept of joining information from different nodes. In a tinkerpop-enabled graph database nodes have labels that define their type and properties that are part of that type. It&rsquo;s natural to draw the comparison to a label being an SQL table and the properties of the nodes being the columns of that table. But trying to extend that analogy to compare joining in SQL is a little murky." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/style.7c6d960b20273ed88bc63a60591a57e7739fb21f243b77f27c3bc730ef6205c0.css" />
+  <link rel="stylesheet" href="/custom.css" />
+  <script defer src="/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">bio(logist | informatician)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      Combining properites from different nodes in Gremlin
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2020-12-13T15:14:10-08:00">
+      13 Dec 2020
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/tags/tinkerpop">tinkerpop</a>
+    <a href="/tags/gremlin">gremlin</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p>One of the key differences between SQL databases and graph databases is the concept of
+joining information from different nodes.
+In a tinkerpop-enabled graph database nodes have labels that define their type and properties
+that are part of that type. It&rsquo;s natural to draw the comparison to a label being an SQL table
+and the properties of the nodes being the columns of that table. But trying to extend that
+analogy to compare joining in SQL is a little murky. Insead of joining two tables together,
+it&rsquo;s better to think about visiting different nodes and
+saving their information for later use. In gremlin you can achieve this in a few differnt ways
+but the most common is to use the <code>as</code>-step. The example below shows how to combine information
+using the &ldquo;Modern&rdquo; graph that is shipped with tinkerpop. Here there are two types of nodes,
+person and software; each have a &ldquo;name&rdquo; property. If you want a mapping of which people created
+which software you could do:</p>
+<div class="highlight"><pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="n">g</span><span class="o">.</span><span class="na">V</span><span class="o">().</span><span class="na">hasLabel</span><span class="o">(</span><span class="s1">&#39;person&#39;</span><span class="o">).</span><span class="na">as</span><span class="o">(</span><span class="s1">&#39;s&#39;</span><span class="o">).</span>
+    <span class="n">out</span><span class="o">(</span><span class="s1">&#39;created&#39;</span><span class="o">).</span><span class="na">hasLabel</span><span class="o">(</span><span class="s1">&#39;software&#39;</span><span class="o">).</span>
+    <span class="n">project</span><span class="o">(</span><span class="s1">&#39;creator_name&#39;</span><span class="o">,</span> <span class="s1">&#39;software_name&#39;</span><span class="o">).</span>
+        <span class="n">by</span><span class="o">(</span><span class="n">select</span><span class="o">(</span><span class="s1">&#39;s&#39;</span><span class="o">).</span><span class="na">values</span><span class="o">(</span><span class="s1">&#39;name&#39;</span><span class="o">)).</span>
+        <span class="n">by</span><span class="o">(</span><span class="s1">&#39;name&#39;</span><span class="o">)</span>
+</code></pre></div><p>In the example above the traversal starts with all of the people and saves the information
+in the variable, <code>s</code>, that&rsquo;s what the <code>as('s')</code> is doing. It then travels to the
+software nodes, using <code>out('created')</code>. To get the information from both the software
+and the person I use the <code>project</code>-step, which creates a new structure. In this case it will be
+a mapping with <code>creator_name</code> and <code>software_name</code> as the keys. To get the creator name I use
+the <code>select</code>-step that recalls the information that was stored previously using the variable, <code>s</code>.
+The traversal above will produce a pair-wise mapping like so:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">{creator_name=marko, software_name=&#34;lop&#34;}
+{creator_name=peter, software_name=&#34;lop&#34;}
+{creator_name=josh, software_name=&#34;lop&#34;}
+</code></pre></div><p>The other method of combining data is to use the <code>group</code>-step. In this case the
+returned structure will have a mapping based on how you group:</p>
+<ol>
+<li>
+<p>with the person as the key</p>
+<div class="highlight"><pre class="chroma"><code class="language-groovy" data-lang="groovy">
+<span class="n">g</span><span class="o">.</span><span class="na">V</span><span class="o">().</span><span class="na">hasLabel</span><span class="o">(</span><span class="s1">&#39;person&#39;</span><span class="o">).</span><span class="na">group</span><span class="o">().</span>
+    <span class="n">by</span><span class="o">(</span><span class="s1">&#39;name&#39;</span><span class="o">).</span>
+    <span class="n">by</span><span class="o">(</span><span class="n">out</span><span class="o">(</span><span class="s1">&#39;created&#39;</span><span class="o">).</span><span class="na">hasLabel</span><span class="o">(</span><span class="s1">&#39;software&#39;</span><span class="o">).</span><span class="na">values</span><span class="o">(</span><span class="s1">&#39;name&#39;</span><span class="o">).</span><span class="na">fold</span><span class="o">())</span>
+</code></pre></div></li>
+<li>
+<p>or with the software name as the key</p>
+<div class="highlight"><pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="n">g</span><span class="o">.</span><span class="na">V</span><span class="o">().</span><span class="na">hasLabel</span><span class="o">(</span><span class="s1">&#39;software&#39;</span><span class="o">).</span><span class="na">group</span><span class="o">().</span>
+    <span class="n">by</span><span class="o">(</span><span class="s1">&#39;name&#39;</span><span class="o">).</span>
+    <span class="n">by</span><span class="o">(</span><span class="n">__</span><span class="o">.</span><span class="na">in</span><span class="o">(</span><span class="s1">&#39;created&#39;</span><span class="o">).</span><span class="na">hasLabel</span><span class="o">(</span><span class="s1">&#39;person&#39;</span><span class="o">).</span><span class="na">values</span><span class="o">(</span><span class="s1">&#39;name&#39;</span><span class="o">).</span><span class="na">fold</span><span class="o">()).</span><span class="na">toList</span><span class="o">()</span>
+</code></pre></div></li>
+</ol>
+<p>The first query gives you a dictionary where the persons name is the key and the values are
+a list of software names created by that person, like the following:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">{
+   marko: [lop],
+   josh: [lop, ripple],
+   peter: [lop]
+}
+</code></pre></div><p>The second version turns it around so that the software is the key and the creators are
+the list of values:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">{
+    lop: [marko, peter, josh],
+    ripple: [josh]
+}
+</code></pre></div><p>Whether to use the query based on the <code>as</code>-step or the <code>gorup</code>-step is dependant on
+the structure that you want at the end and the performance. In my experience, grouping
+takes longer than using the <code>as</code>–<code>project</code> method
+and is more flexible too. You can save multiple steps in your traversal with different
+variable names and recall them at the appropriate time.</p>
+
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2020 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>
