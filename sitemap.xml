@@ -3,27 +3,42 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/</loc>
+    <lastmod>2020-12-21T13:54:32-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/pharo/</loc>
+    <lastmod>2020-12-21T13:54:32-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/</loc>
+    <lastmod>2020-12-21T13:54:32-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/smalltalk/</loc>
+    <lastmod>2020-12-21T13:54:32-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2020-12-21T13:54:32-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2020/12/21/using-dictionaries-in-pharo-smalltalk/</loc>
+    <lastmod>2020-12-21T13:54:32-08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/2020/12/13/combining-properites-from-different-nodes-in-gremlin/</loc>
     <lastmod>2020-12-13T15:14:10-08:00</lastmod>
   </url>
   
   <url>
-    <loc>/</loc>
-    <lastmod>2020-12-13T15:14:10-08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/tags/gremlin/</loc>
-    <lastmod>2020-12-13T15:14:10-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/posts/</loc>
-    <lastmod>2020-12-13T15:14:10-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
     <lastmod>2020-12-13T15:14:10-08:00</lastmod>
   </url>
   
@@ -43,17 +58,7 @@
   </url>
   
   <url>
-    <loc>/tags/pharo/</loc>
-    <lastmod>2020-12-10T20:19:12-08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/tags/roassal/</loc>
-    <lastmod>2020-12-10T20:19:12-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/smalltalk/</loc>
     <lastmod>2020-12-10T20:19:12-08:00</lastmod>
   </url>
   

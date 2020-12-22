@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Using Dictionaries in Pharo Smalltalk | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="Starting out with Smalltalk can be a little jarring as it doesn&rsquo;t have the similar syntax as launguages that are more heavily inspired by C. Dictionaries are one kind of data structure where I noticed this the most so I put together my notes on using them in Pharo with some comparisons to Python. In many other languages there is a subscript operator that allows you to access a value in a dictionary (and also a position in an array)." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/style.7c6d960b20273ed88bc63a60591a57e7739fb21f243b77f27c3bc730ef6205c0.css" />
+  <link rel="stylesheet" href="/custom.css" />
+  <script defer src="/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">bio(logist | informatician)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      Using Dictionaries in Pharo Smalltalk
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2020-12-21T13:54:32-08:00">
+      21 Dec 2020
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/tags/pharo">Pharo</a>
+    <a href="/tags/smalltalk">Smalltalk</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p>Starting out with Smalltalk can be a little jarring as it doesn&rsquo;t have the similar syntax as launguages that
+are more heavily inspired by C. Dictionaries are one kind of data structure where I noticed this the most so
+I put together my notes on using them in Pharo with some comparisons to Python. In many other languages there
+is a <em>subscript operator</em> that allows you to access a value in a dictionary
+(and also a position in an array). It&rsquo;s often written <code>dict[key]</code> to access a value and <code>dict[key]=val</code> to
+set a value to an existing key or add in a new key. Smalltalk doesn&rsquo;t contain
+a subscript operator and so interacting with dictionaries requires a slight change
+in the mental model to get things done.</p>
+<p>Dictionaries in Pharo are composed of Associations. An Association is a class that holds a single key–value
+pair. You can create an Association by sending the <code>-&gt;</code> binary message to an object (e.g. <code>1 -&gt; 2</code>). Associations
+can be used outside of dictionaries as well, for example the following code snippet creates an Array of Associations:</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk">{ <span class="m">1</span> <span class="nf">-&gt;</span> <span class="m">2</span><span class="p">.</span> <span class="m">3</span> <span class="nf">-&gt;</span> <span class="m">4</span><span class="p">.</span> <span class="m">5</span> <span class="nf">-&gt;</span> <span class="m">6</span> }
+</code></pre></div><h2 id="initialization">Initialization</h2>
+<p>You can create a Dictionary from an Array of Associations using the <code>newFrom:</code> message</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="nc">Dictionary</span> <span class="nf">newFrom:</span> { <span class="m">1</span> <span class="nf">-&gt;</span> <span class="m">2</span><span class="p">.</span> <span class="m">3</span> <span class="nf">-&gt;</span> <span class="m">4</span><span class="p">.</span> <span class="m">5</span> <span class="nf">-&gt;</span> <span class="m">6</span> }<span class="p">.</span>
+</code></pre></div><p>or you can achieve the same thing with the <code>at:put:</code> message:</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="nc">Dictionary</span> <span class="nb">new</span> 
+	<span class="nf">at:</span> <span class="m">1</span> <span class="nf">put:</span> <span class="m">2</span><span class="p">;</span> 
+	<span class="nf">at:</span> <span class="m">3</span> <span class="nf">put:</span> <span class="m">4</span><span class="p">;</span> 
+	<span class="nf">at:</span> <span class="m">5</span> <span class="nf">put:</span> <span class="m">6</span><span class="p">;</span> 
+	<span class="nf">yourself</span><span class="p">.</span>
+</code></pre></div><p>While the <code>newFrom:</code> message seems intuative to me, the <code>at:put:</code> way of creating Dictionaries took me
+a while to get my head around. First,
+notice the semicolons between the successive calls to <code>at:put:</code>, this is for cascading messages that should
+all go to the same &ldquo;receiver&rdquo;, which in this case is the Dictionary object created by <code>new</code>. What happens
+if you don&rsquo;t put in the semicolons? Pharo will get confused and think you are trying to send a single
+message called <code>at:put:at:put:at:put:</code> instead of three separate messages and you&rsquo;ll get an error.
+Why is there no semicolon after
+<code>new</code>? So what&rsquo;s happening is that the <code>new</code> message is creating an instance of the Dictionary class i.e.
+a Dictionary object which gets returned from the <code>new</code> message. The <code>at:put:</code> messages are then applied to
+the return value of <code>new</code>. If you put a semicolon after <code>new</code> then all of the subsequent messages will be
+sent to what <code>new</code> was sent to, rather than the result of <code>new</code>. In other words, <code>at:put:</code> will be sent to
+the Dictionary class and not a Dictionary object (which causes an error). The last bit of the statement, <code>yourself</code>,
+is needed to return the Dictionary object. Without <code>yourself</code> the return value of the final <code>at:put:</code> message
+is used, which is the value added to the dictionary. If the return value of <code>at:put:</code> was the dictionary
+object then the <code>yourself</code> message wouldn&rsquo;t be needed at all.</p>
+<h2 id="accessing-elements">Accessing elements</h2>
+<p>The basic method of getting values is to use the <code>at:</code> message:</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="nv">d</span> <span class="o">:=</span> <span class="nc">Dictionary</span> <span class="nf">newFrom:</span> { <span class="m">1</span> <span class="nf">-&gt;</span> <span class="m">2</span><span class="p">.</span> <span class="m">3</span> <span class="nf">-&gt;</span> <span class="m">4</span><span class="p">.</span> <span class="m">5</span> <span class="nf">-&gt;</span> <span class="m">6</span> }<span class="p">.</span>
+
+<span class="nv">d</span> <span class="nf">at:</span> <span class="m">3</span><span class="p">.</span>  <span class="c">&#34;&gt;&gt;&gt; 4&#34;</span>
+</code></pre></div><p>Just like in Python, if you try to access a key that doesn&rsquo;t exist you&rsquo;ll get an error</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="nv">d</span> <span class="nf">at:</span> <span class="m">100</span><span class="p">.</span>   <span class="c">&#34;Error KeyNotFound&#34;</span>
+</code></pre></div><p>but unlike Python there are multiple ways to avoid this error using variants of the <code>at:</code> message.
+The <code>at:update:initial:</code> message allows you either update or set a value in a dictionary:</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="nv">d</span> <span class="nf">at:</span> <span class="m">1</span> <span class="nf">update:</span> [ <span class="o">:</span><span class="nv">value</span> <span class="o">|</span> <span class="nv">value</span> <span class="nf">+</span> <span class="m">1</span> ] <span class="nf">initial:</span> [ <span class="m">1</span> ]<span class="p">.</span>
+</code></pre></div><p>which is broadly equivelent to the following Python code</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">try</span><span class="p">:</span>
+    <span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+    <span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+</code></pre></div><p>There are many other variants of <code>at:</code> that modify the behaviour depending on whether the key is present
+or not.</p>
+<h2 id="enumerating">Enumerating</h2>
+<p>Enumerating in Pharo Smalltalk can also be achieved in multiple ways. The <code>do:</code> message is available in many
+classes for iterating, which for Dictionaries iterates through the values:</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="nv">d</span> <span class="nf">do:</span> [ <span class="o">:</span><span class="nv">value</span> <span class="o">|</span> <span class="nc">Transcript</span> <span class="nf">show:</span> <span class="nv">value</span><span class="p">;</span> <span class="nf">cr</span>]
+</code></pre></div><p>which is Python would be:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</code></pre></div><p>The <code>do:</code> message is an alias for <code>valuesDo:</code> and there is also a <code>keysDo:</code> for iterating through the keys
+and <code>associationsDo:</code> for iterating through the key–value pairs. Unlike Python which returns a tuple
+of the key and value, in Pharo an Association object is returned. This class responds to the <code>key</code> and <code>value</code>
+messages for accessing each.</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="nv">d</span> <span class="nf">associationsDo:</span> [ <span class="o">:</span><span class="nv">pair</span> <span class="o">|</span> <span class="nc">Transcript</span> <span class="nf">show:</span> <span class="nv">pair</span> <span class="nf">key</span><span class="p">;</span> <span class="nf">cr</span><span class="p">;</span> <span class="nf">show:</span> <span class="nv">pair</span> <span class="nf">value</span><span class="p">;</span> <span class="nf">cr</span>]
+</code></pre></div><p>and the Python equivelent:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</code></pre></div><p>Despite the differences introduced through the syntax of each language, using dictionaries in Pharo Smalltalk
+and Python are basically the same.</p>
+
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2020 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>

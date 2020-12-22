@@ -8,8 +8,87 @@
 		<managingEditor>c.skennerton@gmail.com (Connor Skennerton)</managingEditor>
 		<webMaster>c.skennerton@gmail.com (Connor Skennerton)</webMaster>
 		<copyright>Connor Skennerton — All rights reserved.</copyright>
-		<lastBuildDate>Sun, 13 Dec 2020 15:14:10 -0800</lastBuildDate>
+		<lastBuildDate>Mon, 21 Dec 2020 13:54:32 -0800</lastBuildDate>
 		<atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+		<item>
+			<title>Using Dictionaries in Pharo Smalltalk</title>
+			<link>/2020/12/21/using-dictionaries-in-pharo-smalltalk/</link>
+			<pubDate>Mon, 21 Dec 2020 13:54:32 -0800</pubDate>
+			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
+			<guid isPermaLink="true">/2020/12/21/using-dictionaries-in-pharo-smalltalk/</guid>
+			<description>&lt;p&gt;Starting out with Smalltalk can be a little jarring as it doesn&amp;rsquo;t have the similar syntax as launguages that
+are more heavily inspired by C. Dictionaries are one kind of data structure where I noticed this the most so
+I put together my notes on using them in Pharo with some comparisons to Python. In many other languages there
+is a &lt;em&gt;subscript operator&lt;/em&gt; that allows you to access a value in a dictionary
+(and also a position in an array). It&amp;rsquo;s often written &lt;code&gt;dict[key]&lt;/code&gt; to access a value and &lt;code&gt;dict[key]=val&lt;/code&gt; to
+set a value to an existing key or add in a new key. Smalltalk doesn&amp;rsquo;t contain
+a subscript operator and so interacting with dictionaries requires a slight change
+in the mental model to get things done.&lt;/p&gt;
+&lt;p&gt;Dictionaries in Pharo are composed of Associations. An Association is a class that holds a single key–value
+pair. You can create an Association by sending the &lt;code&gt;-&amp;gt;&lt;/code&gt; binary message to an object (e.g. &lt;code&gt;1 -&amp;gt; 2&lt;/code&gt;). Associations
+can be used outside of dictionaries as well, for example the following code snippet creates an Array of Associations:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;{ &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;3&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;5&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt; }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;initialization&#34;&gt;Initialization&lt;/h2&gt;
+&lt;p&gt;You can create a Dictionary from an Array of Associations using the &lt;code&gt;newFrom:&lt;/code&gt; message&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;nc&#34;&gt;Dictionary&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;newFrom:&lt;/span&gt; { &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;3&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;5&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt; }&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;or you can achieve the same thing with the &lt;code&gt;at:put:&lt;/code&gt; message:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;nc&#34;&gt;Dictionary&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;new&lt;/span&gt; 
+	&lt;span class=&#34;nf&#34;&gt;at:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;put:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; 
+	&lt;span class=&#34;nf&#34;&gt;at:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;3&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;put:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; 
+	&lt;span class=&#34;nf&#34;&gt;at:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;5&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;put:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; 
+	&lt;span class=&#34;nf&#34;&gt;yourself&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;While the &lt;code&gt;newFrom:&lt;/code&gt; message seems intuative to me, the &lt;code&gt;at:put:&lt;/code&gt; way of creating Dictionaries took me
+a while to get my head around. First,
+notice the semicolons between the successive calls to &lt;code&gt;at:put:&lt;/code&gt;, this is for cascading messages that should
+all go to the same &amp;ldquo;receiver&amp;rdquo;, which in this case is the Dictionary object created by &lt;code&gt;new&lt;/code&gt;. What happens
+if you don&amp;rsquo;t put in the semicolons? Pharo will get confused and think you are trying to send a single
+message called &lt;code&gt;at:put:at:put:at:put:&lt;/code&gt; instead of three separate messages and you&amp;rsquo;ll get an error.
+Why is there no semicolon after
+&lt;code&gt;new&lt;/code&gt;? So what&amp;rsquo;s happening is that the &lt;code&gt;new&lt;/code&gt; message is creating an instance of the Dictionary class i.e.
+a Dictionary object which gets returned from the &lt;code&gt;new&lt;/code&gt; message. The &lt;code&gt;at:put:&lt;/code&gt; messages are then applied to
+the return value of &lt;code&gt;new&lt;/code&gt;. If you put a semicolon after &lt;code&gt;new&lt;/code&gt; then all of the subsequent messages will be
+sent to what &lt;code&gt;new&lt;/code&gt; was sent to, rather than the result of &lt;code&gt;new&lt;/code&gt;. In other words, &lt;code&gt;at:put:&lt;/code&gt; will be sent to
+the Dictionary class and not a Dictionary object (which causes an error). The last bit of the statement, &lt;code&gt;yourself&lt;/code&gt;,
+is needed to return the Dictionary object. Without &lt;code&gt;yourself&lt;/code&gt; the return value of the final &lt;code&gt;at:put:&lt;/code&gt; message
+is used, which is the value added to the dictionary. If the return value of &lt;code&gt;at:put:&lt;/code&gt; was the dictionary
+object then the &lt;code&gt;yourself&lt;/code&gt; message wouldn&amp;rsquo;t be needed at all.&lt;/p&gt;
+&lt;h2 id=&#34;accessing-elements&#34;&gt;Accessing elements&lt;/h2&gt;
+&lt;p&gt;The basic method of getting values is to use the &lt;code&gt;at:&lt;/code&gt; message:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;nv&#34;&gt;d&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Dictionary&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;newFrom:&lt;/span&gt; { &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;3&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;5&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt; }&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+
+&lt;span class=&#34;nv&#34;&gt;d&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;at:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;&amp;#34;&amp;gt;&amp;gt;&amp;gt; 4&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Just like in Python, if you try to access a key that doesn&amp;rsquo;t exist you&amp;rsquo;ll get an error&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;nv&#34;&gt;d&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;at:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;   &lt;span class=&#34;c&#34;&gt;&amp;#34;Error KeyNotFound&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;but unlike Python there are multiple ways to avoid this error using variants of the &lt;code&gt;at:&lt;/code&gt; message.
+The &lt;code&gt;at:update:initial:&lt;/code&gt; message allows you either update or set a value in a dictionary:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;nv&#34;&gt;d&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;at:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;update:&lt;/span&gt; [ &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;value&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;value&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; ] &lt;span class=&#34;nf&#34;&gt;initial:&lt;/span&gt; [ &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; ]&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;which is broadly equivelent to the following Python code&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;k&#34;&gt;try&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;except&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;KeyError&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;There are many other variants of &lt;code&gt;at:&lt;/code&gt; that modify the behaviour depending on whether the key is present
+or not.&lt;/p&gt;
+&lt;h2 id=&#34;enumerating&#34;&gt;Enumerating&lt;/h2&gt;
+&lt;p&gt;Enumerating in Pharo Smalltalk can also be achieved in multiple ways. The &lt;code&gt;do:&lt;/code&gt; message is available in many
+classes for iterating, which for Dictionaries iterates through the values:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;nv&#34;&gt;d&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;do:&lt;/span&gt; [ &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;value&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Transcript&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;show:&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;cr&lt;/span&gt;]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;which is Python would be:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;value&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;values&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The &lt;code&gt;do:&lt;/code&gt; message is an alias for &lt;code&gt;valuesDo:&lt;/code&gt; and there is also a &lt;code&gt;keysDo:&lt;/code&gt; for iterating through the keys
+and &lt;code&gt;associationsDo:&lt;/code&gt; for iterating through the key–value pairs. Unlike Python which returns a tuple
+of the key and value, in Pharo an Association object is returned. This class responds to the &lt;code&gt;key&lt;/code&gt; and &lt;code&gt;value&lt;/code&gt;
+messages for accessing each.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;nv&#34;&gt;d&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;associationsDo:&lt;/span&gt; [ &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;pair&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Transcript&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;show:&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;pair&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;key&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;cr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;show:&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;pair&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;cr&lt;/span&gt;]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;and the Python equivelent:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pair&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;items&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pair&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;])&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pair&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;])&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Despite the differences introduced through the syntax of each language, using dictionaries in Pharo Smalltalk
+and Python are basically the same.&lt;/p&gt;
+</description>
+		</item>
 		<item>
 			<title>Combining properites from different nodes in Gremlin</title>
 			<link>/2020/12/13/combining-properites-from-different-nodes-in-gremlin/</link>
