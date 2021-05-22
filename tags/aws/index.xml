@@ -88,5 +88,29 @@ so it&amp;rsquo;s probably best to make use of as much as the elasticsearch quer
 so the two services have to interact the least amount.&lt;/p&gt;
 </description>
 		</item>
+		<item>
+			<title>Creating an AWS SDK for Pharo Smalltalk</title>
+			<link>/1/01/01/creating-an-aws-sdk-for-pharo-smalltalk/</link>
+			<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
+			<guid isPermaLink="true">/1/01/01/creating-an-aws-sdk-for-pharo-smalltalk/</guid>
+			<description>&lt;h2 id=&#34;how-does-aws-manage-all-its-sdks&#34;&gt;How does AWS manage all its SDKs?&lt;/h2&gt;
+&lt;p&gt;Libraries for other languages aren&amp;rsquo;t created by hand but instead are generated from data files
+written in JSON. At it&amp;rsquo;s heart, all these libraries need to do is construct a HTTP request and
+process the response. All of the operations for the services are constructed in a similar way
+however there has been evolution in the protocols used by AWS. There are five different protocols
+listed in boto that AWS services use to construct queries: &amp;lsquo;json&amp;rsquo;, &amp;lsquo;ec2&amp;rsquo;, &amp;lsquo;rest-xml&amp;rsquo;, &amp;lsquo;rest-json&amp;rsquo;, &amp;lsquo;query&amp;rsquo;.&lt;/p&gt;
+&lt;p&gt;|protocol name| count of services using protocol|
+|json|114|
+|ec2|1|
+|rest-xml|4|
+|query|19|
+|rest-json|120|&lt;/p&gt;
+&lt;p&gt;Unsurprisingly, communicating with JSON is the most popular choice but it is split between &lt;code&gt;json&lt;/code&gt; and &lt;code&gt;rest-json&lt;/code&gt;.
+It would appear that the EC2 service is a one-of-a-kind and has it&amp;rsquo;s own dedicated protocol, which is
+probably due to it being one of (or &lt;em&gt;the&lt;/em&gt;) oldest AWS service.&lt;/p&gt;
+&lt;h2 id=&#34;creating-an-aws-service-code-generator&#34;&gt;Creating an AWS service code generator&lt;/h2&gt;
+</description>
+		</item>
 	</channel>
 </rss>
