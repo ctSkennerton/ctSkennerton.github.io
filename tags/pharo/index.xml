@@ -8,8 +8,91 @@
 		<managingEditor>c.skennerton@gmail.com (Connor Skennerton)</managingEditor>
 		<webMaster>c.skennerton@gmail.com (Connor Skennerton)</webMaster>
 		<copyright>Connor Skennerton — All rights reserved.</copyright>
-		<lastBuildDate>Mon, 21 Dec 2020 13:54:32 -0800</lastBuildDate>
+		<lastBuildDate>Mon, 19 Jul 2021 01:20:17 -0700</lastBuildDate>
 		<atom:link href="/tags/pharo/index.xml" rel="self" type="application/rss+xml" />
+		<item>
+			<title>Using Strings in Pharo Smalltalk</title>
+			<link>/2021/07/19/using-strings-in-pharo-smalltalk/</link>
+			<pubDate>Mon, 19 Jul 2021 01:20:17 -0700</pubDate>
+			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
+			<guid isPermaLink="true">/2021/07/19/using-strings-in-pharo-smalltalk/</guid>
+			<description>&lt;p&gt;Smalltalk syntax can be a little confusing coming from other languages. Here I&amp;rsquo;ll show some comparisions
+between Python string operations and Smalltalk.&lt;/p&gt;
+&lt;h2 id=&#34;substrings--slicing&#34;&gt;Substrings / Slicing&lt;/h2&gt;
+&lt;p&gt;Python strings use the slice notation where you can place up to three colon-separated values for the start, stop,
+and step. Python strings are 0-indexed and the stop argument is one past the final element that you want.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;abcdefg&amp;#39;&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:]&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;# bcdefg&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[:&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;# ab&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;# bcdef&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;# bcdef&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The slice notation in Python is compact and versatile to be used when getting the beginning, middle, or end
+of a string. Smalltalk achieves the same results using a number of different messages that can be a little
+confusing when you first get into it.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;nv&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;abcdefg&amp;#39;&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;&amp;#34;Leave off only the first character&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nf&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;allButFirst&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;&amp;#34;bcdefg&amp;#34;&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;&amp;#34;allButFirst with an argument to leave off that many characters&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nf&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;allButFirst:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;&amp;#34;cdefg&amp;#34;&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;&amp;#34;There are also the first and last messages that produce the same result
+&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;as s[1:] or s[:5]. Remember though that Smalltalk&amp;#39;s indexing is 1-based 
+&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;and inclusive&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nf&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;first:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;&amp;#34;ab&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nf&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;last:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;&amp;#34;fg&amp;#34;&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;&amp;#34;Get the middle of the string&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nf&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;copyFrom:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;to:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;&amp;#34;bcdef&amp;#34;&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;&amp;#34;Smalltalk indexing doesn&amp;#39;t have the same trick with negative indexes,
+&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;instead you need to calculate the size&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nf&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;copyFrom:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;to:&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;size&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;formatting&#34;&gt;Formatting&lt;/h2&gt;
+&lt;p&gt;Python has extensive string formatting using either the &lt;code&gt;.format()&lt;/code&gt; method of string or using f-strings.
+Pharo has a similar &lt;code&gt;format:&lt;/code&gt; message that can be used for inpterpolating other objects in strings.
+Each of these objects must have a &lt;code&gt;asString&lt;/code&gt; method for this to work.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;c&#34;&gt;&amp;#34;pass in a collection where values are indexed by number (like Array or OrderedCollection)&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;&amp;#39;ab {1} ef {2}&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;format:&lt;/span&gt; {&lt;span class=&#34;s&#34;&gt;&amp;#39;cd&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;gh&amp;#39;&lt;/span&gt;}&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;&amp;#34;ab cd ef gh&amp;#34;&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;&amp;#34;pass in a collection where values are indexed by name&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;&amp;#39;ab {one} ef {two}&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;format:&lt;/span&gt; 
+    (&lt;span class=&#34;nc&#34;&gt;Dictionary&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;with:&lt;/span&gt; &lt;span class=&#34;ss&#34;&gt;#one&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;cd&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;with:&lt;/span&gt; &lt;span class=&#34;ss&#34;&gt;#two&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;gh&amp;#39;&lt;/span&gt;)&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;&amp;#34;ab cd ef gh&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Unlike python there is no format mini-language. Which means that if you want to format things
+like numbers in a specific way you need to do that before passing the object to &lt;code&gt;format:&lt;/code&gt;.
+Numbers have a basic message &lt;code&gt;printString&lt;/code&gt; that will use the default settings. For very large or
+very small numbers it will print in scientific notation.&lt;/p&gt;
+&lt;p&gt;There isn&amp;rsquo;t a general number formatter like &lt;code&gt;printf&lt;/code&gt; in C/C++, instead there are messages for each
+type of formatting you want on a number. &lt;code&gt;printPaddedWith: aCharacter to: aNumber&lt;/code&gt; is used to
+perform left-side padding with a character of your choice. Normally you would choose zero to
+mimic the &lt;code&gt;printf&lt;/code&gt; behaviour but you can choose any character you like.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;m&#34;&gt;123&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;printPaddedWith:&lt;/span&gt; &lt;span class=&#34;sc&#34;&gt;$0&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;to:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt;     &lt;span class=&#34;c&#34;&gt;&amp;#34;&amp;#39;00000123&amp;#39;&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nf&#34;&gt;123&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;printPaddedWith:&lt;/span&gt; &lt;span class=&#34;sc&#34;&gt;$,&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;to:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt;     &lt;span class=&#34;c&#34;&gt;&amp;#34;&amp;#39;,,,,,123&amp;#39;&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nf&#34;&gt;123&lt;/span&gt;.&lt;span class=&#34;m&#34;&gt;31&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;printPaddedWith:&lt;/span&gt; &lt;span class=&#34;sc&#34;&gt;$0&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;to:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;&amp;#34;&amp;#39;000123.31&amp;#39;&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nf&#34;&gt;123&lt;/span&gt;.&lt;span class=&#34;m&#34;&gt;31&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;printPaddedWith:&lt;/span&gt; &lt;span class=&#34;sc&#34;&gt;$0&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;to:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;&amp;#34;&amp;#39;123.31&amp;#39;&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;printShowingDecimalPlaces: placesDesired&lt;/code&gt; is for controlling the number of decimal places.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;m&#34;&gt;123.31&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;printShowingDecimalPlaces:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;12&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;&amp;#34;&amp;#39;123.310000000000&amp;#39;&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;To combine these with the &lt;code&gt;format:&lt;/code&gt; message you could do something like the following to make
+a dynamic array of the values you want:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;{1}&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;format:&lt;/span&gt; {  &lt;span class=&#34;m&#34;&gt;1.123&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;printShowingDecimalPlaces:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;12&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;There isn&amp;rsquo;t a scientific formatter though, instead the default is to print a number in decimal
+format when it&amp;rsquo;s small, and switch to the scientific format as it gets bigger. I found this
+a little annoying as I wanted to print numbers in a consistent scientific format no matter their
+size.&lt;/p&gt;
+&lt;p&gt;There is a package called &lt;a href=&#34;http://ss3.gemstone.com/ss/NumberPrinter/&#34;&gt;NumberPrinter&lt;/a&gt; that has more
+versatile printing options, including scientific printing. For example, the default settings with
+&lt;code&gt;FloatPrinterScientificFormat&lt;/code&gt; would convert 123.123 to 1.23123e2. But you can change that with
+different messages to the number printer.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;nv&#34;&gt;rws&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;ReadWriteStream&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;with:&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;String&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;fp&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;FloatPrinterScientificFormat&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;fp&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;exponentDigitCount:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;fp&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;exponentChar:&lt;/span&gt; &lt;span class=&#34;sc&#34;&gt;$E&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;fp&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;print:&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;123.123&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;on:&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;rws&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;rws&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;contents&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;&amp;#34;1.23123E02&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Sadly this is a bit more verbose than python: &lt;code&gt;&#39;{:.5E}&#39;.format(0.09112346) = &#39;9.11235E-02&#39;&lt;/code&gt;&lt;/p&gt;
+</description>
+		</item>
 		<item>
 			<title>Using Dictionaries in Pharo Smalltalk</title>
 			<link>/2020/12/21/using-dictionaries-in-pharo-smalltalk/</link>
@@ -263,30 +346,6 @@ but smalltalk makes it easy to investigate and patch bugs on the fly. It&amp;rsq
 and lends itself to agile development.&lt;/p&gt;
 &lt;p&gt;I&amp;rsquo;m going to keep using Pharo on the side. For the moment I don&amp;rsquo;t think it could replace python/R
 in my professional work but the language is easy and good for quicker analyses.&lt;/p&gt;
-</description>
-		</item>
-		<item>
-			<title>Creating an AWS SDK for Pharo Smalltalk</title>
-			<link>/1/01/01/creating-an-aws-sdk-for-pharo-smalltalk/</link>
-			<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">/1/01/01/creating-an-aws-sdk-for-pharo-smalltalk/</guid>
-			<description>&lt;h2 id=&#34;how-does-aws-manage-all-its-sdks&#34;&gt;How does AWS manage all its SDKs?&lt;/h2&gt;
-&lt;p&gt;Libraries for other languages aren&amp;rsquo;t created by hand but instead are generated from data files
-written in JSON. At it&amp;rsquo;s heart, all these libraries need to do is construct a HTTP request and
-process the response. All of the operations for the services are constructed in a similar way
-however there has been evolution in the protocols used by AWS. There are five different protocols
-listed in boto that AWS services use to construct queries: &amp;lsquo;json&amp;rsquo;, &amp;lsquo;ec2&amp;rsquo;, &amp;lsquo;rest-xml&amp;rsquo;, &amp;lsquo;rest-json&amp;rsquo;, &amp;lsquo;query&amp;rsquo;.&lt;/p&gt;
-&lt;p&gt;|protocol name| count of services using protocol|
-|json|114|
-|ec2|1|
-|rest-xml|4|
-|query|19|
-|rest-json|120|&lt;/p&gt;
-&lt;p&gt;Unsurprisingly, communicating with JSON is the most popular choice but it is split between &lt;code&gt;json&lt;/code&gt; and &lt;code&gt;rest-json&lt;/code&gt;.
-It would appear that the EC2 service is a one-of-a-kind and has it&amp;rsquo;s own dedicated protocol, which is
-probably due to it being one of (or &lt;em&gt;the&lt;/em&gt;) oldest AWS service.&lt;/p&gt;
-&lt;h2 id=&#34;creating-an-aws-service-code-generator&#34;&gt;Creating an AWS service code generator&lt;/h2&gt;
 </description>
 		</item>
 	</channel>

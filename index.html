@@ -51,6 +51,34 @@
   <div>
     <h2 class="post-title">
       
+      <a href="/2021/07/19/using-strings-in-pharo-smalltalk/">Using Strings in Pharo Smalltalk</a>
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2021-07-19T01:20:17-07:00">
+      19 Jul 2021
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/tags/pharo">Pharo</a>
+    <a href="/tags/smalltalk">Smalltalk</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    Smalltalk syntax can be a little confusing coming from other languages. Here I&rsquo;ll show some comparisions between Python string operations and Smalltalk.
+Substrings / Slicing Python strings use the slice notation where you can place up to three colon-separated values for the start, stop, and step. Python strings are 0-indexed and the stop argument is one past the final element that you want.
+s = &#39;abcdefg&#39; s[1:] # bcdefg s[:2] # ab s[1:6] # bcdef s[1:-1] # bcdef The slice notation in Python is compact and versatile to be used when getting the beginning, middle, or end of a string.
+  </div>
+</div>
+<div>
+  <div>
+    <h2 class="post-title">
+      
       <a href="/2020/12/21/using-dictionaries-in-pharo-smalltalk/">Using Dictionaries in Pharo Smalltalk</a>
     </h2>
     
@@ -284,31 +312,6 @@ Long ago I added in a translate function and recently I added in a function that
   </div>
   <div>
     NCBI&rsquo;s assembly database is a great one-stop-shop for genomic data and annotations but it&rsquo;s actually kind of difficult to download data if you only know the accession number of an assembly. The documentation says that the assembly database is integrated with entrez-direct, a great set of command line utilities for accessing NCBI data from the command line. Most of the databases have an option to download data based on the ID, so I thought that something like the following would work
-  </div>
-</div>
-<div>
-  <div>
-    <h2 class="post-title">
-      
-      <a href="/2017/12/15/creating-huge-metabolic-overviews-for-comparative-genomics/">Creating huge metabolic overviews for comparative genomics</a>
-    </h2>
-    
-<div class="post-meta">
-  <span>Date</span> &#x5b;
-    <time datetime="2017-12-15T19:38:46Z">
-      15 Dec 2017
-    </time>
-  &#x5d;
-        
-        
-  <span>Tags</span> &#x5b;
-    <a href="/tags/bioinformatics">Bioinformatics</a>
-  &#x5d;
-</div>
-
-  </div>
-  <div>
-    I love looking at KEGG maps and using them to understand an organisms metabolism but they have their limitations. For starters, you&rsquo;re obviously stuck with how they are drawn, which in most cases includes many variations on a particular pathway. Secondly, the tools for mapping on your own genes to a pathway are limited to one organism at a time. What I really wanted was a way of quickly comparing 10s of genomes across a common set of pathways, in this case amino acid synthesis pathways.
   </div>
 </div>
 

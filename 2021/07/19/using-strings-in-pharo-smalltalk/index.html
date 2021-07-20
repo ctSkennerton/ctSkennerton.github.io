@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Using Strings in Pharo Smalltalk | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="Smalltalk syntax can be a little confusing coming from other languages. Here I&rsquo;ll show some comparisions between Python string operations and Smalltalk.
+Substrings / Slicing Python strings use the slice notation where you can place up to three colon-separated values for the start, stop, and step. Python strings are 0-indexed and the stop argument is one past the final element that you want.
+s = &#39;abcdefg&#39; s[1:] # bcdefg s[:2] # ab s[1:6] # bcdef s[1:-1] # bcdef The slice notation in Python is compact and versatile to be used when getting the beginning, middle, or end of a string." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/style.4499e350b4bf6f8c081a7e09030944de5a9d76cb513b6ad32a95ea610fed2c95.css" />
+  <link rel="stylesheet" href="/custom.css" />
+  <script defer src="/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">bio(logist | informatician)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      Using Strings in Pharo Smalltalk
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2021-07-19T01:20:17-07:00">
+      19 Jul 2021
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/tags/pharo">Pharo</a>
+    <a href="/tags/smalltalk">Smalltalk</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p>Smalltalk syntax can be a little confusing coming from other languages. Here I&rsquo;ll show some comparisions
+between Python string operations and Smalltalk.</p>
+<h2 id="substrings--slicing">Substrings / Slicing</h2>
+<p>Python strings use the slice notation where you can place up to three colon-separated values for the start, stop,
+and step. Python strings are 0-indexed and the stop argument is one past the final element that you want.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;abcdefg&#39;</span>
+<span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># bcdefg</span>
+<span class="n">s</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># ab</span>
+<span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>  <span class="c1"># bcdef</span>
+<span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># bcdef</span>
+</code></pre></div><p>The slice notation in Python is compact and versatile to be used when getting the beginning, middle, or end
+of a string. Smalltalk achieves the same results using a number of different messages that can be a little
+confusing when you first get into it.</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="nv">s</span> <span class="o">:=</span> <span class="s">&#39;abcdefg&#39;</span>
+
+<span class="c">&#34;Leave off only the first character&#34;</span>
+<span class="nf">s</span> <span class="nf">allButFirst</span>  <span class="c">&#34;bcdefg&#34;</span>
+
+<span class="c">&#34;allButFirst with an argument to leave off that many characters&#34;</span>
+<span class="nf">s</span> <span class="nf">allButFirst:</span> <span class="m">2</span>  <span class="c">&#34;cdefg&#34;</span>
+
+<span class="c">&#34;There are also the first and last messages that produce the same result
+</span><span class="c">as s[1:] or s[:5]. Remember though that Smalltalk&#39;s indexing is 1-based 
+</span><span class="c">and inclusive&#34;</span>
+<span class="nf">s</span> <span class="nf">first:</span> <span class="m">2</span>  <span class="c">&#34;ab&#34;</span>
+<span class="nf">s</span> <span class="nf">last:</span> <span class="m">2</span>  <span class="c">&#34;fg&#34;</span>
+
+<span class="c">&#34;Get the middle of the string&#34;</span>
+<span class="nf">s</span> <span class="nf">copyFrom:</span> <span class="m">2</span> <span class="nf">to:</span> <span class="m">6</span>  <span class="c">&#34;bcdef&#34;</span>
+
+<span class="c">&#34;Smalltalk indexing doesn&#39;t have the same trick with negative indexes,
+</span><span class="c">instead you need to calculate the size&#34;</span>
+<span class="nf">s</span> <span class="nf">copyFrom:</span> <span class="m">2</span> <span class="nf">to:</span> <span class="nv">s</span> <span class="nf">size</span> <span class="nf">-</span> <span class="m">1</span> 
+</code></pre></div><h2 id="formatting">Formatting</h2>
+<p>Python has extensive string formatting using either the <code>.format()</code> method of string or using f-strings.
+Pharo has a similar <code>format:</code> message that can be used for inpterpolating other objects in strings.
+Each of these objects must have a <code>asString</code> method for this to work.</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="c">&#34;pass in a collection where values are indexed by number (like Array or OrderedCollection)&#34;</span>
+<span class="s">&#39;ab {1} ef {2}&#39;</span> <span class="nf">format:</span> {<span class="s">&#39;cd&#39;</span><span class="p">.</span> <span class="s">&#39;gh&#39;</span>}<span class="p">.</span>  <span class="c">&#34;ab cd ef gh&#34;</span>
+
+<span class="c">&#34;pass in a collection where values are indexed by name&#34;</span>
+<span class="s">&#39;ab {one} ef {two}&#39;</span> <span class="nf">format:</span> 
+    (<span class="nc">Dictionary</span> <span class="nf">with:</span> <span class="ss">#one</span> <span class="nf">-&gt;</span> <span class="s">&#39;cd&#39;</span> <span class="nf">with:</span> <span class="ss">#two</span> <span class="nf">-&gt;</span> <span class="s">&#39;gh&#39;</span>)<span class="p">.</span>  <span class="c">&#34;ab cd ef gh&#34;</span>
+</code></pre></div><p>Unlike python there is no format mini-language. Which means that if you want to format things
+like numbers in a specific way you need to do that before passing the object to <code>format:</code>.
+Numbers have a basic message <code>printString</code> that will use the default settings. For very large or
+very small numbers it will print in scientific notation.</p>
+<p>There isn&rsquo;t a general number formatter like <code>printf</code> in C/C++, instead there are messages for each
+type of formatting you want on a number. <code>printPaddedWith: aCharacter to: aNumber</code> is used to
+perform left-side padding with a character of your choice. Normally you would choose zero to
+mimic the <code>printf</code> behaviour but you can choose any character you like.</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="m">123</span> <span class="nf">printPaddedWith:</span> <span class="sc">$0</span> <span class="nf">to:</span> <span class="m">8</span>     <span class="c">&#34;&#39;00000123&#39;&#34;</span>
+<span class="nf">123</span> <span class="err">printPaddedWith:</span> <span class="sc">$,</span> <span class="nf">to:</span> <span class="m">8</span>     <span class="c">&#34;&#39;,,,,,123&#39;&#34;</span>
+<span class="nf">123</span>.<span class="m">31</span> <span class="nf">printPaddedWith:</span> <span class="sc">$0</span> <span class="nf">to:</span> <span class="m">6</span>  <span class="c">&#34;&#39;000123.31&#39;&#34;</span>
+<span class="nf">123</span>.<span class="m">31</span> <span class="nf">printPaddedWith:</span> <span class="sc">$0</span> <span class="nf">to:</span> <span class="m">1</span>  <span class="c">&#34;&#39;123.31&#39;&#34;</span>
+</code></pre></div><p><code>printShowingDecimalPlaces: placesDesired</code> is for controlling the number of decimal places.</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="m">123.31</span> <span class="nf">printShowingDecimalPlaces:</span> <span class="m">12</span>  <span class="c">&#34;&#39;123.310000000000&#39;&#34;</span>
+</code></pre></div><p>To combine these with the <code>format:</code> message you could do something like the following to make
+a dynamic array of the values you want:</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="s">&#39;{1}&#39;</span> <span class="nf">format:</span> {  <span class="m">1.123</span> <span class="nf">printShowingDecimalPlaces:</span> <span class="m">12</span><span class="p">.</span> }
+</code></pre></div><p>There isn&rsquo;t a scientific formatter though, instead the default is to print a number in decimal
+format when it&rsquo;s small, and switch to the scientific format as it gets bigger. I found this
+a little annoying as I wanted to print numbers in a consistent scientific format no matter their
+size.</p>
+<p>There is a package called <a href="http://ss3.gemstone.com/ss/NumberPrinter/">NumberPrinter</a> that has more
+versatile printing options, including scientific printing. For example, the default settings with
+<code>FloatPrinterScientificFormat</code> would convert 123.123 to 1.23123e2. But you can change that with
+different messages to the number printer.</p>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="nv">rws</span> <span class="o">:=</span> <span class="nc">ReadWriteStream</span> <span class="nf">with:</span> <span class="nc">String</span> <span class="nb">new</span><span class="p">.</span>
+<span class="nv">fp</span> <span class="o">:=</span> <span class="nc">FloatPrinterScientificFormat</span> <span class="nb">new</span><span class="p">.</span>
+<span class="nv">fp</span> <span class="nf">exponentDigitCount:</span> <span class="m">2</span><span class="p">.</span>
+<span class="nv">fp</span> <span class="nf">exponentChar:</span> <span class="sc">$E</span><span class="p">.</span>
+<span class="nv">fp</span> <span class="nf">print:</span> <span class="m">123.123</span> <span class="nf">on:</span> <span class="nv">rws</span><span class="p">.</span>
+<span class="nv">rws</span> <span class="nf">contents</span>  <span class="c">&#34;1.23123E02&#34;</span>
+</code></pre></div><p>Sadly this is a bit more verbose than python: <code>'{:.5E}'.format(0.09112346) = '9.11235E-02'</code></p>
+
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2021 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>
