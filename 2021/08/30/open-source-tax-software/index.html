@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Open Source Tax Software | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="Filing taxes in America sucks. Your options are to do it by hand, pay someone like Intuit, or if you are below a certain income threshold get some tax software for free. The kicker is that free tax software is from Intuit who will try very hard to make sure that you either don&rsquo;t find it in the first place, or try to get you to pay for it and upsell you on something that should be free." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/style.4499e350b4bf6f8c081a7e09030944de5a9d76cb513b6ad32a95ea610fed2c95.css" />
+  <link rel="stylesheet" href="/custom.css" />
+  <script defer src="/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">bio(logist | informatician)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      Open Source Tax Software
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2021-08-30T18:45:28-07:00">
+      30 Aug 2021
+    </time>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p>Filing taxes in America sucks. Your options are to do it by hand, pay someone like Intuit, or
+if you are below a certain income threshold get some tax software for free. The kicker is that
+free tax software is from Intuit who will try very hard to make sure that you either don&rsquo;t find
+it in the first place, or try to get you to pay for it and upsell you on something that should
+be free. Check out this <a href="https://www.propublica.org/article/inside-turbotax-20-year-fight-to-stop-americans-from-filing-their-taxes-for-free">excellent article</a> from ProPublica that outlines Intuit&rsquo;s tactics.</p>
+<p>I&rsquo;ve tried to do my taxes by hand and made mistakes that mean I&rsquo;d have to amend my return.
+This tax year I was pleasantly surprised to find <a href="https://excel1040.com">https://excel1040.com</a>, which offers
+a fairly comprehensive list of federal tax forms. The beauty of excel1040 is that the forms
+themselves have been recreated in excel, one form per tab. It&rsquo;s incredibly powerful to see the
+forms get filled out automatically as you put in input values from your W-2 or 1099 forms.
+And since it&rsquo;s excel you can freely overwrite values if you think they are wrong or add in
+new logic if a form isn&rsquo;t implemented yet. The author even says that you can print out the
+forms from excel and they&rsquo;ll be accepted, though I didn&rsquo;t try that and instead copied the
+values from the spreadsheet onto the pdf forms from the IRS.</p>
+<p>Though I&rsquo;m sure there are unsupported parts of the
+tax code in excel1040 it does have a wealth of different forms and the author appears to have
+been slowly evolving the complexity of the task over many years.</p>
+<p>The only downside with excel1040 is that it&rsquo;s tricky to understand how all of the formulas
+are implemented as there is some complex logic that has to be squeezed into a single line
+formula. Here are a couple of examples of what I mean:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">=IF(P74&lt;&gt;&#34;&#34;,P74,IF(NOT(F6251_PIII),&#34;&#34;,IF(AND(SchDTW_Used,NOT(CGTW)),&#39;Sch. D WS&#39;!P87,IF(CGTW,&#39;Line 16 (QDCG Tax)&#39;!J34,0))))
+=IF(AM44&lt;&gt;&#34;&#34;,ROUND(AM44,0),IF(OR(AM25,AM29),&#34;&#34;,IF(AL6&lt;&gt;&#34;&#34;,IRA_CONV_YOU,IF(AL7&lt;&gt;&#34;&#34;,IRA_CONV_SPOUSE))))
+</code></pre></div><p>After I found excel1040, I also discovered <a href="https://ustaxes.org">https://ustaxes.org</a> which is aiming to be a replacement
+for paid tax software. It&rsquo;s a website and downloadable application that lets you add in your
+income and it does the math and fills in the IRS pdf forms automatically. It is written in
+typescript and felt more natural to me (as a programmer) to understand the logic. I&rsquo;ve already
+contributed a couple of additions and plan to keep contributing. It doesn&rsquo;t have
+as many of the forms implemented as excel1040 but I see it having at least one advantage:
+Because it is written in typescript as a custom application, we can take advantage of software
+tools like automatic testing, version control, and better structure to the formulas and logic.</p>
+<p>I hope that efforts like excel1040 and ustaxes.org get more popular so that Americans have
+additional, free choices when filing their tax.</p>
+
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2021 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>
