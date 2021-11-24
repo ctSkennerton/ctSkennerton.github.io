@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Dynamic types in Python. | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="I&rsquo;m constantly learning new things about the Python language. I consider myself a pretty good python programmer but often you never need to use all of the language features when writing your own code. For example I&rsquo;ve not used is the class factory pattern using the type built in function. I&rsquo;ve been aware of class factories, and read a few blog posts but never grokked it, until now.
+A class factory is a function or another class that can create classes at runtime rather than you writing out the class definition in code." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/style.4499e350b4bf6f8c081a7e09030944de5a9d76cb513b6ad32a95ea610fed2c95.css" />
+  <link rel="stylesheet" href="/custom.css" />
+  <script defer src="/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">bio(logist | informatician)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      Dynamic types in Python.
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2021-11-24T01:45:00-08:00">
+      24 Nov 2021
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/tags/python">python</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p>I&rsquo;m constantly learning new things about the Python language. I
+consider myself a pretty good python programmer but often you never
+need to use all of the language features when writing your own code.
+For example I&rsquo;ve not used is the class factory pattern using the
+<code>type</code> built in function. I&rsquo;ve been aware of class factories, and
+read a few blog posts but never <em>grokked</em> it, until now.</p>
+<p>A class factory is a function or another class that can create
+classes at runtime rather than you writing out the class definition
+in code. In other words it&rsquo;s a way to programatically create classes.
+Normally when you write python you create classes in your code like
+so:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">A</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mi">2</span>
+
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+</code></pre></div><p>So above, we define the name of a class, <code>A</code>, and give it an
+initialization method. Then we create and instance of that class,
+<code>a</code>, and print its two instance variables. There is another way to
+create this class though using the <a href="https://docs.python.org/3/library/functions.html#type"><code>type</code> function</a>,
+which lets you create types (classes). We could reconstruct the
+code above as follows:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">init_func</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mi">2</span>
+    
+<span class="n">A</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="p">(),</span> <span class="p">{</span><span class="s2">&#34;__init__&#34;</span><span class="p">:</span> <span class="n">init_func</span><span class="p">})</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+</code></pre></div><p>The fun bit is the third argument to <code>type</code> which defines a dictionary
+where the keys are the names of methods (and class variables) for
+the class. The values of the dictionary are either function names
+or values. Note that for <code>init_func</code> you don&rsquo;t want to add the
+parentheses as this will call the function (and give an error). For
+me, this also helped illuminate why in python we have to pass <code>self</code>
+as the first argument to a method &ndash; because you can attach on any
+old function to a class. It also goes to show that <code>self</code> is just
+a convention. If you were so inclined you could make python look
+like another language that uses <code>this</code> and not <code>self</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Let&#39;s make python look a little more like C++</span>
+<span class="c1"># which uses &#34;this&#34; instead of &#34;self&#34;</span>
+<span class="c1"># Probably don&#39;t want to do this for real as it</span>
+<span class="c1"># will really confuse people</span>
+<span class="k">def</span> <span class="nf">constructor</span><span class="p">(</span><span class="n">this</span><span class="p">):</span>
+    <span class="n">this</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">this</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="n">B</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s1">&#39;Cpp&#39;</span><span class="p">,</span> <span class="p">(),</span> <span class="p">{</span><span class="s1">&#39;__init__&#39;</span><span class="p">:</span> <span class="n">constructor</span><span class="p">})</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">B</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+</code></pre></div><p>So now lets use this knowledge to make our &ldquo;factory&rdquo;. Take most of
+the code above and wrap it in another function. This way you can
+pass configuration for your to-be-created class into the outer
+function. You can extend this as far as you want and don&rsquo;t have to
+make it a function either, you could create a class whose job it
+is to create other classes &ndash; a class factory class!</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">class_factory</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">init_func</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mi">2</span>
+        
+    <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(),</span> <span class="p">{</span><span class="s2">&#34;__init__&#34;</span><span class="p">:</span> <span class="n">init_func</span><span class="p">})</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">class_factory</span><span class="p">()</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+</code></pre></div><p>This is all nice and abstract but how and why would you use this?</p>
+<p>Lets have a look at the
+<a href="https://marshmallow.readthedocs.io/en/stable/">marshmallow</a> library
+which performs object serialization. With marshmallow you can define
+incoming data, usually in the form of JSON and convert it to native
+python data types (and vice-versa) while validating the data conforms
+to a certain schema. Here is the example from their website:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">fields</span>
+
+
+<span class="k">class</span> <span class="nc">ArtistSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">AlbumSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">()</span>
+    <span class="n">release_date</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Date</span><span class="p">()</span>
+    <span class="n">artist</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">ArtistSchema</span><span class="p">())</span>
+
+
+<span class="n">bowie</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&#34;David Bowie&#34;</span><span class="p">)</span>
+<span class="n">album</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">artist</span><span class="o">=</span><span class="n">bowie</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&#34;Hunky Dory&#34;</span><span class="p">,</span> <span class="n">release_date</span><span class="o">=</span><span class="n">date</span><span class="p">(</span><span class="mi">1971</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">17</span><span class="p">))</span>
+
+<span class="n">schema</span> <span class="o">=</span> <span class="n">AlbumSchema</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">album</span><span class="p">)</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># { &#39;artist&#39;: {&#39;name&#39;: &#39;David Bowie&#39;},</span>
+<span class="c1">#   &#39;release_date&#39;: &#39;1971-12-17&#39;,</span>
+<span class="c1">#   &#39;title&#39;: &#39;Hunky Dory&#39;}</span>
+</code></pre></div><p>The key things to note are that you have to create schema classes
+that define fields that are of particular types. But what if you
+don&rsquo;t know the types beforehand or the types changed outside of the
+control of your program? For example, you have a web service that
+accepts incoming data, but the input data is user defined (to a
+point) and the actual schema of the data are stored outside of your
+program. It&rsquo;s not feasible for you to code in a new class in your
+web service every time the data changes but you also don&rsquo;t want to
+accept any old user data. What you really need is to read in one
+of these external schemas to create a validator for the input data
+on the fly.</p>
+<p>Class factories to the rescue! Lets see how we can build a marshmallow
+schema class from a simple definition stored in JSON as a dictionary
+of field names to types.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">fields</span>
+
+<span class="k">def</span> <span class="nf">schema_factory</span><span class="p">(</span><span class="n">schema_definition</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="s2">&#34;&#34;&#34;
+</span><span class="s2">        The schema definition is a simple dictionary with the name
+</span><span class="s2">        of the field as the key and a string that defines its type
+</span><span class="s2">        as the value. For example:
+</span><span class="s2">        
+</span><span class="s2">        {
+</span><span class="s2">            &#39;field1&#39;: &#39;str&#39;,
+</span><span class="s2">            &#39;field2&#39;: &#39;date&#39;
+</span><span class="s2">        }
+</span><span class="s2">    &#34;&#34;&#34;</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">field_type_map</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;str&#39;</span><span class="p">:</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">,</span>
+        <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">fields</span><span class="o">.</span><span class="n">Date</span>
+        <span class="c1"># add in other types as needed</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="n">schema_field_name</span><span class="p">,</span> <span class="n">schema_field_value</span> <span class="ow">in</span> <span class="n">schema_definition</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># We find the right marshmallow field and initialize it.</span>
+        <span class="c1"># Fields then defines the class variables that you would </span>
+        <span class="c1"># manually do when defining a marshmallow Schema.</span>
+        <span class="n">fields</span><span class="p">[</span><span class="n">schema_field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_type_map</span><span class="p">[</span><span class="n">schema_field_value</span><span class="p">]()</span>
+        
+    <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="s1">&#39;CustomSchema&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">Schema</span><span class="p">,),</span> <span class="n">fields</span><span class="p">)</span>
+
+</code></pre></div>
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2021 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>
