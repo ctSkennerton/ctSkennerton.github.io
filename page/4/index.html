@@ -2,14 +2,13 @@
 <html lang="en-us">
 <head>
   <meta charset="utf-8" />
-  <title>Pharo | Connor Skennerton</title>
+  <title>Connor Skennerton</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="description" content="Connor Skennerton&#39;s personal website" />
   <meta name="author" content="Connor Skennerton" />
   <meta name="generator" content="Hugo 0.74.1" />
   <link href="/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
-  <link href="/tags/pharo/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Pharo Feed" />
   <link rel="stylesheet" href="/style.4499e350b4bf6f8c081a7e09030944de5a9d76cb513b6ad32a95ea610fed2c95.css" />
   <link rel="stylesheet" href="/custom.css" />
   <script defer src="/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
@@ -49,92 +48,46 @@
 
   
 <div>
-  <p>Pharo:</p>
-  <ul>
-    <li>
-      <div class="post-title">
-        <a href="/2022/04/02/creating-an-aws-sdk-for-pharo-smalltalk/">Creating an AWS SDK for Pharo Smalltalk</a>
-      </div>
+  <div>
+    <h2 class="post-title">
       
+      <a href="/2013/10/28/testing-out-seqans-multipattern-search-implementations/">Testing out Seqan&#39;s Multipattern Search Implementations</a>
+    </h2>
+    
 <div class="post-meta">
   <span>Date</span> &#x5b;
-    <time datetime="2022-04-02T14:52:00-07:00">
-      02 Apr 2022
+    <time datetime="2013-10-28T00:00:00Z">
+      28 Oct 2013
     </time>
   &#x5d;
         
         
   <span>Tags</span> &#x5b;
-    <a href="/tags/pharo">Pharo</a>
-    <a href="/tags/aws">AWS</a>
-    <a href="/tags/smalltalk">smalltalk</a>
+    <a href="/tags/seqan">seqan</a>
+    <a href="/tags/benchmarks">benchmarks</a>
+    <a href="/tags/bioinformatics">bioinformatics</a>
   &#x5d;
 </div>
 
-    </li>
-    <li>
-      <div class="post-title">
-        <a href="/2021/07/19/using-strings-in-pharo-smalltalk/">Using Strings in Pharo Smalltalk</a>
-      </div>
-      
-<div class="post-meta">
-  <span>Date</span> &#x5b;
-    <time datetime="2021-07-19T01:20:17-07:00">
-      19 Jul 2021
-    </time>
-  &#x5d;
-        
-        
-  <span>Tags</span> &#x5b;
-    <a href="/tags/pharo">Pharo</a>
-    <a href="/tags/smalltalk">Smalltalk</a>
-  &#x5d;
-</div>
-
-    </li>
-    <li>
-      <div class="post-title">
-        <a href="/2020/12/21/using-dictionaries-in-pharo-smalltalk/">Using Dictionaries in Pharo Smalltalk</a>
-      </div>
-      
-<div class="post-meta">
-  <span>Date</span> &#x5b;
-    <time datetime="2020-12-21T13:54:32-08:00">
-      21 Dec 2020
-    </time>
-  &#x5d;
-        
-        
-  <span>Tags</span> &#x5b;
-    <a href="/tags/pharo">Pharo</a>
-    <a href="/tags/smalltalk">Smalltalk</a>
-  &#x5d;
-</div>
-
-    </li>
-    <li>
-      <div class="post-title">
-        <a href="/2020/12/10/exploratory-data-analysis-with-pharo-smalltalk/">Exploratory data analysis with Pharo Smalltalk</a>
-      </div>
-      
-<div class="post-meta">
-  <span>Date</span> &#x5b;
-    <time datetime="2020-12-10T20:19:12-08:00">
-      10 Dec 2020
-    </time>
-  &#x5d;
-        
-        
-  <span>Tags</span> &#x5b;
-    <a href="/tags/pharo">Pharo</a>
-    <a href="/tags/smalltalk">Smalltalk</a>
-    <a href="/tags/roassal">Roassal</a>
-    <a href="/tags/dataframe">DataFrame</a>
-  &#x5d;
-</div>
-
-    </li>
-  </ul>
+  </div>
+  <div>
+    <p>I recently discovered <a href="http://seqan.de">Seqan</a>, a header-only C++ library for
+bioinformatics.  I&rsquo;ve been playing around with the toolkit to make some
+small programs just to see whether I want to use it in a
+larger project.  So far I&rsquo;ve written
+<a href="https://github.com/ctSkennerton/prepmate">prepmate</a>, an adaptor trimming
+program for Illumina&rsquo;s Nextera mate-pair libraries; and
+<a href="https://github.com/ctSkennerton/fxtract">fxtract</a>, a
+grep-like program for extracting fasta/fastq records from large files.  One of the
+algorithms that I use in fxtract and in another program I&rsquo;ve written,
+<a href="http://ctskennerton.github.io/crass/">crass</a>, is to search for
+multiple patterns simultaneously (in this case a number of different DNA
+motifs).  Seqan
+implements a number of algorithms for multipattern matching (checkout
+their tutorial page), however they don&rsquo;t give many clues as to why you
+would choose one algorithm over another.  So I decided to take a few of
+these implementations out for a spin using fxtract.</p>
+  </div>
 </div>
 
   <div class="pagination-content">
@@ -143,11 +96,17 @@
         <li class="pure-menu-item pure-menu-disabled">
           Pages
         </li>
-        <li class="pure-menu-item pure-menu-selected">
-          <a href="/tags/pharo/" class="pure-menu-link">First</a>
+        <li class="pure-menu-item">
+          <a href="/" class="pure-menu-link">First</a>
+        </li>
+        <li class="pure-menu-item">
+          <a href="/page/2/" class="pure-menu-link">2</a>
+        </li>
+        <li class="pure-menu-item">
+          <a href="/page/3/" class="pure-menu-link">3</a>
         </li>
         <li class="pure-menu-item pure-menu-selected">
-          <a href="/tags/pharo/" class="pure-menu-link">Last</a>
+          <a href="/page/4/" class="pure-menu-link">Last</a>
         </li>
       </ul>
     </div>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Creating an AWS SDK for Pharo Smalltalk | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="I&rsquo;ve been working on an expanded AWS SDK for Pharo. Currently, 234 AWS services are available. See the code on GitHub.
+Amazon Web Services (AWS) is a huge set (approximately 300 at time of writing) of services for doing just about anything related to computing infrastructure and tools, often with multiple ways to achieve the same or similar thing. The awesome thing about AWS is that there is an extensive set of APIs for working with these services that make it a coders paradise since it opens up great avennues for automation." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/style.4499e350b4bf6f8c081a7e09030944de5a9d76cb513b6ad32a95ea610fed2c95.css" />
+  <link rel="stylesheet" href="/custom.css" />
+  <script defer src="/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">bio(logist | informatician)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      Creating an AWS SDK for Pharo Smalltalk
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2022-04-02T14:52:00-07:00">
+      02 Apr 2022
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/tags/pharo">Pharo</a>
+    <a href="/tags/aws">AWS</a>
+    <a href="/tags/smalltalk">smalltalk</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p>I&rsquo;ve been working on an expanded AWS SDK for Pharo. Currently, 234 AWS services are available. See
+the code on <a href="https://github.com/ctSkennerton/aws-sdk-smalltalk">GitHub</a>.</p>
+<p>Amazon Web Services (AWS) is a huge set (approximately 300 at time of writing) of services for doing
+just about anything related to computing infrastructure and tools, often with multiple ways to
+achieve the same or similar thing. The awesome thing about AWS is that there is an extensive set of
+APIs for working with these services that make it a coders paradise since it opens up great avennues
+for automation. The AWS APIs are implemented via HTTP which means that they can be accessed
+basically from any programming language that lets you send and receive web requests. However it&rsquo;s
+much nicer to wrap up these API calls into software development kits (SDKs) that hide a lot of those
+details. AWS has a lot of officially supported languages and there are also some community efforts
+for other lanuages. Sadly, there isn&rsquo;t a complete SDK for Smalltalk, although there is a <a href="https://github.com/newapplesho/aws-sdk-smalltalk">incomplete
+version on Github</a> that has partial support for
+some services. I wanted to expand on this but the task seems hurculean since there are thousands of
+APIs that need to be written.</p>
+<h2 id="how-does-aws-manage-all-its-sdks">How does AWS manage all its SDKs?</h2>
+<p>AWS is a big company but I still wanted to understand how they could release the same set of APIs in
+all these different programming languages and keep them all in sync. Thankfully, the SDKs are all
+open source so I looked through how the Python SDK,
+<a href="https://boto3.amazonaws.com/v1/documentation/api/latest/index.html">Boto3</a>, is created. Boto3
+actually relies on a separate package called <a href="https://github.com/boto/botocore">botocore</a> that
+handles all of the lower level HTTP API calls. If you&rsquo;ve ever done <code>boto3.client('batch')</code> in
+Python, you&rsquo;re actually using the code in botocore.</p>
+<p>Botocore makes heavy use of code generation! The <a href="https://github.com/boto/botocore/tree/develop/botocore/data">AWS APIs are defined in JSON formatted
+files</a> and this data is read at runtime
+to dynamically create the correct classes. Looking at other languages, like
+<a href="https://github.com/aws/aws-sdk-ruby/tree/version-3/apis">Ruby</a> or
+<a href="https://github.com/aws/aws-sdk-go/tree/main/models/apis">Go</a>, there are the exact same files.</p>
+<p>Aha! AWS doesn&rsquo;t make these SDKs individually, they publish data files that enable code generation.</p>
+<h2 id="understanding-the-data-files">Understanding the data files</h2>
+<p>For each service there are multiple JSON files but the main one seems to be <code>service-2.json</code>. This
+file contains information about the &ldquo;operations&rdquo;, the API endpoints for the service, and the
+&ldquo;shapes&rdquo;, which describe the input and output data structures for the API requests. There is also a
+&ldquo;metadata&rdquo; section with lots of interesting things about the service itself.</p>
+<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&#34;version&#34;</span><span class="p">:</span><span class="s2">&#34;2.0&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;metadata&#34;</span><span class="p">:{</span>
+    <span class="nt">&#34;apiVersion&#34;</span><span class="p">:</span><span class="s2">&#34;2020-08-01&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;endpointPrefix&#34;</span><span class="p">:</span><span class="s2">&#34;aps&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;jsonVersion&#34;</span><span class="p">:</span><span class="s2">&#34;1.1&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;protocol&#34;</span><span class="p">:</span><span class="s2">&#34;rest-json&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;serviceFullName&#34;</span><span class="p">:</span><span class="s2">&#34;Amazon Prometheus Service&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;serviceId&#34;</span><span class="p">:</span><span class="s2">&#34;amp&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;signatureVersion&#34;</span><span class="p">:</span><span class="s2">&#34;v4&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;signingName&#34;</span><span class="p">:</span><span class="s2">&#34;aps&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;uid&#34;</span><span class="p">:</span><span class="s2">&#34;amp-2020-08-01&#34;</span>
+  <span class="p">},</span>
+  <span class="nt">&#34;operations&#34;</span><span class="p">:{},</span>
+  <span class="nt">&#34;shapes&#34;</span><span class="p">:{}</span>
+<span class="p">}</span>
+</code></pre></div><p>The metadata has a <code>protocol</code> key that broadly describes how to construct API requests and
+deserializing responses.  There are five different protocols listed in the data files that AWS
+services use to construct queries: &lsquo;json&rsquo;, &lsquo;ec2&rsquo;, &lsquo;rest-xml&rsquo;, &lsquo;rest-json&rsquo;, &lsquo;query&rsquo;.</p>
+<table>
+<thead>
+<tr>
+<th>Protocol Name</th>
+<th>Services Using Protocol</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rest-json</td>
+<td>120</td>
+</tr>
+<tr>
+<td>json</td>
+<td>114</td>
+</tr>
+<tr>
+<td>query</td>
+<td>19</td>
+</tr>
+<tr>
+<td>rest-xml</td>
+<td>4</td>
+</tr>
+<tr>
+<td>ec2</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>Unsurprisingly, communicating with JSON is the most popular choice but it is split between <code>json</code>
+and <code>rest-json</code>.  It would appear that the EC2 service is a one-of-a-kind and has it&rsquo;s own dedicated
+protocol, which is probably due to it being one of the oldest AWS services.</p>
+<h3 id="json-protocol">JSON Protocol</h3>
+<p>This appears to be the simplest of the protocols. All of the requests are sent to the root path of
+the host and a header, <code>x-amz-target</code>, provides information about which operation to target. All of
+the required parameters are provided in the body of the request as JSON.</p>
+<h3 id="rest-json-protocol">REST-JSON Protocol</h3>
+<p>Each operation has a different path on the host server. Input parameters can be placed in the URL
+path, query string, headers, or request body. The input shape is responsible for encoding which
+parameters go where and the request body is formatted with JSON.</p>
+<h3 id="query-protocol">Query Protocol</h3>
+<p>The input shape is encoded as <code>x-www-form-urlencoded</code> and added to the query string of the request.
+Nested information of the input shape, such as structures, maps, and lists are encoded are via an
+incrementally generated prefix so that the key in the query string could become something like
+<code>Foo.bar.member.1=value</code> for a shape that looks something like <code>{&quot;Foo&quot;: {&quot;bar&quot;: [&quot;value&quot;]}}</code> in
+JSON. Structures are created by <code>prefix.member</code>, lists are created by <code>prefix.listName.1</code>, and maps
+are created by <code>prefix.mapName.key</code> and <code>prefix.mapName.value</code></p>
+<h3 id="rest-xml-protocol">REST-XML Protocol</h3>
+<p>The same as rest-json but the request and response bodies are formatted with XML rather than JSON.</p>
+<h3 id="ec2-protocol">EC2 Protocol</h3>
+<p>Very similar to the Query protocol; used only on the EC2 service.</p>
+<h2 id="creating-an-aws-service-code-generator">Creating an AWS service code generator</h2>
+<p>The python an Ruby SDKs ship with the JSON files and read them every time there is a call to
+generate a new client. This is an interesting approach that makes use of metaprogramming in these
+languages. I chose instead to use code generation to build the services beforehand. Since Pharo
+doesn&rsquo;t separate code and runtime once you create a class it&rsquo;s created and can be accessed in the
+image so creating the classes at &ldquo;runtime&rdquo; doesn&rsquo;t really mean the same thing as it does in those
+other languages. Furthermore, it&rsquo;s better to generate the classes so they can be imported with
+metacello individually if needed. It&rsquo;s very unlikely that you need all 300 odd AWS services in your
+image so there is no reason to get all of the data for them. Of course, you are free to use the code
+generation package yourself if you have the data files on hand and want to go that way.</p>
+<h3 id="operations">Operations</h3>
+<p>I followed the general structure of other SDKs and created a single class for each service.  That
+class has a number of messages, one for each of the operations. An operation is simply an API request.</p>
+<p>Here is an example of how an operation is encoded in the JSON data files:</p>
+<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json">  <span class="s2">&#34;operations&#34;</span><span class="err">:</span><span class="p">{</span>
+    <span class="nt">&#34;CreateAlertManagerDefinition&#34;</span><span class="p">:{</span>
+      <span class="nt">&#34;name&#34;</span><span class="p">:</span><span class="s2">&#34;CreateAlertManagerDefinition&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;http&#34;</span><span class="p">:{</span>
+        <span class="nt">&#34;method&#34;</span><span class="p">:</span><span class="s2">&#34;POST&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;requestUri&#34;</span><span class="p">:</span><span class="s2">&#34;/workspaces/{workspaceId}/alertmanager/definition&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;responseCode&#34;</span><span class="p">:</span><span class="mi">202</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;input&#34;</span><span class="p">:{</span><span class="nt">&#34;shape&#34;</span><span class="p">:</span><span class="s2">&#34;CreateAlertManagerDefinitionRequest&#34;</span><span class="p">},</span>
+      <span class="nt">&#34;output&#34;</span><span class="p">:{</span><span class="nt">&#34;shape&#34;</span><span class="p">:</span><span class="s2">&#34;CreateAlertManagerDefinitionResponse&#34;</span><span class="p">},</span>
+      <span class="nt">&#34;errors&#34;</span><span class="p">:[</span>
+        <span class="p">{</span><span class="nt">&#34;shape&#34;</span><span class="p">:</span><span class="s2">&#34;ThrottlingException&#34;</span><span class="p">},</span>
+        <span class="p">{</span><span class="nt">&#34;shape&#34;</span><span class="p">:</span><span class="s2">&#34;ConflictException&#34;</span><span class="p">},</span>
+        <span class="p">{</span><span class="nt">&#34;shape&#34;</span><span class="p">:</span><span class="s2">&#34;ValidationException&#34;</span><span class="p">},</span>
+        <span class="p">{</span><span class="nt">&#34;shape&#34;</span><span class="p">:</span><span class="s2">&#34;ResourceNotFoundException&#34;</span><span class="p">},</span>
+        <span class="p">{</span><span class="nt">&#34;shape&#34;</span><span class="p">:</span><span class="s2">&#34;AccessDeniedException&#34;</span><span class="p">},</span>
+        <span class="p">{</span><span class="nt">&#34;shape&#34;</span><span class="p">:</span><span class="s2">&#34;InternalServerException&#34;</span><span class="p">},</span>
+        <span class="p">{</span><span class="nt">&#34;shape&#34;</span><span class="p">:</span><span class="s2">&#34;ServiceQuotaExceededException&#34;</span><span class="p">}</span>
+      <span class="p">],</span>
+      <span class="nt">&#34;documentation&#34;</span><span class="p">:</span><span class="s2">&#34;&lt;p&gt;Create an alert manager definition.&lt;/p&gt;&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;idempotent&#34;</span><span class="p">:</span><span class="kc">true</span>
+    <span class="p">},</span>
+</code></pre></div><p>The operation name, <code>CreateAlertManagerDefinition</code>, would get converted to the message
+<code>AWSAmp&gt;&gt;createAlertManagerDefinition: aCreateAlertManagerDefinitionRequest</code>.</p>
+<p>Due to the way that messages work I chose to model the shapes as objects. In Python SDK, shapes are
+not turned into objects but instead the python function calls contain many keyword arguments. This
+works well for Python where keyword arguments can be given in any order to a function. In Pharo,
+arguments need to be given in order so it becomes quite cumbersome to put in 10 different arguments,
+most of which are optional.</p>
+<p>Instead, the operations take a single argument, a request object, that can be serialized.  This is
+the same approach that the Go SDK takes.</p>
+<p>The operation above has a templated path on the server: the <code>requestUri</code> of the operation contains a
+parameter, <code>workspaceId</code> that must be obtained from the input. In this case the
+<code>CreateAlertManagerDefinitionRequest</code> is modeled as an object in Pharo that contains a <code>workspaceId</code>
+accessor.</p>
+<p>The definition of the shapes is also in the JSON data definitions. Below is what the <code>CreateAlertManagerDefinitionRequest</code>
+looks like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json">    <span class="s2">&#34;CreateAlertManagerDefinitionRequest&#34;</span><span class="err">:</span><span class="p">{</span>
+      <span class="nt">&#34;type&#34;</span><span class="p">:</span><span class="s2">&#34;structure&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;required&#34;</span><span class="p">:[</span>
+        <span class="s2">&#34;data&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;workspaceId&#34;</span>
+      <span class="p">],</span>
+      <span class="nt">&#34;members&#34;</span><span class="p">:{</span>
+        <span class="nt">&#34;clientToken&#34;</span><span class="p">:{</span>
+          <span class="nt">&#34;shape&#34;</span><span class="p">:</span><span class="s2">&#34;IdempotencyToken&#34;</span><span class="p">,</span>
+          <span class="nt">&#34;documentation&#34;</span><span class="p">:</span><span class="s2">&#34;&lt;p&gt;Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.&lt;/p&gt;&#34;</span><span class="p">,</span>
+          <span class="nt">&#34;idempotencyToken&#34;</span><span class="p">:</span><span class="kc">true</span>
+        <span class="p">},</span>
+        <span class="nt">&#34;data&#34;</span><span class="p">:{</span>
+          <span class="nt">&#34;shape&#34;</span><span class="p">:</span><span class="s2">&#34;AlertManagerDefinitionData&#34;</span><span class="p">,</span>
+          <span class="nt">&#34;documentation&#34;</span><span class="p">:</span><span class="s2">&#34;&lt;p&gt;The alert manager definition data.&lt;/p&gt;&#34;</span>
+        <span class="p">},</span>
+        <span class="nt">&#34;workspaceId&#34;</span><span class="p">:{</span>
+          <span class="nt">&#34;shape&#34;</span><span class="p">:</span><span class="s2">&#34;WorkspaceId&#34;</span><span class="p">,</span>
+          <span class="nt">&#34;documentation&#34;</span><span class="p">:</span><span class="s2">&#34;&lt;p&gt;The ID of the workspace in which to create the alert manager definition.&lt;/p&gt;&#34;</span><span class="p">,</span>
+          <span class="nt">&#34;location&#34;</span><span class="p">:</span><span class="s2">&#34;uri&#34;</span><span class="p">,</span>
+          <span class="nt">&#34;locationName&#34;</span><span class="p">:</span><span class="s2">&#34;workspaceId&#34;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;documentation&#34;</span><span class="p">:</span><span class="s2">&#34;&lt;p&gt;Represents the input of a CreateAlertManagerDefinition operation.&lt;/p&gt;&#34;</span>
+    <span class="p">}</span><span class="err">,</span>
+
+</code></pre></div><p>Shapes also have types, in this case it is a <code>structure</code> but there are others like <code>map</code>, <code>list</code>,
+<code>string</code>, <code>timestamp</code>, etc. Structures have a members dictionary which for the smalltalk SDK get
+converted into the accessors of the object. You can also see that the members contain some metadata
+about where in the request they should be put. The <code>workspaceId</code> member has a location of the <code>uri</code>,
+whereas the other two members don&rsquo;t have that information (based on the other SDKs this means to put
+them in the default location, meaning the body of the request). The members also define their own
+shapes creating a recursive descent till the shapes are basic types like <code>string</code>.</p>
+<h3 id="using-the-code-generator">Using the code generator</h3>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="c">&#34;Load in the code generator group&#34;</span>
+<span class="nc">Metacello</span> <span class="nb">new</span>
+    <span class="nf">baseline:</span> <span class="s">&#39;AWS&#39;</span><span class="p">;</span>
+    <span class="nf">repository:</span> <span class="s">&#39;github://ctSkennerton/aws-sdk-smalltalk/pharo-repository&#39;</span><span class="p">;</span>
+    <span class="nf">load:</span> <span class="ss">#(</span><span class="s">&#39;Client-Creator&#39;</span><span class="ss">)</span><span class="p">.</span>
+
+<span class="nv">acc</span> <span class="o">:=</span> <span class="nc">AWSClientCreator</span> <span class="nb">new</span><span class="p">.</span>
+
+<span class="c">&#34;point the code generator to the directory containing the AWS data files.
+</span><span class="c">You will need to bootstrap them from another SDK like botocore.
+</span><span class="c">&#34;</span>
+<span class="nv">serviceData</span> <span class="o">:=</span> <span class="nv">acc</span> <span class="nf">findJson:</span> <span class="s">&#39;/botocore/data&#39;</span> <span class="nf">asFileReference</span><span class="p">.</span>
+
+<span class="c">&#34;Load in the JSON definition for the Athena service and create the classes&#34;</span>
+<span class="nv">athenaDefinition</span> <span class="o">:=</span> (<span class="nc">NeoJSONReader</span> <span class="nf">on:</span> (<span class="nv">serviceData</span> <span class="nf">at:</span> <span class="s">&#39;athena&#39;</span>) <span class="nf">readStream</span>) <span class="nf">next</span><span class="p">.</span>
+<span class="nv">acc</span> <span class="nf">createFromJson:</span> <span class="nv">athenaDefinition</span><span class="p">.</span>
+</code></pre></div><h2 id="install-and-try-it-out">Install and try it out</h2>
+<div class="highlight"><pre class="chroma"><code class="language-smalltalk" data-lang="smalltalk"><span class="c">&#34;Load only the Amp service from the example above.
+</span><span class="c">Replace the parameter to load with the services you use&#34;</span>
+<span class="nc">Metacello</span> <span class="nb">new</span>
+    <span class="nf">baseline:</span> <span class="s">&#39;AWS&#39;</span><span class="p">;</span>
+    <span class="nf">repository:</span> <span class="s">&#39;github://ctSkennerton/aws-sdk-smalltalk/pharo-repository&#39;</span><span class="p">;</span>
+    <span class="nf">load:</span> <span class="ss">#(</span><span class="s">&#39;Amp&#39;</span><span class="ss">)</span><span class="p">.</span>
+
+
+<span class="c">&#34;default parameters to pass to the request. Change to your values&#34;</span>
+<span class="nv">workspace</span> <span class="o">:=</span> <span class="s">&#39;CAJK12N&#39;</span><span class="p">.</span>
+<span class="nv">data</span> <span class="o">:=</span> <span class="s">&#39;COMPLETE&#39;</span><span class="p">.</span>
+
+<span class="c">&#34;Create a new AMP service. Will use your credentials from ~/.aws&#34;</span>
+<span class="nv">service</span> <span class="o">:=</span> <span class="nc">AWSAmp</span> <span class="nb">new</span><span class="p">.</span>
+
+<span class="nv">resp</span> <span class="o">:=</span> <span class="nv">service</span> <span class="nf">createAlertManagerDefinition:</span>
+    (<span class="nc">AWSAmpCreateAlertManagerDefinitionRequest</span> <span class="nb">new</span> <span class="nf">workspaceId:</span> <span class="nv">workspace</span><span class="p">;</span> <span class="nf">data:</span> <span class="nv">data</span>)<span class="p">.</span>
+</code></pre></div><h2 id="project-status-work-still-to-be-done">Project Status, Work Still to be Done</h2>
+<p>This is still very much a work in progress. So far the class generators cover the JSON and REST-JSON
+protocols, which is still 234 different services but lacks some important ones such as ec2, s3, and
+SNS. There also isn&rsquo;t any nice parsing of responses from any of the services so the response objects
+are basically the raw JSON returned.</p>
+<p>Contributions very welcome, make a pull request on <a href="https://github.com/ctSkennerton/aws-sdk-smalltalk">GitHub</a>.</p>
+<!---
+## Shapes
+
+### Writing Shapes
+
+JSON shapes are easy using NeoJSON mapping. For each shape a `neoJsonMapping` message on the class side of the shape which is recognized by the serializer to convert the custom shapes.
+
+```smalltalk
+serviceDAta := AWSClientCreator new findJson: '/tmp/botocore/botocore/data' asFileReference.
+sd := serviceDAta collect: [ :a | (NeoJSONReader on: a readStream) next ].
+
+"How unique are shape names across services?"
+allShapes := Dictionary new.
+sd associationsDo: [ :v |
+    (v value at: 'shapes') keysDo: [:s |
+        (allShapes at: s ifAbsent: [
+            allShapes  at: s put: Set new.
+            ]) add: v key ]].
+
+"Here are the duplicated Shapes. There are 5470 of them"
+allShapes select: [ :v | v size > 1 ].
+
+"Of the shapes that have the same name, do they have the same definition?"
+duplicatedShapeDefinitions := Dictionary new.
+(allShapes select: [ :v | v size > 1 ])
+	keysAndValuesDo:  [ :shape :services |
+		services do: [ :service |
+			((duplicatedShapeDefinitions
+				at: shape
+				ifAbsent: [
+                    duplicatedShapeDefinitions at: shape put: OrderedCollection new.]) add: ((sd at: service at: 'shapes')at: shape)) ] ].
+
+"What are the different base types for shapes"
+shapeTypes := Bag new.
+sd valuesDo: [ :service | (service at: 'shapes') valuesDo: [ :shape | shapeTypes add: (shape at: 'type')] ].
+shapeTypes valuesAndCounts
+```
+
+This is the general term for the various input and outputs from the operations
+There are approximately 46,000 different shapes defined across all services with about 5,000 sharing a name.
+The shapes come in a few basic types: structures, lists, maps, strings. Here are all of the options
+
+| type | count |
+|------|-------|
+| float | 36 |
+| blob | 105 |
+| double | 211 |
+| long | 357 |
+| timestamp | 437 |
+| map | 612 |
+| boolean | 631 |
+| integer | 1730 |
+| list | 7298 |
+| string | 13746 |
+| structure | 36981 |
+
+
+### Mapping the objects to JSON
+
+```smalltalk
+t := AWSBatchComputeEnvironmentDetail new type: 'container'; computeEnvironmentName: 'test'; ecsClusterArn: 'arn:::fake'.
+
+bleg := NeoJSONObjectMapping new subjectClass: AWSBatchComputeEnvironmentDetail; mapAccessors: #(type computeEnvironmentName ecsClusterArn); yourself.
+
+String streamContents: [ :stream |
+	bleg writeObject: t on: ((NeoJSONWriter on: stream)
+	prettyPrint: true)
+	].
+
+```
+---!>
+
+
+
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2022 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>
