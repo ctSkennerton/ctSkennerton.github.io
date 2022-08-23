@@ -13,18 +13,18 @@
 		<item>
 			<title>Résumé</title>
 			<link>/resume/</link>
-			<pubDate>Wed, 04 May 2022 00:00:00 +0000</pubDate>
+			<pubDate>Mon, 22 Aug 2022 00:00:00 +0000</pubDate>
 			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
 			<guid isPermaLink="true">/resume/</guid>
 			<description>&lt;h2 id=&#34;experience&#34;&gt;Experience&lt;/h2&gt;
-&lt;h3 id=&#34;seniorstaff-data-engineer&#34;&gt;(Senior/Staff) Data Engineer&lt;/h3&gt;
+&lt;h3 id=&#34;senior-staff-data-engineer&#34;&gt;Senior Staff Data Engineer&lt;/h3&gt;
 &lt;h4 id=&#34;pendulum-therapeutics-2019present&#34;&gt;Pendulum Therapeutics 2019 — Present&lt;/h4&gt;
 &lt;ul&gt;
-&lt;li&gt;Developed internal web applications using PostgreSQL or Amazon Neptune as the database layer, Flask/Django as the web server/API layer and VueJS frontend layer.&lt;/li&gt;
-&lt;li&gt;Developed Python libraries so data scientists could easily interact with internal REST APIs and databases.&lt;/li&gt;
-&lt;li&gt;Developed data analysis pipelines using Luigi for processing genomics data for genome assembly, variant calling, contamination detection, and metabolic reconstruction in AWS cloud infrastructure.&lt;/li&gt;
-&lt;li&gt;Developed ETL and ELT pipelines for integrating Marketing, Manufacturing, and R&amp;amp;D data from SaaS applications and internal databases&lt;/li&gt;
-&lt;li&gt;Modelled and transformed data using DBT to create a central data warehouse using Snowflake&lt;/li&gt;
+&lt;li&gt;Worked cross functionally with relevant stakeholders at Pendulum to architect the full stack of software and data infrastructure.&lt;/li&gt;
+&lt;li&gt;Architected Python libraries to enable data scientists to easily interact with REST APIs and databases.&lt;/li&gt;
+&lt;li&gt;Managed junior software engineers, mentored their technical development with pair programming and code reviews while helping to balance their personal career objectives with company goals.&lt;/li&gt;
+&lt;li&gt;Led development of internal web applications. Creating the data model, API, and frontend layer.&lt;/li&gt;
+&lt;li&gt;Developed ETL and ELT pipelines for integrating Marketing, Manufacturing, and R&amp;amp;D data from SaaS applications and internal databases into a Snowflake data warehouse using Luigi, Prefect, and DBT.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;bioinformatics-cloud-engineer&#34;&gt;Bioinformatics Cloud Engineer&lt;/h3&gt;
 &lt;h4 id=&#34;second-genome-2018--2019&#34;&gt;Second Genome 2018 — 2019&lt;/h4&gt;
