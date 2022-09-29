@@ -3,27 +3,37 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/</loc>
+    <lastmod>2022-09-29T08:00:00-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/data-engineering/</loc>
+    <lastmod>2022-09-29T08:00:00-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2022/09/29/datelist-tables-at-roblox-data-engineering-meetup/</loc>
+    <lastmod>2022-09-29T08:00:00-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/</loc>
+    <lastmod>2022-09-29T08:00:00-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2022-09-29T08:00:00-07:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/tags/aws/</loc>
     <lastmod>2022-08-28T22:09:45-07:00</lastmod>
   </url>
   
   <url>
     <loc>/tags/batch/</loc>
-    <lastmod>2022-08-28T22:09:45-07:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/</loc>
-    <lastmod>2022-08-28T22:09:45-07:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/posts/</loc>
-    <lastmod>2022-08-28T22:09:45-07:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
     <lastmod>2022-08-28T22:09:45-07:00</lastmod>
   </url>
   

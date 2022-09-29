@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Datelist tables at Roblox Data Engineering Meetup | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="Yesterday I went to a data engineering meetup hosted by Roblox. The talk in the meetup was by Yan Shen and William Ng on how they cut down on processing costs in their data processing pipelines by making use of datelist tables.
+A datelist table acts as an intermediate incremental accumulating aggregate of a quantity from a fact table. Their key feature is that they have a column that contains an array or map of dates where the this quantity was observed." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/style.4499e350b4bf6f8c081a7e09030944de5a9d76cb513b6ad32a95ea610fed2c95.css" />
+  <link rel="stylesheet" href="/custom.css" />
+  <script defer src="/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header clearfix">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle pull-end">
+        <li class="pure-menu-item pure-menu-disabled">Data Engineer</li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      Datelist tables at Roblox Data Engineering Meetup
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2022-09-29T08:00:00-07:00">
+      29 Sep 2022
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/tags/data-engineering">data engineering</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p>Yesterday I went to a data engineering meetup hosted by <a href="https://www.roblox.com">Roblox</a>. The
+talk in the meetup was by <a href="https://www.linkedin.com/in/ynshn/">Yan Shen</a> and <a href="https://www.linkedin.com/in/william-ng-337a9525/">William Ng</a> on how they cut down on processing
+costs in their data processing pipelines by making use of datelist
+tables.</p>
+<p>A datelist table acts as an intermediate incremental accumulating
+aggregate of a quantity from a fact table. Their key feature is
+that they have a column that contains an array or map of dates where
+the this quantity was observed.</p>
+<p>Consider a raw fact table like (but imagine that it&rsquo;s huge and partitioned by day):</p>
+<table>
+<thead>
+<tr>
+<th>userid</th>
+<th>date</th>
+<th>quantity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2022-09-01</td>
+<td>1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2022-09-01</td>
+<td>5</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2022-09-04</td>
+<td>6</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2022-09-05</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<p>A datelist table would convert this information into a summary like:</p>
+<table>
+<thead>
+<tr>
+<th>userid</th>
+<th>fisrt_date</th>
+<th>last_date</th>
+<th>date_list</th>
+<th>dt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2022-09-01</td>
+<td>2022-09-05</td>
+<td>{&ldquo;2022-09-01&rdquo;: 1, &ldquo;2022-09-04&rdquo;: 6, &ldquo;2022-09-05&rdquo;: 5}</td>
+<td>2022-09-05</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2022-09-01</td>
+<td>2022-09-01</td>
+<td>{&ldquo;2022-09-01&rdquo;: 5}</td>
+<td>2022-09-05</td>
+</tr>
+</tbody>
+</table>
+<p>In this case the table granularity is an individual user (one user
+per row) and contains a column recording all of the dates at which
+quantity has been recorded. This table also has a partitioning
+column <code>dt</code> that is used to record the date at which the rows were
+last updated. The table can also record other important attributes, in
+this case the first date and last date that the quantity was recorded.</p>
+<p>The value in this structure comes from updating the information when
+new partitions are added to the original fact table. Let&rsquo;s say that
+new data comes in that looks like the following:</p>
+<table>
+<thead>
+<tr>
+<th>userid</th>
+<th>date</th>
+<th>quantity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>2022-09-06</td>
+<td>9</td>
+</tr>
+</tbody>
+</table>
+<p>We can then update the datelist table using only this new partition of the fact table:</p>
+<table>
+<thead>
+<tr>
+<th>userid</th>
+<th>fisrt_date</th>
+<th>last_date</th>
+<th>date_list</th>
+<th>dt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2022-09-01</td>
+<td>2022-09-05</td>
+<td>{&ldquo;2022-09-01&rdquo;: 1, &ldquo;2022-09-04&rdquo;: 6, &ldquo;2022-09-05&rdquo;: 5}</td>
+<td>2022-09-06</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2022-09-01</td>
+<td>2022-09-06</td>
+<td>{&ldquo;2022-09-01&rdquo;: 5, &ldquo;2022-09-06&rdquo;: 9}</td>
+<td>2022-09-06</td>
+</tr>
+</tbody>
+</table>
+<p>This can be achieved incrementally as the datelist table contains
+all of the history, so to generate the current datelist table we
+need only the previous days datelist table and the current partition
+of the fact table.</p>
+<p>For small datasets, it&rsquo;s possible to easily scan over the historical
+data, but as the dataset grows that becomes an unreasonable compute
+burden. In his talk, Yan and WIlliam gave the example of scanning
+over a raw fact table that had 10 TB of data generated per day.
+Scanning all the historical data every time a query was run required
+looking at petabytes of data. In comparison, using datelist table
+they only needed to scan through 10TB + ~0.5TB per day.</p>
+<p>The datelist table can then act as an efficient intermediate table
+for calculating historical metrics like retention and totals of the
+quantity over the last 7 days, 28 days etc., from the table above
+it&rsquo;s easy to aggregate the quantity over the previous 7 days:</p>
+<table>
+<thead>
+<tr>
+<th>userid</th>
+<th>quantity_L7</th>
+<th>dt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>12</td>
+<td>2022-09-06</td>
+</tr>
+<tr>
+<td>3</td>
+<td>14</td>
+<td>2022-09-06</td>
+</tr>
+</tbody>
+</table>
+
+  </div>
+</div>
+  <div class="footer">
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item" title="Theme repository">
+        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+      </li>
+      <li class="pure-menu-item" title="RSS Feed">
+        <a href="/index.xml" class="pure-menu-link">RSS</a>
+      </li>
+      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+        <a class="pure-menu-link" id="btn-gototop">
+          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item pure-menu-disabled">
+        &copy; 2022 &mdash; Connor Skennerton — All rights reserved.
+      </li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>
