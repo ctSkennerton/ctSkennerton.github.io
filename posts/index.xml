@@ -3383,5 +3383,54 @@ and in your PATH.&lt;/p&gt;
 &lt;span class=&#34;nf&#34;&gt;dev.off&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
 		</item>
+		<item>
+			<title>Building a personal baby tracker with Pharo and Seaside</title>
+			<link>/1/01/01/building-a-personal-baby-tracker-with-pharo-and-seaside/</link>
+			<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
+			<guid isPermaLink="true">/1/01/01/building-a-personal-baby-tracker-with-pharo-and-seaside/</guid>
+			<description>&lt;p&gt;One of the things that I&amp;rsquo;ve discovered about parenting is that
+babies are tracked religously. How much are they sleeping? Are they
+eating enough? Did they pee/poop the correct number of times in the
+last 24 hours? This isn&amp;rsquo;t just frettful new parent stuff (although
+it totally is that too) but things that pediatricians want to know
+and could be the early signs of problems when there isn&amp;rsquo;t a good
+way to know if there is a problem. There are many apps that will
+help with this giving simple GUI to measure all sorts of things.
+&lt;a href=&#34;https://babytracker.info/&#34;&gt;Here&lt;/a&gt; is a website that compares some,
+and a quick search of the App Store will give many more. The problem
+I have with all of these solutions is that you are minutely tracking
+the first stages of your childs life and development and giving all
+that data to someone else. The people who make these apps are running
+a business and you&amp;rsquo;re the product. Now I don&amp;rsquo;t necessarily have an
+issue with that, I&amp;rsquo;m using multiple apps that work by targeting ads
+to me. I get it but I didn&amp;rsquo;t want to feed the personal data mining
+machine. I didn&amp;rsquo;t want to read a privacy policy or even worry about
+it, I wanted something where there was no data to be given away and
+sold. So I wrote my own personal baby tracker.&lt;/p&gt;
+&lt;p&gt;The requirements were pretty simple:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Dead easy UI so even in a sleep deprived state we could log updates.&lt;/li&gt;
+&lt;li&gt;Available across multiple devices.&lt;/li&gt;
+&lt;li&gt;Only accessible to people caring for our newborn.&lt;/li&gt;
+&lt;li&gt;Easy development and deployment. This is a personal project so it doesn&amp;rsquo;t need to scale.&lt;/li&gt;
+&lt;li&gt;Have some fun.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;Instead I wrote an MVP that works for me.&lt;/li&gt;
+&lt;li&gt;Used Seaside framework with &lt;a href=&#34;https://pharo.org&#34;&gt;Pharo&lt;/a&gt; 10 because I wanted to try it out.&lt;/li&gt;
+&lt;li&gt;Used &lt;a href=&#34;https://andybrewer.github.io/mvp/&#34;&gt;MVP css&lt;/a&gt; for basic styling.&lt;/li&gt;
+&lt;li&gt;Was really impressed with how easy Seaside was to generate pages. No need to learn a templating language like in Python or Ruby. Instead write the HTML structure using smalltalk code.&lt;/li&gt;
+&lt;li&gt;Pharo&amp;rsquo;s refactoring tools were really useful for extracting logic into separate methods when things were getting too long.&lt;/li&gt;
+&lt;li&gt;Seaside doesn&amp;rsquo;t provide any persistence like Django or Ruby on Rails. In that regard it&amp;rsquo;s a bit more like Flask. Pharo has many libraries for persistence&lt;/li&gt;
+&lt;li&gt;I chose &lt;a href=&#34;https://github.com/rko281/ReStoreForPharo&#34;&gt;ReStore&lt;/a&gt; as it looked easy to set up. And it was!&lt;/li&gt;
+&lt;li&gt;ReStore has a simple way to add translations for Smalltalk messages into SQL functions or expressions. I was able to add in sqlite3&amp;rsquo;s &lt;code&gt;unixepoch&lt;/code&gt; function by using the &lt;code&gt;asUnixTime&lt;/code&gt; message that is understood by the &lt;code&gt;DateAndTime&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;nc&#34;&gt;ReStore&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;translateMessage:&lt;/span&gt; &lt;span class=&#34;ss&#34;&gt;#asUnixTime&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;toFunction:&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;UNIXEPOCH(%1)&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asSQLFunctionIntegerResult&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;span class=&#34;nc&#34;&gt;ReStore&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;translateMessage:&lt;/span&gt; &lt;span class=&#34;ss&#34;&gt;#asDate&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;toFunction:&lt;/span&gt; (&lt;span class=&#34;s&#34;&gt;&amp;#39;date(%1)&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asSQLFunctionWithResultClass:&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Date&lt;/span&gt;)&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+
+(&lt;span class=&#34;nc&#34;&gt;BabyEvent&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;storedInstances&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;satisfying:&lt;/span&gt; [ &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;startTime&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;2022-10-29&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asDate&lt;/span&gt; ] ) &lt;span class=&#34;nf&#34;&gt;project:&lt;/span&gt; [ &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;||&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;startDate&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;||&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;count&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;||&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;durationInSeconds&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;sum&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;||&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;durationInSeconds&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;average&lt;/span&gt; ]&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+		</item>
 	</channel>
 </rss>
