@@ -8,8 +8,96 @@
 		<managingEditor>c.skennerton@gmail.com (Connor Skennerton)</managingEditor>
 		<webMaster>c.skennerton@gmail.com (Connor Skennerton)</webMaster>
 		<copyright>Connor Skennerton — All rights reserved.</copyright>
-		<lastBuildDate>Sat, 02 Apr 2022 14:52:00 -0700</lastBuildDate>
+		<lastBuildDate>Mon, 29 May 2023 12:35:00 -0700</lastBuildDate>
 		<atom:link href="/tags/pharo/index.xml" rel="self" type="application/rss+xml" />
+		<item>
+			<title>Building a personal baby tracker with Pharo and Seaside</title>
+			<link>/2023/05/29/building-a-personal-baby-tracker-with-pharo-and-seaside/</link>
+			<pubDate>Mon, 29 May 2023 12:35:00 -0700</pubDate>
+			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
+			<guid isPermaLink="true">/2023/05/29/building-a-personal-baby-tracker-with-pharo-and-seaside/</guid>
+			<description>&lt;p&gt;One of the things that I&amp;rsquo;ve discovered about parenting is that
+babies are tracked religously. How much are they sleeping? Are they
+eating enough? Did they pee/poop the correct number of times in the
+last 24 hours? This isn&amp;rsquo;t just frettful new parent stuff (although
+it totally is that too) but things that pediatricians want to know
+and could be the early signs of problems when there isn&amp;rsquo;t a good
+way to know if there is a problem. There are many apps that will
+help with this giving simple GUI to measure all sorts of things.
+&lt;a href=&#34;https://babytracker.info/&#34;&gt;Here&lt;/a&gt; is a website that compares some,
+and a quick search of the App Store will give many more. The problem
+I have with all of these solutions is that you are minutely tracking
+the first stages of your childs life and development and giving all
+that data to someone else. The people who make these apps are running
+a business and you&amp;rsquo;re the product. Now I don&amp;rsquo;t necessarily have an
+issue with that, I&amp;rsquo;m using multiple apps that work by targeting ads
+to me. I get it, but I didn&amp;rsquo;t want to feed the personal data mining
+machine. I didn&amp;rsquo;t want to read a privacy policy or even worry about
+it, I wanted something where there was no data to be given away and
+sold. So I wrote &lt;a href=&#34;https://github.com/ctSkennerton/baby_tracker&#34;&gt;my own personal baby tracker&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The requirements were pretty simple:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Dead easy UI so even in a sleep deprived state we could log updates.&lt;/li&gt;
+&lt;li&gt;Available across multiple devices.&lt;/li&gt;
+&lt;li&gt;Only accessible to people caring for our newborn.&lt;/li&gt;
+&lt;li&gt;Easy development and deployment. This is a personal project so it doesn&amp;rsquo;t need to scale.&lt;/li&gt;
+&lt;li&gt;Have some fun.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;I wrote an MVP that works for me using the Seaside framework with
+&lt;a href=&#34;https://pharo.org&#34;&gt;Pharo&lt;/a&gt; 10.  This was my first time using Seaside
+and I was really impressed with how easy it was to generate pages.
+No need to learn a templating language like in Python or Ruby.
+Instead, in Seaside, you write the HTML structure using smalltalk
+code.  There was a big learning curve for me because of some initial
+misconceptions about how Seaside works.  It&amp;rsquo;s not just for creating
+web pages, but for creating web apps. In Django/Flask or other
+frameworks I&amp;rsquo;ve used the request contains all of the information
+and state isn&amp;rsquo;t saved. In Seaside, state is saved, I found that
+thinking about Seaside to how something like React or Vue are used;
+there is global state and this is saved for you between actions.
+The difference being that Seaside acts server-side.&lt;/p&gt;
+&lt;p&gt;Seaside doesn&amp;rsquo;t provide any persistence like Django or Ruby on
+Rails. In that regard it&amp;rsquo;s a bit more like Flask. Pharo has many
+libraries for persistence I chose
+&lt;a href=&#34;https://github.com/rko281/ReStoreForPharo&#34;&gt;ReStore&lt;/a&gt; as it looked
+easy to set up. And it was! ReStore has a simple API that mimics
+the collection API in Pharo but it also allowed for some interesting
+customizations. ReStore has a simple way to add
+translations for Smalltalk messages into SQL functions or expressions.
+I was able to add in sqlite3&amp;rsquo;s &lt;code&gt;unixepoch&lt;/code&gt; function by using the
+&lt;code&gt;asUnixTime&lt;/code&gt; message that is understood by the &lt;code&gt;DateAndTime&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;nc&#34;&gt;ReStore&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;translateMessage:&lt;/span&gt; &lt;span class=&#34;ss&#34;&gt;#asUnixTime&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;toFunction:&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;UNIXEPOCH(%1)&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asSQLFunctionIntegerResult&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;span class=&#34;nc&#34;&gt;ReStore&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;translateMessage:&lt;/span&gt; &lt;span class=&#34;ss&#34;&gt;#asDate&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;toFunction:&lt;/span&gt; (&lt;span class=&#34;s&#34;&gt;&amp;#39;date(%1)&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asSQLFunctionWithResultClass:&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Date&lt;/span&gt;)&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+
+(&lt;span class=&#34;nc&#34;&gt;BabyEvent&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;storedInstances&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;satisfying:&lt;/span&gt; [
+    &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;startTime&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;2022-10-29&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asDate&lt;/span&gt; ] )
+    &lt;span class=&#34;nf&#34;&gt;project:&lt;/span&gt; [
+        &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt;
+        &lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;||&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;startDate&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;||&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;count&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;||&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;durationInSeconds&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;sum&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;||&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;durationInSeconds&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;average&lt;/span&gt; 
+    ]&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This kind of customization was increadably simple. I have no idea
+how I could have done this in something like Django (or whether
+such a thing is even possible).&lt;/p&gt;
+&lt;p&gt;One of the difficulties when using a more niche framework is the
+lack of documentation for all of the use cases. One top of that
+this was my first Seaside app, so trying to map my knowledge from
+Django took a little time. For example, I couldn&amp;rsquo;t figure out how
+to keep track of the database connection, or where to store such
+initialization information. After asking a few &amp;ldquo;stupid questions&amp;rdquo;
+I was pointed to using the &lt;code&gt;WASession&lt;/code&gt; class to hold &amp;ldquo;global&amp;rdquo;
+information like the database connection. Here are a couple of links
+I was pointed to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://onsmalltalk.com/terse-guide-to-seaside&#34;&gt;http://onsmalltalk.com/terse-guide-to-seaside&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://edutec.citilab.eu/downloads/TFC-ASmalltalkByTheSeaside.pdf&#34;&gt;https://edutec.citilab.eu/downloads/TFC-ASmalltalkByTheSeaside.pdf&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Though I found that the &lt;a href=&#34;https://github.com/svenvc/Reddit&#34;&gt;Reddit&lt;/a&gt;
+sample application for seaside is a great resource for looking at
+the session and the deployment.&lt;/p&gt;
+&lt;p&gt;For deployment I found &lt;a href=&#34;https://nickjanetakis.com/blog/why-i-prefer-running-nginx-on-my-docker-host-instead-of-in-a-container&#34;&gt;this blog&lt;/a&gt; nice for not running nginx and I used Digital Ocean&amp;rsquo;s tool
+for creating the actual configuration (as well as their hosting to set up a small droplet)&lt;/p&gt;
+</description>
+		</item>
 		<item>
 			<title>Creating an AWS SDK for Pharo Smalltalk</title>
 			<link>/2022/04/02/creating-an-aws-sdk-for-pharo-smalltalk/</link>
@@ -657,55 +745,6 @@ and lends itself to agile development.&lt;/p&gt;
 &lt;p&gt;I&amp;rsquo;m going to keep using Pharo on the side. For the moment I don&amp;rsquo;t think it could replace python/R
 in my professional work but the language is easy and good for quicker analyses.&lt;/p&gt;
 </description>
-		</item>
-		<item>
-			<title>Building a personal baby tracker with Pharo and Seaside</title>
-			<link>/1/01/01/building-a-personal-baby-tracker-with-pharo-and-seaside/</link>
-			<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
-			<guid isPermaLink="true">/1/01/01/building-a-personal-baby-tracker-with-pharo-and-seaside/</guid>
-			<description>&lt;p&gt;One of the things that I&amp;rsquo;ve discovered about parenting is that
-babies are tracked religously. How much are they sleeping? Are they
-eating enough? Did they pee/poop the correct number of times in the
-last 24 hours? This isn&amp;rsquo;t just frettful new parent stuff (although
-it totally is that too) but things that pediatricians want to know
-and could be the early signs of problems when there isn&amp;rsquo;t a good
-way to know if there is a problem. There are many apps that will
-help with this giving simple GUI to measure all sorts of things.
-&lt;a href=&#34;https://babytracker.info/&#34;&gt;Here&lt;/a&gt; is a website that compares some,
-and a quick search of the App Store will give many more. The problem
-I have with all of these solutions is that you are minutely tracking
-the first stages of your childs life and development and giving all
-that data to someone else. The people who make these apps are running
-a business and you&amp;rsquo;re the product. Now I don&amp;rsquo;t necessarily have an
-issue with that, I&amp;rsquo;m using multiple apps that work by targeting ads
-to me. I get it but I didn&amp;rsquo;t want to feed the personal data mining
-machine. I didn&amp;rsquo;t want to read a privacy policy or even worry about
-it, I wanted something where there was no data to be given away and
-sold. So I wrote my own personal baby tracker.&lt;/p&gt;
-&lt;p&gt;The requirements were pretty simple:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;Dead easy UI so even in a sleep deprived state we could log updates.&lt;/li&gt;
-&lt;li&gt;Available across multiple devices.&lt;/li&gt;
-&lt;li&gt;Only accessible to people caring for our newborn.&lt;/li&gt;
-&lt;li&gt;Easy development and deployment. This is a personal project so it doesn&amp;rsquo;t need to scale.&lt;/li&gt;
-&lt;li&gt;Have some fun.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;ul&gt;
-&lt;li&gt;Instead I wrote an MVP that works for me.&lt;/li&gt;
-&lt;li&gt;Used Seaside framework with &lt;a href=&#34;https://pharo.org&#34;&gt;Pharo&lt;/a&gt; 10 because I wanted to try it out.&lt;/li&gt;
-&lt;li&gt;Used &lt;a href=&#34;https://andybrewer.github.io/mvp/&#34;&gt;MVP css&lt;/a&gt; for basic styling.&lt;/li&gt;
-&lt;li&gt;Was really impressed with how easy Seaside was to generate pages. No need to learn a templating language like in Python or Ruby. Instead write the HTML structure using smalltalk code.&lt;/li&gt;
-&lt;li&gt;Pharo&amp;rsquo;s refactoring tools were really useful for extracting logic into separate methods when things were getting too long.&lt;/li&gt;
-&lt;li&gt;Seaside doesn&amp;rsquo;t provide any persistence like Django or Ruby on Rails. In that regard it&amp;rsquo;s a bit more like Flask. Pharo has many libraries for persistence&lt;/li&gt;
-&lt;li&gt;I chose &lt;a href=&#34;https://github.com/rko281/ReStoreForPharo&#34;&gt;ReStore&lt;/a&gt; as it looked easy to set up. And it was!&lt;/li&gt;
-&lt;li&gt;ReStore has a simple way to add translations for Smalltalk messages into SQL functions or expressions. I was able to add in sqlite3&amp;rsquo;s &lt;code&gt;unixepoch&lt;/code&gt; function by using the &lt;code&gt;asUnixTime&lt;/code&gt; message that is understood by the &lt;code&gt;DateAndTime&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-smalltalk&#34; data-lang=&#34;smalltalk&#34;&gt;&lt;span class=&#34;nc&#34;&gt;ReStore&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;translateMessage:&lt;/span&gt; &lt;span class=&#34;ss&#34;&gt;#asUnixTime&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;toFunction:&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;UNIXEPOCH(%1)&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asSQLFunctionIntegerResult&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
-&lt;span class=&#34;nc&#34;&gt;ReStore&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;translateMessage:&lt;/span&gt; &lt;span class=&#34;ss&#34;&gt;#asDate&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;toFunction:&lt;/span&gt; (&lt;span class=&#34;s&#34;&gt;&amp;#39;date(%1)&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asSQLFunctionWithResultClass:&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Date&lt;/span&gt;)&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
-
-(&lt;span class=&#34;nc&#34;&gt;BabyEvent&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;storedInstances&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;satisfying:&lt;/span&gt; [ &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;startTime&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;2022-10-29&amp;#39;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;asDate&lt;/span&gt; ] ) &lt;span class=&#34;nf&#34;&gt;project:&lt;/span&gt; [ &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;||&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;startDate&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;||&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;count&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;||&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;durationInSeconds&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;sum&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;||&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;each&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;durationInSeconds&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;average&lt;/span&gt; ]&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
 		</item>
 	</channel>
 </rss>

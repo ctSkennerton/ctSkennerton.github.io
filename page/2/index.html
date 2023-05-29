@@ -51,6 +51,32 @@
   <div>
     <h2 class="post-title">
       
+      <a href="/2020/11/16/a-make-for-uris/">A Make for URIs</a>
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2020-11-16T18:07:45-08:00">
+      16 Nov 2020
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/tags/mk">Mk</a>
+    <a href="/tags/make">Make</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    Make has been a one of the key tools in my arsenal for gettings things done. Although it was developed for compiling code, its functionality can be generalized to any process that requires files to be generated based on dependancies. I recommend you look at these slides by Vince Buffalo as a good introduction to using make for scientific workflows. Make works by creating a dependancy graph of files and their prerequisites using the last time the file was modified as a way to determine if a file needs to be remade.
+  </div>
+</div>
+<div>
+  <div>
+    <h2 class="post-title">
+      
       <a href="/2020/09/27/drawing-kegg-pathway-maps-using-biopython-and-matplotlib/">Drawing KEGG pathway maps using biopython and matplotlib</a>
     </h2>
     
@@ -281,31 +307,6 @@ Long ago I added in a translate function and recently I added in a function that
     <p>The <a href="https://www.ncbi.nlm.nih.gov/books/NBK179288/">Entrez Direct</a> toolkit is great for programmatic access to all of NCBI&rsquo;s resources. This little snippet below finds all of the refseq representative genomes for a given NCBI taxonomy ID, makes a little summary of the genomes downloaded and uses <code>wget</code> to download the genbank files from the Assembly FTP. Change the inital query in the first call to <code>esearch</code> to change what genomes are downloaded.</p>
   </div>
 </div>
-<div>
-  <div>
-    <h2 class="post-title">
-      
-      <a href="/2016/11/17/python-ete3-formatting-organism-names-the-way-i-want/">Python ete3: formatting organism names the way I want</a>
-    </h2>
-    
-<div class="post-meta">
-  <span>Date</span> &#x5b;
-    <time datetime="2016-11-17T00:58:40Z">
-      17 Nov 2016
-    </time>
-  &#x5d;
-        
-        
-  <span>Tags</span> &#x5b;
-    <a href="/tags/bioinformatics">Bioinformatics</a>
-  &#x5d;
-</div>
-
-  </div>
-  <div>
-    I feel like I&rsquo;m on a life-long quest to make all of my phylogenetic tree figures completely programmatically. The best tool I&rsquo;ve found for making them is the ete library for the python programing language. I&rsquo;ve already figured out how to get trees drawn in the style that I like but there was still one thing left to do: making organism names italicize correctly. I work with microorganisms where the convention is for the genus and species names to be italicized but the strain name to be in regular font.
-  </div>
-</div>
 
   <div class="pagination-content">
     <div class="pure-menu pure-menu-horizontal">
@@ -348,7 +349,7 @@ Long ago I added in a translate function and recently I added in a function that
   <div class="pure-menu pure-menu-horizontal">
     <ul class="pure-menu-list">
       <li class="pure-menu-item pure-menu-disabled">
-        &copy; 2022 &mdash; Connor Skennerton — All rights reserved.
+        &copy; 2023 &mdash; Connor Skennerton — All rights reserved.
       </li>
     </ul>
   </div>
