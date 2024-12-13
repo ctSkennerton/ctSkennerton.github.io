@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Can we imagine something better than embedded SQL strings | Connor Skennerton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="SQL is lingua franca of the data world. Every tool supports it or has some version of it. I&rsquo;ve been exposed to Postres, Trino, Spark-SQL, Flink-SQL, MySql, MS-SQL and they all work the same way for basic things. Of course the real challenge is when things get more complicated, certain functions have different names, or don&rsquo;t exist, and some query patterns that work well in one engine don&rsquo;t in another. (And I don&rsquo;t just mean between OLTP and OLAP engines) While these are minor annoyances, it is pretty amazing to have a declarative language that is mostly familiar across tools and environments so that everyone from a product manager to a backend engineer can query terabytes of data in a few seconds." />
+  <meta name="author" content="Connor Skennerton" />
+  <meta name="generator" content="Hugo 0.74.1" />
+  <link href="/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
+  <link rel="stylesheet" href="/style.ea83d25f4b0f23db598aad472c930103bef3f8fe5a6ec12ce6ee00c4b293eb8d.css" />
+  <link rel="stylesheet" href="/custom.css" />
+  <script defer src="/script.e8003a738bd5520c8edb960d68bdae1bd1f2cc6827666e54d188fb7f31e06a76.js" integrity="sha256-6AA6c4vVUgyO25YNaL2uG9HyzGgnZm5U0Yj7fzHganY="></script>
+  
+
+</head>
+<body>
+<div class="pure-g">
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+  <div class="pure-u-22-24 pure-u-md-14-24">
+  
+<div class="navigation">
+  <div class="navigation-header">
+    <div class="pure-menu pure-menu-horizontal">
+      <a class="pure-menu-heading pure-menu-link" href="/">
+        Connor Skennerton
+      </a>
+      <ul class="pure-menu-list navigation-header-subtitle">
+        <li class="pure-menu-item pure-menu-disabled">
+          <span class="pure-menu-link">Data Engineer</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="navigation-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="All posts">
+          <a  class="pure-menu-link" href="/posts/">Posts</a>
+        </li>
+        <li class="pure-menu-item" title="About">
+          <a  class="pure-menu-link" href="/about/">About</a>
+        </li>
+        <li class="pure-menu-item" title="Résumé">
+          <a  class="pure-menu-link" href="/resume/">Résumé</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      Can we imagine something better than embedded SQL strings
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2024-12-12T00:00:00Z">
+      12 Dec 2024
+    </time>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    <p>SQL is <em>lingua franca</em> of the data world. Every tool supports it or has some version of it.  I&rsquo;ve been
+exposed to Postres, Trino, Spark-SQL, Flink-SQL, MySql, MS-SQL and they all work the same way for basic
+things. Of course the real challenge is when things get more complicated, certain functions have
+different names, or don&rsquo;t exist, and some query patterns that work well in one engine don&rsquo;t in another.
+(And I don&rsquo;t just mean between OLTP and OLAP engines) While these are minor annoyances, it is pretty
+amazing to have a declarative language that is mostly familiar across tools and environments so that
+everyone from a product manager to a backend engineer can query terabytes of data in a few seconds.</p>
+<p>Sadly what isn&rsquo;t amazing is all the extra tooling that has been built on top of this in the data
+engineering world.  Data Engineering can&rsquo;t just rely on SQL, we need to orchestrate queries and
+parameterize them in various different ways. This is often done in Python (e.g. Airflow, Dagster,
+Prefect) using some degree of templating, whether that is using <code>jinja2</code>, <code>f-strings</code>, or <code>.format()</code>.
+Doing this has drastic negative effects on developer experience becuase we loose even basic things
+like syntax highlighting, or more advanded features of static analysis.</p>
+<p>Some IDEs have extensions that detect embedded SQL and apply better linting rules. (Shout out to
+<a href="https://www.jetbrains.com/pycharm/">Pycharm</a> which does this and lets you select a wide range of SQL
+dialects.) But if you don&rsquo;t have that you&rsquo;re stuck looking at a very long string and trying to understand
+why, when it&rsquo;s all stitched together, where the syntax error is.</p>
+<p>SQL itself is not a language that is easily modularized. It is difficult to create chunks or &ldquo;functions&rdquo;
+as part of the query.  I&rsquo;ve seen SQL embedding in python as f-strings where whole parts of the query
+are generated by calling functions in the string parameters (those functions themselves taking parameters
+from the main python code). It&rsquo;s impossible to read but it&rsquo;s done because the original author was
+struggling to make something that was composible.</p>
+<p>There are other APIs, <abbr title="Object Relational Mapping">ORMs</abbr> wrap up SQL in more native
+looking code and some tools like <a href="https://spark.apache.org">Spark</a> have a data frame API which provides
+python native access. I&rsquo;ve found getting out of SQL and using the data frame API quite a productivity
+boost but&hellip;</p>
+<p>Because SQL is <em>lingua franca</em> it is difficult to on board users onto other ways of developing. Any
+open source Data or BI tool will accept SQL but ORM wrappers or data frame APIs aren&rsquo;t supported.  I
+try to work as much in Spark as possible and use the Dataframe API as much as I can due to it&rsquo;s
+composibility, but it is hard to iterate quickly when Trino is just faster at some things and the only
+way to use it is via SQL through the company sanctioned web app BI tool.</p>
+<p>Then again, maybe this doesn&rsquo;t matter anymore: I can ask github copilot to take some SQL and convert
+it into pyspark Dataframe API, and it does a pretty good job of it</p>
+
+  </div>
+</div>
+  <div class="footer">
+  <div class="footer-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="Theme repository">
+          <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+        </li>
+        <li class="pure-menu-item" title="RSS Feed">
+          <a href="/index.xml" class="pure-menu-link">RSS</a>
+        </li>
+        <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+          <a class="pure-menu-link" id="btn-gototop">
+            <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item pure-menu-disabled">
+          &copy; 2024 &mdash; Connor Skennerton — All rights reserved.
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  </div>
+  <div class="pure-u-1-24 pure-u-md-5-24"></div>
+</div>
+</body>
+</html>

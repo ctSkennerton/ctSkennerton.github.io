@@ -9,9 +9,11 @@
   <meta name="author" content="Connor Skennerton" />
   <meta name="generator" content="Hugo 0.74.1" />
   <link href="/index.xml" rel="alternate" type="application/rss+xml" title="Connor Skennerton Feed" />
-  <link rel="stylesheet" href="/style.4499e350b4bf6f8c081a7e09030944de5a9d76cb513b6ad32a95ea610fed2c95.css" />
+  <link rel="stylesheet" href="/style.ea83d25f4b0f23db598aad472c930103bef3f8fe5a6ec12ce6ee00c4b293eb8d.css" />
   <link rel="stylesheet" href="/custom.css" />
-  <script defer src="/script.9df38729991a6ec08d83b60514e841529cebd5ccc800cf8e1f98fb63e73aaa73.js"></script>
+  <script defer src="/script.e8003a738bd5520c8edb960d68bdae1bd1f2cc6827666e54d188fb7f31e06a76.js" integrity="sha256-6AA6c4vVUgyO25YNaL2uG9HyzGgnZm5U0Yj7fzHganY="></script>
+  
+
 </head>
 <body>
 <div class="pure-g">
@@ -19,13 +21,15 @@
   <div class="pure-u-22-24 pure-u-md-14-24">
   
 <div class="navigation">
-  <div class="navigation-header clearfix">
+  <div class="navigation-header">
     <div class="pure-menu pure-menu-horizontal">
       <a class="pure-menu-heading pure-menu-link" href="/">
         Connor Skennerton
       </a>
-      <ul class="pure-menu-list navigation-header-subtitle pull-end">
-        <li class="pure-menu-item pure-menu-disabled">Data Engineer</li>
+      <ul class="pure-menu-list navigation-header-subtitle">
+        <li class="pure-menu-item pure-menu-disabled">
+          <span class="pure-menu-link">Data Engineer</span>
+        </li>
       </ul>
     </div>
   </div>
@@ -47,6 +51,31 @@
 </div>
 
   
+<div>
+  <div>
+    <h2 class="post-title">
+      
+      <a href="/2017/04/09/split_by-splitting-files-on-the-command-line-based-on-content/">split_by: splitting files on the command line based on content</a>
+    </h2>
+    
+<div class="post-meta">
+  <span>Date</span> &#x5b;
+    <time datetime="2017-04-09T08:04:41Z">
+      09 Apr 2017
+    </time>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="/tags/bioinformatics">Bioinformatics</a>
+  &#x5d;
+</div>
+
+  </div>
+  <div>
+    Unix has so many great ways to perform text manipulation but one niche which hasn&rsquo;t been filled is splitting a tabular file into pieces based on the contents of certain columns. There are two commands, split and csplit, that do a similar role. split can split a file into a certain number of bytes or lines; csplit uses a regular expression to determine where to split the file. Often for my purposes neither of these tools is a good fit, and what I really want is an equivalent to the &ldquo;group by&rdquo; clause in SQL databases.
+  </div>
+</div>
 <div>
   <div>
     <h2 class="post-title">
@@ -291,32 +320,6 @@ order of magnitude less than what just got published.</p>
 is: should this gene really be there? The answer is that sometimes it&rsquo;s not easy to know</p>
   </div>
 </div>
-<div>
-  <div>
-    <h2 class="post-title">
-      
-      <a href="/2014/11/12/uploading-your-theis-literature-review-to-wikipedia/">Uploading your Theis Literature Review to Wikipedia</a>
-    </h2>
-    
-<div class="post-meta">
-  <span>Date</span> &#x5b;
-    <time datetime="2014-11-12T00:00:00Z">
-      12 Nov 2014
-    </time>
-  &#x5d;
-        
-        
-  <span>Tags</span> &#x5b;
-    <a href="/tags/bioinformatics">bioinformatics</a>
-  &#x5d;
-</div>
-
-  </div>
-  <div>
-    Every PhD student can contribute to open science by uploading their thesis literature review onto Wikipedia!
-My thesis was entitled &ldquo;Phage-host evolution in a model ecosystem&rdquo;, where I tracked the evolution of phage genome evolution and the evolution of bacterial defense mechanisms using metagenomics. When I was writing my thesis I spent a lot of time writing up the section on CRISPRs, which are a type of bacterial adaptive immune system.
-  </div>
-</div>
 
   <div class="pagination-content">
     <div class="pure-menu pure-menu-horizontal">
@@ -341,27 +344,31 @@ My thesis was entitled &ldquo;Phage-host evolution in a model ecosystem&rdquo;, 
   </div>
 
   <div class="footer">
-  <div class="pure-menu pure-menu-horizontal">
-    <ul class="pure-menu-list">
-      <li class="pure-menu-item" title="Theme repository">
-        <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
-      </li>
-      <li class="pure-menu-item" title="RSS Feed">
-        <a href="/index.xml" class="pure-menu-link">RSS</a>
-      </li>
-      <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
-        <a class="pure-menu-link" id="btn-gototop">
-          <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
-        </a>
-      </li>
-    </ul>
+  <div class="footer-content">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item" title="Theme repository">
+          <a class="pure-menu-link" href="https://github.com/ctSkennerton">GitHub</a>
+        </li>
+        <li class="pure-menu-item" title="RSS Feed">
+          <a href="/index.xml" class="pure-menu-link">RSS</a>
+        </li>
+        <li class="pure-menu-item fix-cursor-pointer" title="Go to top">
+          <a class="pure-menu-link" id="btn-gototop">
+            <span class="fix-placement-up">&#x21e7;&#xfe0e;</span>
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
-  <div class="pure-menu pure-menu-horizontal">
-    <ul class="pure-menu-list">
-      <li class="pure-menu-item pure-menu-disabled">
-        &copy; 2023 &mdash; Connor Skennerton — All rights reserved.
-      </li>
-    </ul>
+  <div class="footer-copyright">
+    <div class="pure-menu pure-menu-horizontal">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item pure-menu-disabled">
+          &copy; 2024 &mdash; Connor Skennerton — All rights reserved.
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
 
