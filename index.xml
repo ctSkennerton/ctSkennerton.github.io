@@ -52,6 +52,21 @@ it into pyspark Dataframe API, and it does a pretty good job of it&lt;/p&gt;
 </description>
 		</item>
 		<item>
+			<title>Helix Shortcuts</title>
+			<link>/2024/12/11/helix-shortcuts/</link>
+			<pubDate>Wed, 11 Dec 2024 00:00:00 +0000</pubDate>
+			<author>c.skennerton@gmail.com (Connor Skennerton)</author>
+			<guid isPermaLink="true">/2024/12/11/helix-shortcuts/</guid>
+			<description>&lt;p&gt;Writing these down because I always forget&amp;hellip;&lt;/p&gt;
+&lt;h2 id=&#34;replace-all-occurances-of-something&#34;&gt;Replace all occurances of something&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;create a selection. For example, using &lt;kbd&gt;x&lt;/kbd&gt; for lines, &lt;kbd&gt;v&lt;/kbd&gt; for a flexible selection, or &lt;kbd&gt;%&lt;/kbd&gt; for the whole file&lt;/li&gt;
+&lt;li&gt;search in the selection with &lt;kbd&gt;s&lt;/kbd&gt; followed by whatever you want to search for, then &lt;kbd&gt;enter&lt;/kbd&gt;&lt;/li&gt;
+&lt;li&gt;(this will create a whole bunch of cursors) use &lt;kbd&gt;c&lt;/kbd&gt; to change the text and enter insert-mode to replace&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+		</item>
+		<item>
 			<title>Résumé</title>
 			<link>/resume/</link>
 			<pubDate>Sun, 10 Nov 2024 00:00:00 +0000</pubDate>
